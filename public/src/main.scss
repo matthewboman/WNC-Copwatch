@@ -1,0 +1,59 @@
+.container {
+  padding: 20px;
+
+  .map {
+    height: 70vh;
+    width: 100%;
+  }
+
+  .filter {
+    margin: 10px 0;
+  }
+
+  .filters {
+    font-size: 1rem;
+    font-family: sans-serif;
+
+    .incident-filters {
+
+      .incident-label {
+
+      }
+    }
+
+    .officer-filters {
+
+    }
+
+    .date-filters {
+
+    }
+  }
+
+  /* page globals */
+  h2 {
+    margin-bottom: .5em;
+  }
+
+  .btn-reset {
+    border-radius: 10px;
+    background-color: #d3d3d3;
+    color: #313131;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 5px 10px;
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  select {
+    font-size: 1rem;
+    padding: 5px 10px;
+  }
+}
