@@ -7,8 +7,8 @@ require('dotenv').config()
 const geoLocation = require('./utils/geoLocation')
 const dateParser = require('./utils/dateParser')
 const report = ('./models/report')
-const filePath = path.join(__dirname, `/reports/${process.argv[3]}`)
-const force = process.argv[2]
+const filePath = path.join(__dirname, `/reports/${process.argv[2]}`)
+const force = process.argv[2].substr(0, process.argv[2].indexOf('.'))
 
 MongoClient.connect(process.env.DB_URL, (err, client) => {
   if (err) {

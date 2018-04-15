@@ -7,10 +7,9 @@ The application renders a map of police reports and provides different filter pa
 
 
 ## Commands
-`npm run parser <force> <filename>.xlsx`
+`npm run parser <filename>.xlsx`
 * parses an .xlsx file and saves it to a database
-* `force` should either be "apd" of "sheriff"
-* `filename` will be in YYYY-MM-DD format
+* `filename` will be in force.YYYY-MM-DD.xlsx format (sheriff.2018-02-28.xlsx or apd.2018-02-28.xlsx)
 
 `npm run dev`
 * launches Vue app with hot-reload server (see `webpack.config.json`)
