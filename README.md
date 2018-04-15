@@ -20,11 +20,6 @@ The application renders a map of police reports and provides different filter pa
 * requires connection to MongoDB
 * endpoint: `localhost:3000/reports`
 
-`npm run testserver`
-* launches Express server RestAPI
-* uses sample reports for when you don't have a MongoDB instance
-* endpoint: `localhost:3000/reports`
-
 `npm run test`
 * runs Jest unit tests
 
