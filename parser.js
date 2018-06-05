@@ -18,6 +18,8 @@ MongoClient.connect(process.env.DB_URL, (err, client) => {
 
   const workSheetsFromFile = xlsx.parse(filePath)
   const [header, ...reports] = workSheetsFromFile[0].data
+    .filter(e => e[0] != 'TA')
+    .filter(e => e[0] != 'LW')
     .map(e => ({
       'force': force,
       'code': e[0],
