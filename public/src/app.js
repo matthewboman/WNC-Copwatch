@@ -9,19 +9,15 @@ const ATTRIBUTION = '&copy; <a href="http://www.openstreetmap.org/copyright">Ope
 const apdIcon = L.icon({ iconUrl: "/public/icons/apd.png", iconSize: [25, 25] })
 const sheriffIcon = L.icon({ iconUrl: "/public/icons/sheriff.png", iconSize: [25, 25] })
 
-const reportsByCode = (codes, reports) => reports.filter(r => codes.includes(r.code))
-const reportsByOfficer = (officer, reports) => !officer ? reports :
-  reports.filter(r => r.officer == officer)
-const reportsByDate = (start, end, reports) => !start || !end ? reports :
-  reports.filter(r => ((r.dateTime >= start) && (r.dateTime <= end)))
-
 /*
-maps officer name to their wiki--not implemented yet
-
-const officerWiki = (officer) => wikiObjects.filter(obj => obj.displayName == officer)
-  .map(obj => obj.wikiURL)[0]
-
-<a href="${}">officer ${report.officer}</a>
+ * maps officer name to their wiki--not implemented yet
+ *
+ * const officerWiki = (officer) => wikiObjects.filter(obj => obj.displayName == officer)
+ *   .map(obj => obj.wikiURL)[0]
+ *
+ * adds wiki link to returned report
+ *
+ * <a href="${}">officer ${report.officer}</a>
 */
 
 const reportPopup = (report) =>
@@ -39,7 +35,7 @@ export default {
       tileLayer: null,
       markers: [],
       allReports: [],
-      displayedReports: ['AR', 'TC', 'LW', 'TA'],
+      selectedCodes: ['AR', 'TC', 'LW', 'TA'],
       selectedOfficer: null,
       officers: [],
       dates: [],
@@ -97,9 +93,9 @@ export default {
 
     changeCode(e) {
       const code = e.target.id
-      this.displayedReports = this.displayedReports.includes(code)
-        ? this.displayedReports.filter(r => r != code)
-        : [...this.displayedReports, code]
+      this.selectedCodes = this.selectedCodes.includes(code)
+        ? this.selectedCodes.filter(r => r != code)
+        : [...this.selectedCodes, code]
 
       this.rerenderReports()
     },
@@ -110,16 +106,12 @@ export default {
 
     changeDates() {
       if (this.startDate && this.endDate) {
-        this.leafleftMap.removeLayer(this.markers)
-        this.markersFromReports(
-          reportsByDate(this.startDate, this.endDate, this.allReports)
-        )
+        this.rerenderReports()
       }
     },
 
     resetOfficer() {
       this.selectedOfficer = null
-      this.displayedReports = ['AR', 'TC', 'LW', 'TA'] // temporary workaround. see rerenderReports()
       this.rerenderReports()
     },
 
@@ -131,18 +123,21 @@ export default {
 
     rerenderReports() {
       this.leafleftMap.removeLayer(this.markers)
-      /*
-      This tightly couples the code, dates, and officer filters together,
-      causing weird bugs to arise with how the two functions interact.
 
-      TODO: Make each filter function independently with own reset instead of resetting
-      all together
-      */
-      this.markersFromReports(
-        reportsByCode(
-          this.displayedReports, reportsByOfficer(this.selectedOfficer, this.allReports)
-        )
+      const officerReports = reports => !this.selectedOfficer
+        ? reports
+        : reports.filter(r => r.officer == this.selectedOfficer)
+      const codeReports = reports => reports.filter(r => this.selectedCodes.includes(r.code))
+      const dateReports = reports => (!this.startDate || !this.endDate)
+        ? reports
+        : reports.filter(r => ((r.dateTime >= this.startDate) && (r.dateTime <= this.endDate)))
+
+      const filterBySelections = this.$R.pipe(
+        officerReports,
+        codeReports,
+        dateReports
       )
+      this.markersFromReports(filterBySelections(this.allReports))
     }
   }, // end methods
 

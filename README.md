@@ -60,7 +60,7 @@ access to our database, email [ccrsh@riseup.net](mailto:ccrsh@riseup.net).
 
 ## To Do:
 ### Frontend Application
-* decouple date, code, and officer filters
+* remove traffic accident as it's no longer used on the backend)
 * link to wiki
 
 ### Backend Application
