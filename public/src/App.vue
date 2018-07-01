@@ -12,9 +12,6 @@
         <span class="incident-label">Traffic Control:</span>
         <input type="checkbox" id="TC" :checked="true" @change="changeCode($event)" />
 
-        <span class="incident-label">Traffic Accident:</span>
-        <input type="checkbox" id="TA" :checked="true" @change="changeCode($event)" />
-
         <span class="incident-label">Incidents:</span>
         <input type="checkbox" id="LW" :checked="true" @change="changeCode($event)" />
       </div>

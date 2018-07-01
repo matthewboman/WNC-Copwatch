@@ -52,20 +52,20 @@ If you'd like to contribute, clone, fork, and push your branch up for review.
 
 ### Requirements
 * Node 9.* (you'll need a version that allows for array/object destructuring)
-* MongoDB
-* A Google Maps API key
+* MongoDB (or you can link to ours)
+* A Google Maps API key (only necessary for parser)
 
 We're sharing a remote MongoDB instance. You can use your own, but if you'd like
 access to our database, email [ccrsh@riseup.net](mailto:ccrsh@riseup.net).
 
 ## To Do:
+* connect application to [open traffic stop data](http://data.ashevillenc.gov/datasets/apd-traffic-stops-after-oct-1-2017)
+
 ### Frontend Application
-* remove traffic accident as it's no longer used on the backend)
 * link to wiki
 
 ### Backend Application
 * build spider for automatically downloading .xls
-* solve Google Maps API bug
 
 ### Configuration
 * set up environment variables

@@ -9,6 +9,13 @@ const ATTRIBUTION = '&copy; <a href="http://www.openstreetmap.org/copyright">Ope
 const apdIcon = L.icon({ iconUrl: "/public/icons/apd.png", iconSize: [25, 25] })
 const sheriffIcon = L.icon({ iconUrl: "/public/icons/sheriff.png", iconSize: [25, 25] })
 
+const filterByOfficer = (officer, reports) => !officer
+  ? reports
+  : reports.filter(r => r.officer == officer)
+const filterByCodes = (codes, reports) => reports.filter(r => codes.includes(r.code))
+const filterByDates = (start, end, reports) => (!start || !end)
+  ? reports
+  : reports.filter(r => ((r.dateTime >= start) && (r.dateTime <= end)))
 /*
  * maps officer name to their wiki--not implemented yet
  *
@@ -20,7 +27,7 @@ const sheriffIcon = L.icon({ iconUrl: "/public/icons/sheriff.png", iconSize: [25
  * <a href="${}">officer ${report.officer}</a>
 */
 
-const reportPopup = (report) =>
+const reportPopup = report =>
 `<div>
   <p>date: ${new Date(report.dateTime).toDateString()}</p>
   <p>officer: ${report.officer}</p>
@@ -35,7 +42,7 @@ export default {
       tileLayer: null,
       markers: [],
       allReports: [],
-      selectedCodes: ['AR', 'TC', 'LW', 'TA'],
+      selectedCodes: ['AR', 'TC', 'LW'],
       selectedOfficer: null,
       officers: [],
       dates: [],
@@ -124,15 +131,11 @@ export default {
     rerenderReports() {
       this.leafleftMap.removeLayer(this.markers)
 
-      const officerReports = reports => !this.selectedOfficer
-        ? reports
-        : reports.filter(r => r.officer == this.selectedOfficer)
-      const codeReports = reports => reports.filter(r => this.selectedCodes.includes(r.code))
-      const dateReports = reports => (!this.startDate || !this.endDate)
-        ? reports
-        : reports.filter(r => ((r.dateTime >= this.startDate) && (r.dateTime <= this.endDate)))
+      const officerReports = reports => filterByOfficer(this.selectedOfficer, reports)
+      const codeReports = reports => filterByCodes(this.selectedCodes, reports)
+      const dateReports = reports => filterByDates(this.startDate, this.endDate, reports)
 
-      const filterBySelections = this.$R.pipe(
+      const filterBySelections = this.$R.compose(
         officerReports,
         codeReports,
         dateReports
