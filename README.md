@@ -61,11 +61,13 @@ access to our database, email [ccrsh@riseup.net](mailto:ccrsh@riseup.net).
 ## To Do:
 * connect application to [open traffic stop data](http://data.ashevillenc.gov/datasets/apd-traffic-stops-after-oct-1-2017)
 
+
 ### Frontend Application
 * link to wiki
 
 ### Backend Application
 * build spider for automatically downloading .xls
+* move routes to index, create controllers, handle api calls to various services
 
 ### Configuration
 * set up environment variables

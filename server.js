@@ -1,12 +1,22 @@
 const express = require('express')
 const fs = require('fs')
 const path = require('path')
-const MongoClient = require('mongodb').MongoClient
+const mongoose = require('mongoose')
 require('dotenv').config()
+
+const apdApi = require('./utils/apdApi')
+const api = require('./routes/api')
+
+mongoose.connect(process.env.DB_URL, (err, res) => {
+  if (err) {
+    console.error('Database connection failed: ', err)
+  }
+})
 
 const app = express()
 app.use(express.static(path.join(__dirname + '/public')))
-let db
+app.set('port', (process.env.PORT || 3000))
+app.use('/api', api)
 
 /*
 Allow Vue app running on hot-reloading dev server to make API requests
@@ -26,28 +36,8 @@ if (process.env.NODE_ENV == 'development') {
   })
 }
 
-app.get('/reports', (req, res) => {
-  db.collection('reports').find().toArray((err, results) => {
-    res.setHeader('Content-Type', 'application/json')
-    const reports = err ? [] : results
-    res.send(reports)
-    return
-  })
+app.listen(app.get('port'), () => {
+  console.log(`App is running on ${app.get('port')}`)
 })
 
-app.get('/reports/:searchTerm', (req, res) => {
-  db.collection('reports').find({ $text: { $search: req.params.searchTerm } }).toArray((err, results) => {
-    res.setHeader('Content-Type', 'application/json')
-    const reports = err ? [] : results
-    res.send(reports)
-    return
-  })
-})
-
-MongoClient.connect(process.env.DB_URL, (err, client) => {
-  if (err) {
-    return console.log('Databse connection failed: ', err)
-  }
-  db = client.db('police_reports')
-  app.listen(3000, () => console.log(`listening on 3000`))
-})
+module.exports = app
