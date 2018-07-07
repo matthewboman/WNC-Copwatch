@@ -21,6 +21,7 @@ MongoClient.connect(process.env.DB_URL, (err, client) => {
     .filter(e => e[0] != 'TA')
     .filter(e => e[0] != 'LW')
     .map(e => ({
+      'repord_id': e[1],
       'force': force,
       'code': e[0],
       'description': e[4],

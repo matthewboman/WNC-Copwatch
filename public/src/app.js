@@ -1,7 +1,7 @@
 import { adamCoords, charlieCoords, bakerCoords } from './beats'
 import { wikiObjects } from './wikiObj'
 
-const API_URL = 'http://localhost:3000/reports'
+const API_URL = 'http://localhost:3000/api/reports'
 const DEFAULT_CENTER = [35.575058, -82.551487]
 const DEFAULT_ZOOM = 12
 const BASEMAP = 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png'

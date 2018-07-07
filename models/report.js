@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 
 const report = new mongoose.Schema({
+  report_id: { type: String, default: '' },
   force: { type: String, default: '' },
   code: { type: String, default: '' },
   description: { type: String, default: '' },
@@ -9,18 +10,6 @@ const report = new mongoose.Schema({
   race: { type: String, default: '' },
   officer: { type: String, default: '' },
   latLng: { type: Object, default: {} },
-})
-
-report.methods.summary = () => ({
-  id: this._id,
-  force: this.force,
-  code: this.code,
-  description: this.description,
-  address: this.address,
-  dateTime: this.dateTime,
-  race: this.race,
-  officer: this.officer,
-  latLng: this.latLng,
 })
 
 module.exports = mongoose.model('report', report)
