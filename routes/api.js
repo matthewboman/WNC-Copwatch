@@ -1,4 +1,5 @@
 const express = require('express')
+const fs = require('fs')
 const router = express.Router()
 const ReportsController = require('../controllers/ReportsController')
 
@@ -41,6 +42,19 @@ router.get('/bulletin_reports', (req, res) => {
     .catch(err => res.status(500).send([]))
 })
 
+router.get('/bulletin_reports/backup', (req, res) => {
+  ReportsController.bulletin()
+    .then(reports => {
+      fs.writeFile('backup.json', JSON.stringify(reports), 'utf8', (err, res) => {
+        if (err) {
+          console.log('err', err)
+        }
+        console.log(res)
+      })
+    })
+    .catch(err => res.status(500).send([]))
+})
+
 router.get('/bulletin_reports/description/:word', (req, res) => {
   ReportsController.bulletin_description(req.params.word)
     .then(reports => res.status(200).send(reports))
@@ -53,6 +67,7 @@ router.get('/bulletin_reports/officer/:officer', (req, res) => {
     .catch(err => res.status(500).send([]))
 })
 
+// yyyymmdd
 router.get('/bulletin_reports/range/:start/:end', (req, res) => {
   ReportsController.bulletin_dates(req.params.start, req.params.end)
     .then(reports => res.status(200).send(reports))

@@ -59,15 +59,17 @@ We're sharing a remote MongoDB instance. You can use your own, but if you'd like
 access to our database, email [ccrsh@riseup.net](mailto:ccrsh@riseup.net).
 
 ## To Do:
-* connect application to [open traffic stop data](http://data.ashevillenc.gov/datasets/apd-traffic-stops-after-oct-1-2017)
-
+* move database from Mlabs to own server
 
 ### Frontend Application
 * link to wiki
+* move selected officer and dates to Vuex store
 
 ### Backend Application
 * build spider for automatically downloading .xls
-* move routes to index, create controllers, handle api calls to various services
+* use database queries to filter instead of filtering the result
+* build API using query strings instead of parameters
+* functors for error handling
 
 ### Configuration
 * set up environment variables
@@ -77,3 +79,4 @@ access to our database, email [ccrsh@riseup.net](mailto:ccrsh@riseup.net).
 
 ## Known Issues
 * Google API bug -- some addresses return `null`
+* Resetting the officer or dates updates the component, resetting the other as well. Moving the logic to the Vuex store should fix this.
