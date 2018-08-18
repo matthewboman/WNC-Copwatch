@@ -1,12 +1,13 @@
 import Vue from 'vue'
 import VueResource from 'vue-resource'
-import VueRamda from 'vue-ramda'
 
-import App from './App.vue'
+import Home from './Home.vue'
+import store from './vuex/store'
 
 Vue.use(VueResource)
-Vue.use(VueRamda)
+
 new Vue({
   el: '#app',
-  render: h => h(App)
+  store,
+  render: h => h(Home)
 })
