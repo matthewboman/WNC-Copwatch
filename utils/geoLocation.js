@@ -2,6 +2,8 @@
  * Uses Google's Map API to to return a valid [ lat, lng ].
  */
 
+// TODO: rewrite using Open Street Maps
+
 const GoogleMapsAPI = require('googlemaps')
 
 const publicConfig = {

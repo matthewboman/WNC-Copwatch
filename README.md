@@ -1,7 +1,7 @@
 # WNC Copwatch Maps
 This is a map of daily police bulletins for Asheville, NC and Buncombe County.
 
-Node.js parses police reports, saves them to a database, and provides a RestAPI endpoint.
+The Node.js backend parses police reports, saves them to a database, and provides a RestAPI endpoint.
 
 The application renders a map of police reports and provides different filter parameters so users can see reports by officer, code, and/or date. The frontend is written in Vue.js and Leaflet.js.
 
@@ -53,28 +53,32 @@ If you'd like to contribute, clone, fork, and push your branch up for review.
 ### Requirements
 * Node 9.* (you'll need a version that allows for array/object destructuring)
 * MongoDB (or you can link to ours)
-* A Google Maps API key (only necessary for parser)
+* A Google Maps API key (necessary only for parser)
 
-We're sharing a remote MongoDB instance. You can use your own, but if you'd like
-access to our database, email [ccrsh@riseup.net](mailto:ccrsh@riseup.net).
+We're sharing a remote MongoDB instance. You can use your own for backend development, but if you'd like access to our database, email [ccrsh@riseup.net](mailto:ccrsh@riseup.net).
+
+API endpoints will be public and documentation provided once the site is beta.
 
 ## To Do:
-* move database from Mlabs to own server
+* Transfer database from Mlabs to own server
+* Deploy public API
 
 ### Frontend Application
-* link to wiki
-* move selected officer and dates to Vuex store
+* Link officers to wiki
+* Move selected officer and dates to Vuex store
+* Throttle/Debounce search filter
+* Start application on past month (instead of trying to render all of the data)
+* Theming
+* User feedback when content is loading
 
 ### Backend Application
-* build spider for automatically downloading .xls
-* use database queries to filter instead of filtering the result
-* build API using query strings instead of parameters
-* functors for error handling
+* Build spider for automatically downloading .xls
+* Get dates to work with querystrings
+* Update cache daily
 
 ### Configuration
-* set up environment variables
-* run everything as single command
-* create Docker container
+* Set up environment variables
+* Create Docker container
 
 
 ## Known Issues

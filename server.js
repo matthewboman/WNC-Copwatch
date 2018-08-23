@@ -6,7 +6,7 @@ require('dotenv').config()
 
 const api = require('./routes/api')
 
-mongoose.connect(process.env.DB_URL, (err, res) => {
+mongoose.connect(process.env.DB_URL_LOCAL, (err, res) => {
   if (err) {
     console.error('Database connection failed: ', err)
   }
