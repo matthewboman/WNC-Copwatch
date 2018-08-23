@@ -1,3 +1,10 @@
+/*
+ * Parses .xls || .xlsx files from daily police bulletin
+ * script: `npm run parser force_name.YYYY-MM-DD.xls`
+ *
+ * https://apdp2c.buncombecounty.org/dailybulletin.aspx
+ */
+
 const fs = require('fs')
 const MongoClient = require('mongodb').MongoClient
 const path = require('path')
@@ -10,7 +17,7 @@ const report = ('./models/report')
 const filePath = path.join(__dirname, `/reports/${process.argv[2]}`)
 const force = process.argv[2].substr(0, process.argv[2].indexOf('.'))
 
-MongoClient.connect(process.env.DB_URL, (err, client) => {
+MongoClient.connect(process.env.DB_URL_LOCAL, (err, client) => {
   if (err) {
     console.log('Error connecting to database:', err)
   }
@@ -18,8 +25,8 @@ MongoClient.connect(process.env.DB_URL, (err, client) => {
 
   const workSheetsFromFile = xlsx.parse(filePath)
   const [header, ...reports] = workSheetsFromFile[0].data
-    .filter(e => e[0] != 'TA')
-    .filter(e => e[0] != 'LW')
+    .filter(e => e[0] != 'TA') // don't store traffic accidents
+    .filter(e => e[0] != 'LW') // don't store incidents
     .map(e => ({
       'repord_id': e[1],
       'force': force,

@@ -1,5 +1,6 @@
 const express = require('express')
 const fs = require('fs')
+const MongoQS = require('mongo-querystring')
 const router = express.Router()
 const ReportsController = require('../controllers/ReportsController')
 
@@ -37,21 +38,34 @@ router.get('/open_data_reports/arrests', (req, res) => {
  * daily APD bulletins
  */
 router.get('/bulletin_reports', (req, res) => {
-  ReportsController.bulletin()
-    .then(reports => res.status(200).send(reports))
-    .catch(err => res.status(500).send([]))
+  if (Object.keys(req.query).length) {
+    const qs = new MongoQS()
+    ReportsController.byQueryString(qs.parse(req.query))
+      .then(reports => res.status(200).send(reports) )
+      .catch(err => res.status(500).send(err))
+  } else {
+    ReportsController.bulletin()
+      .then(reports => res.status(200).send(reports))
+      .catch(err => res.status(500).send([]))
+  }
 })
 
-router.get('/bulletin_reports/backup', (req, res) => {
+router.get('/bulletin_reports/create_backup/:filename', (req, res) => {
   ReportsController.bulletin()
     .then(reports => {
-      fs.writeFile('backup.json', JSON.stringify(reports), 'utf8', (err, res) => {
+      fs.writeFile(req.params.filename, JSON.stringify(reports), 'utf8', (err, res) => {
         if (err) {
           console.log('err', err)
         }
         console.log(res)
       })
     })
+    .catch(err => res.status(500).send([]))
+})
+
+router.get('/bulletin_reports/seed_database/:filename', (req, res) => {
+  ReportsController.reformat_dump(req.params.filename)
+    .then(reports => res.status(200).send(reports))
     .catch(err => res.status(500).send([]))
 })
 
@@ -67,7 +81,9 @@ router.get('/bulletin_reports/officer/:officer', (req, res) => {
     .catch(err => res.status(500).send([]))
 })
 
-// yyyymmdd
+/*
+ * start && end are formatted `yyyymmdd`
+ */
 router.get('/bulletin_reports/range/:start/:end', (req, res) => {
   ReportsController.bulletin_dates(req.params.start, req.params.end)
     .then(reports => res.status(200).send(reports))

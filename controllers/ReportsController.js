@@ -1,4 +1,4 @@
-const reportModel = require('../models/report')
+const Report = require('../models/report')
 const arcgis = require('../utils/arcgis')
 
 let cache = {
@@ -36,6 +36,7 @@ async function callandCache(apiCall, cache_name, cache) {
   const result = (cache[cache_name].data.length && same_day(cache_name, cache))
     ? cache[cache_name].data
     : await apiCall()
+    // TODO: reset cache on a daily basis
   cache[cache_name] = { ...cache[cache_name], data: result }
   return result
 }
@@ -43,46 +44,54 @@ async function callandCache(apiCall, cache_name, cache) {
 // genRegExp :: String -> RegEx
 const genRegExp = str => new RegExp(`${str}`, 'i')
 
-// reportByOneParam :: String -> String -> Promise [Report]
-const reportByOneParam = (key, value) => {
-  return new Promise((resolve, reject) => {
-    reportModel.find({ [key]: genRegExp(value) }, (err, reports) => {
-      if (err) {
-        reject(err)
-      }
-      resolve(reports)
-    })
+// reportByQueryString :: {} -> Promise [Report]
+const reportByQueryString = query => new Promise((resolve, reject) => {
+  Report.find(query, (err, reports) => {
+    if (err) {
+      reject(err)
+    }
+    resolve(reports)
   })
-}
+})
+
+// reportByOneParam :: String -> String -> Promise [Report]
+const reportByOneParam = (key, value) => new Promise((resolve, reject) => {
+  Report.find({ [key]: genRegExp(value) }, (err, reports) => {
+    if (err) {
+      reject(err)
+    }
+    resolve(reports)
+  })
+})
 
 // findByDateRange :: String -> String -> Promise [Report]
-const findByDateRange = (start, end) => {
-  return new Promise((resolve, reject) => {
-    reportModel.find({ dateTime: { $gte: dateFromParam(start), $lte: dateFromParam(end) }}, (err, reports) => {
-      if (err) {
-        reject(err)
-      }
-      resolve(reports)
-    })
+const findByDateRange = (start, end) => new Promise((resolve, reject) => {
+  Report.find({ "dateTime": {
+      '$gte': dateFromParam(start).toISOString(),
+      '$lte': dateFromParam(end).toISOString()
+    } }, (err, reports) => {
+    if (err) {
+      reject(err)
+    }
+    resolve(reports)
   })
-}
+})
 
+// allArcgisData :: [Report]
 const allArcgisData = () => arcgis.getApdData()
 
-const allMongoData = () => {
-  return new Promise((resolve, reject) => {
-    reportModel.find({}, (err, reports) => {
-      if (err) {
-        reject(err)
-      }
-      resolve(reports)
-    })
+// allMongoData :: Promise [Report]
+const allMongoData = () => new Promise((resolve, reject) => {
+  Report.find({}, (err, reports) => {
+    if (err) {
+      reject(err)
+    }
+    resolve(reports)
   })
-}
+})
 
 // combineReports :: -> Cache -> [Report]
 async function combineReports(cache) {
-  console.log('combining')
   const arc = await callandCache(allArcgisData, 'arcgis', cache)
   const mongo = await callandCache(allMongoData, 'mongo', cache)
   return [...arc, ...mongo]
@@ -93,14 +102,45 @@ module.exports = {
 
   allReports: () => combineReports(cache),
 
+  /*
+   * APD daily bulletin stored in MongoDB
+   */
   bulletin: () => callandCache(allMongoData, 'mongo', cache),
 
-  bulletin_dates: (start, end) => findByDateRange(start, end),
+  /*
+   * Database queries return filtered results, however,
+   * we filter the results because function calls may return cache.
+   */
+  byQueryString: query => resolvePromise(reportByQueryString(query), 'mongo', cache)
+    .then(reports => reports.filter(report => {
+      // TODO: make query string work for dates
+      for (let key in query) {
+        if (
+          report[key] &&
+          report[key].search(genRegExp(query[key]['$regex'])) != -1
+        ) {
+          continue
+        } else {
+          return false
+        }
+      }
+      return true
+    })),
 
-  bulletin_description: (word) => resolvePromise(reportByOneParam('description', word), 'mongo', cache),
+  bulletin_dates: (start, end) => findByDateRange(start, end)
+    .then(reports => reports.filter(report =>
+      (report.dateTime >= dateFromParam(start) && report.dateTime <= dateFromParam(end))
+    )),
 
-  bulletin_officer: (officer) => resolvePromise(reportByOneParam('officer', officer), 'mongo', cache),
+  bulletin_description: (word) => resolvePromise(reportByOneParam('description', word), 'mongo', cache)
+    .then(reports => reports.filter(report => report.description.search(genRegExp(word)) != -1)),
 
+  bulletin_officer: (officer) => resolvePromise(reportByOneParam('officer', officer), 'mongo', cache)
+    .then(reports => reports.filter(report => report.officer.search(genRegExp(officer)) != -1)),
+
+  /*
+   * API calls to Open Data Reports
+   */
   odr: () => callandCache(allArcgisData, 'arcgis', cache),
 
   odr_arrests: (param) => callandCache(allArcgisData ,'arcgis', cache)
