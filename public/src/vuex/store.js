@@ -3,7 +3,6 @@ import Vuex from 'vuex'
 const R = require('ramda')
 
 import api from './api'
-import { debounce, throttle } from '../utils/functions'
 
 Vue.use(Vuex)
 
