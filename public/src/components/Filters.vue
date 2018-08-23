@@ -59,9 +59,10 @@
 
 <script>
   import { mapActions, mapGetters, mapState } from 'vuex'
-  import { debounce, throttle } from '../utils/functions'
+  import { debounce, throttle } from 'lodash'
 
   export default {
+    name: "filters",
     data() {
       return {
         selectedOfficer: null,
@@ -103,9 +104,9 @@
         this.endDate = null
         this.updateDates({ start: null, end: null })
       },
-      filterByDescription(e) {
+      filterByDescription: debounce(function(e) {
         this.updateDescriptions(e.target.value)
-      },
+      }, 500)
 
     },
   }
