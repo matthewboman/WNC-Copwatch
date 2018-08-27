@@ -22,11 +22,10 @@
       <h3>Officer who filed report</h3>
       <form>
         <label class="label">Select an officer:</label>
-        <select v-model="selectedOfficer" @change="changeOfficer()">
-          <option disabled value="">Select an officer</option>
-          <option v-for="officer in officers">{{ officer }}</option>
+        <select :value="selectedOfficer" @change="changeOfficer($event)">
+          <option v-for="officer in officers" :value="officer">{{ officer }}</option>
         </select>
-        <button class="btn-reset" v-on:click="resetOfficer">Reset officer</button>
+        <button type="button" class="btn-reset" v-on:click="resetOfficer">Reset officer</button>
       </form>
     </div>
 
@@ -42,7 +41,7 @@
           <option disabled value="">Choose a end date</option>
           <option v-for="date in dates" v-bind:value="date">{{ new Date(date).toDateString() }}</option>
         </select>
-        <button class="btn-reset" v-on:click="resetDates">Reset dates</button>
+        <button type="button" class="btn-reset" v-on:click="resetDates">Reset dates</button>
       </form>
     </div>
 
@@ -65,7 +64,6 @@
     name: "filters",
     data() {
       return {
-        selectedOfficer: null,
         startDate: null,
         endDate: null,
       }
@@ -75,6 +73,7 @@
         codes: selectedCodes => state.selectedCodes,
         officers: state => state.officers,
         dates: state => state.dates,
+        selectedOfficer: state => state.selectedOfficer
       }),
     },
     methods: {
@@ -87,8 +86,8 @@
       changeCode(e) {
         this.updateCode(e.target.id)
       },
-      changeOfficer() {
-        this.updateOfficer(this.selectedOfficer)
+      changeOfficer(e) {
+        this.updateOfficer(e.target.value)
       },
       resetOfficer() {
         this.selectedOfficer = null

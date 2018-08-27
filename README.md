@@ -65,11 +65,10 @@ API endpoints will be public and documentation provided once the site is beta.
 
 ### Frontend Application
 * Link officers to wiki
-* Move selected officer and dates to Vuex store
-* Throttle/Debounce search filter
 * Start application on past month (instead of trying to render all of the data)
 * Theming
 * User feedback when content is loading
+* handle open data reports
 
 ### Backend Application
 * Build spider for automatically downloading .xls

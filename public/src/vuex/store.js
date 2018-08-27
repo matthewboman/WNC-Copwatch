@@ -86,7 +86,7 @@ export default new Vuex.Store({
   actions: {
     getReports: ({ commit }) => {
       // return api.get('reports')
-      return api.get('bulletin_reports/range/20180401/20180415')
+      return api.get('bulletin_reports/range/20180801/20180815')
         .then(res => {
           commit('SET_REPORTS', res)
         })
