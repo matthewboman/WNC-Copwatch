@@ -60,20 +60,19 @@ We're sharing a remote MongoDB instance. You can use your own for backend develo
 API endpoints will be public and documentation provided once the site is beta.
 
 ## To Do:
-* Transfer database from Mlabs to own server
 * Deploy public API
 
 ### Frontend Application
 * Link officers to wiki
-* Start application on past month (instead of trying to render all of the data)
+* Filter displayed reports
+* Make checkboxes match data
 * Theming
 * User feedback when content is loading
-* handle open data reports
 
 ### Backend Application
 * Build spider for automatically downloading .xls
-* Get dates to work with querystrings
 * Update cache daily
+* Update and document API
 
 ### Configuration
 * Set up environment variables
@@ -82,4 +81,3 @@ API endpoints will be public and documentation provided once the site is beta.
 
 ## Known Issues
 * Google API bug -- some addresses return `null`
-* Resetting the officer or dates updates the component, resetting the other as well. Moving the logic to the Vuex store should fix this.

@@ -17,7 +17,6 @@
         : "Buncome County Sheriff",
       formatDate: date => new Date(date).toDateString(),
     }
-
   }
 
 </script>
