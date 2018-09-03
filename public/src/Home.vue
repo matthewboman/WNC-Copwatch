@@ -17,7 +17,8 @@
 
 <script>
   import { mapActions } from 'vuex'
-  import { Filters, Legend, Map, Records } from './components'
+  import { Legend, Map, Records } from './components'
+  import Filters from './components/filters/Filters'
 
   export default {
     components: {
@@ -27,15 +28,14 @@
       appRecords: Records
     },
     mounted() {
-      this.loadReports()
+      this.getOpenDataReports()
+      this.getBulletinReports()
     },
     methods: {
       ...mapActions({
-        getReports: 'getReports'
+        getBulletinReports: 'getBulletinReports',
+        getOpenDataReports: 'getOpenDataReports'
       }),
-      loadReports() {
-        this.getReports()
-      }
     }
   }
 
