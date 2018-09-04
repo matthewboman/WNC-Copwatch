@@ -6,6 +6,11 @@ import api from './api'
 
 Vue.use(Vuex)
 
+// conditionalArray :: Boolean -> [a] -> [a]
+const conditionalArray = (bool, array) => bool
+  ? array
+  : []
+
 // pastWeek :: [Date] -> (Date, Date)
 const pastWeek = dates => {
   const last = R.last(dates)
@@ -99,7 +104,7 @@ export default new Vuex.Store({
 
     /* open data state */
     allOpenDataReports: [],
-    displayOpenDataReports: true,
+    displayOpenDataReports: false,
     displayedOpenDataReports: [],
     openDataDates: [],
     openStartDate: null,
@@ -123,13 +128,18 @@ export default new Vuex.Store({
       const codeReports = reports => filterByCodes(state.selectedCodes, reports)
       const dateReports = reports => filterByDates(state.bulletinStartDate, state.bulletinEndDate, reports)
       const descriptionReports = reports => filterByDescription(state.descriptionSearchTerm, reports)
+      const conditionallyRendered = reports => conditionalArray(state.displayBulletinReports, reports)
 
       state.displayedBulletinReports = R.compose(
         officerReports,
         codeReports,
         dateReports,
-        descriptionReports
+        descriptionReports,
+        conditionallyRendered,
       )(state.allBulletinReports)
+    },
+    'TOGGLE_BULLETIN_DISPLAY': (state) => {
+      state.displayBulletinReports = !state.displayBulletinReports
     },
     'UPDATE_OFFICER': (state, officer) => {
       state.selectedOfficer = officer
@@ -161,11 +171,16 @@ export default new Vuex.Store({
     'FILTER_OPEN_DATA_REPORTS': (state) => {
       const dateReports = reports => filterByDates(state.openStartDate, state.openEndDate, reports)
       const ordDetailReports = reports => filterByODRDetails(state.selectedODRDetails, reports)
+      const conditionallyRendered = reports => conditionalArray(state.displayOpenDataReports, reports)
 
       state.displayedOpenDataReports = R.compose(
         dateReports,
-        ordDetailReports
+        ordDetailReports,
+        conditionallyRendered
       )(state.allOpenDataReports)
+    },
+    'TOGGLE_OPEN_DATA_DISPLAY': (state) => {
+      state.displayOpenDataReports = !state.displayOpenDataReports
     },
     'UPDATE_ODR_START': (state, start) => {
       state.openStartDate = start
@@ -196,6 +211,10 @@ export default new Vuex.Store({
           commit('FILTER_BULLETIN_REPORTS')
         })
         .catch(err => console.log(err))
+    },
+    toggleBulletinDisplay: ({ commit }) => {
+      commit('TOGGLE_BULLETIN_DISPLAY')
+      commit('FILTER_BULLETIN_REPORTS')
     },
     updateOfficer: ({ commit }, officer) => {
       commit('UPDATE_OFFICER', officer)
@@ -234,6 +253,10 @@ export default new Vuex.Store({
         })
         .catch(err => console.log(err))
     },
+    toggleODRDisplay: ({ commit }) => {
+      commit('TOGGLE_OPEN_DATA_DISPLAY')
+      commit('FILTER_OPEN_DATA_REPORTS')
+    },
     updateODRStart: ({ commit }, start) => {
       commit('UPDATE_ODR_START', start)
       commit('FILTER_OPEN_DATA_REPORTS')
@@ -271,3 +294,5 @@ export default new Vuex.Store({
   },
 
 })
+
+// use toggle to set displayed results to null

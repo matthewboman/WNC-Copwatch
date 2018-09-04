@@ -56,7 +56,7 @@
   export default {
     computed: {
       ...mapState({
-        odrDetails: odrDetails => state.odrDetails,
+        odrDetails: odrDetails => state.odrDetails, // ?
         dates: state => state.openDataDates,
         startDate: state => state.openStartDate,
         endDate: state => state.openEndDate
