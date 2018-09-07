@@ -1,10 +1,9 @@
 <template>
   <div class="filter-group open-data">
 
-    <div class="filter date-filters">
-      <h3>Date range</h3>
-      <form>
-        <label class="label">Select a start and end date:</label>
+    <div class="filter date-filters border-bottom">
+      <h3 class="section-heading">Date range</h3>
+      <form class="form-group">
         <select id="start" :value="startDate" @change="changeStart">
           <option v-if="startDate" :value="startDate">{{ new Date(startDate).toDateString() }}</option>
           <option disabled value="">Choose a start date</option>
@@ -15,12 +14,12 @@
           <option disabled value="">Choose a end date</option>
           <option v-for="date in dates" :value="date">{{ new Date(date).toDateString() }}</option>
         </select>
-        <button type="button" class="btn-reset" v-on:click="resetDates">Reset dates</button>
       </form>
+      <button type="button" class="btn-reset" v-on:click="resetDates">Reset dates</button>
     </div>
 
     <div class="filter detail-filters">
-      <h3>Report Details</h3>
+      <h3 class="section-heading">Report Details</h3>
       <form>
         <label class="label">Search (vehicle, driver, passenger):</label>
         <input type="checkbox" id="search" :checked="false" @change="changeODRDetails" />
@@ -87,6 +86,26 @@
 
 <style lang="scss" scoped>
   .open-data {
+    padding: 18px;
+    border-radius: 6px;
+    box-shadow: 2px 6px 25px rgba(0, 0, 0, 0.1);
+    transition: all .3s ease;
+    position: relative;
+
+    .filter {
+
+      .section-heading {
+        margin-bottom: 6px;
+      }
+
+      .form-group {
+        margin-bottom: 12px;
+
+        select {
+          margin-right: 12px;
+        }
+      }
+    }
 
     .date-filters {
 

@@ -103,7 +103,8 @@
 
 <style lang="scss" scoped>
   .map {
-    height: 70vh;
+    height: 80vh;
     width: 100%;
+    margin-bottom: 18px;
   }
 </style>

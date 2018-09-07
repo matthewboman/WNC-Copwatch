@@ -1,10 +1,9 @@
 <template>
   <div class="filter-group bulletin">
 
-    <div class="filter date-filters">
-      <h3>Date range</h3>
-      <form>
-        <label class="label">Select a start and end date:</label>
+    <div class="filter date-filters border-bottom">
+      <h3 class="section-heading">Date range</h3>
+      <form class="form-group">
         <select id="start" :value="startDate" @change="changeStart">
           <option v-if="startDate" :value="startDate">{{ new Date(startDate).toDateString() }}</option>
           <option disabled value="">Choose a start date</option>
@@ -15,12 +14,12 @@
           <option disabled value="">Choose a end date</option>
           <option v-for="date in dates" :value="date">{{ new Date(date).toDateString() }}</option>
         </select>
-        <button type="button" class="btn-reset" v-on:click="resetDates">Reset dates</button>
       </form>
+      <button type="button" class="btn-reset" v-on:click="resetDates">Reset dates</button>
     </div>
 
-    <div class="filter incident-filters">
-      <h3>Type of report</h3>
+    <div class="filter incident-filters border-bottom">
+      <h3 class="section-heading">Type of report</h3>
       <form>
         <label class="label">Arrest:</label>
         <input type="checkbox" id="AR" :checked="true" @change="changeCode" />
@@ -35,12 +34,11 @@
       </form>
     </div>
 
-    <div class="filter officer-filters">
-      <h3>Officer who filed report</h3>
-      <form>
-        <label class="label">Select an officer:</label>
+    <div class="filter officer-filters border-bottom">
+      <h3 class="section-heading">Officer who filed report</h3>
+      <form class="form-group">
         <select :value="selectedOfficer" @change="changeOfficer">
-          <option disabled value=""></option>
+          <option disabled value="select an officer"></option>
           <option v-for="officer in officers" :value="officer">{{ officer }}</option>
         </select>
         <button type="button" class="btn-reset" v-on:click="resetOfficer">Reset officer</button>
@@ -48,8 +46,8 @@
     </div>
 
     <div class="filter search-filter">
-      <h3>Search description</h3>
-      <form>
+      <h3 class="section-heading">Search description</h3>
+      <form class="form-group">
         <label class="label">Search for:</label>
         <input type="text"  @input="filterByDescription" />
       </form>
@@ -110,8 +108,26 @@
 
 <style lang="scss" scoped>
   .bulletin {
+    margin-bottom: 24px;
+    padding: 18px;
+    border-radius: 6px;
+    box-shadow: 2px 6px 25px rgba(0, 0, 0, 0.1);
+    transition: all .3s ease;
+    position: relative;
 
     .filter {
+
+      .section-heading {
+        margin-bottom: 6px;
+      }
+
+      .form-group {
+        margin-bottom: 12px;
+
+        select {
+          margin-right: 12px;
+        }
+      }
 
     }
 
