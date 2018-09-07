@@ -1,26 +1,29 @@
 <template>
   <div class="records">
     <div v-if="shouldDisplayOpenData">
-      <app-record
+      <app-open-record
         v-for="record in openDataReports"
         :record="record"
-        :key="record._id"></app-record>
+        :key="record._id"></app-open-record>
     </div>
     <div v-if="shouldDisplayBulletins">
-      <app-record
+      <app-bulletin-record
         v-for="record in bulletionReports"
         :record="record"
-        :key="record._id"></app-record>
+        :key="record._id"></app-bulletin-record>
     </div>
   </div>
 </template>
 
 <script>
-  import Record from './Record.vue'
+  import BulletinRecord from './BulletinRecord.vue'
+  import OpenRecord from './OpenRecord.vue'
+
 
   export default {
     components: {
-      appRecord: Record
+      appBulletinRecord: BulletinRecord,
+      appOpenRecord: OpenRecord
     },
     computed: {
       openDataReports() {

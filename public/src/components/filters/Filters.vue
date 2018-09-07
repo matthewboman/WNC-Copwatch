@@ -5,22 +5,23 @@
       <form>
         <label class="label">APD Daily Bulletins</label>
         <input type="checkbox" id="apd" :checked="false" @change="toggleBulletinDisplay" />
+        <span class="horizontal-divider">|</span>
         <label class="label">Open Data Reports</label>
         <input type="checkbox" id="open" :checked="false" @change="toggleODRDisplay" />
       </form>
     </div>
     <div class="display-block">
-      <span>Display APD Bulletin Filters</span>
       <button class="carat" @click="displayBulletinFilters = !displayBulletinFilters">
+        Display APD Bulletin Filters
       </button>
+      <app-bulletin-filters v-show="displayBulletinFilters"></app-bulletin-filters>
     </div>
-    <app-bulletin-filters v-show="displayBulletinFilters"></app-bulletin-filters>
     <div class="display-block">
-      <span>Display Open Data Filters</span>
       <button class="carat" @click="displayOpenDataFilters = !displayOpenDataFilters">
+        Display Open Data Filters
       </button>
+      <app-odr-filters v-show="displayOpenDataFilters"></app-odr-filters>
     </div>
-    <app-odr-filters v-show="displayOpenDataFilters"></app-odr-filters>
   </div>
 </template>
 
@@ -57,17 +58,30 @@
 </script>
 
 <style lang="scss" scoped>
+  .horizontal-divider {
+    margin: 0 12px;
+  }
   .filters-container {
 
-    .display-block {
-
-      .carat {
-        background-image: url('/public/icons/carat.png');
-        background-size: 20px;
-        background-position: center;
-        height: 20px;
-      }
+    .report-options {
+      margin-bottom: 24px;
     }
 
+    .display-block {
+      margin-bottom: 12px;
+
+      .display {
+        margin-right: 6px;
+      }
+
+      .carat {
+        padding-right: 24px;
+        background-image: url('/public/icons/carat-down-white.png');
+        background-size: 24px;
+        background-repeat: no-repeat;
+        background-position: right;
+        margin-bottom: 12px;
+      }
+    }
   }
 </style>

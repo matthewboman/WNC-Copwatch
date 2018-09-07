@@ -1,25 +1,24 @@
 <template>
-  <div>
-    <h2>Map legend</h2>
+  <div class="legend">
     <div class="forces">
-      <p>
-        <span class="force-name">
-          Asheville Police
-          <span class="icon apd"></span>
-        </span>
-        <span class="force-name">
-          Buncombe County Sheriff
-          <span class="icon sheriff"></span>
-        </span>
-      </p>
+      <h3 class="legend-heading">Icons</h3>
+      <div class="inline">
+        <span class="force-name">Asheville Police</span>
+        <span class="icon apd"></span>
+        <span class="force-name">Buncombe County Sheriff</span>
+        <span class="icon sheriff"></span>
+      </div>
     </div>
     <div class="beats">
-      <h3>Beats</h3>
-      <p>
-        <span class="beat-name">Adam: <span class="beat-color adam"></span></span>
-        <span class="beat-name">Charlie: <span class="beat-color charlie"></span></span>
-        <span class="beat-name">Baker: <span class="beat-color baker"></span></span>
-      </p>
+      <h3 class="legend-heading">Beats</h3>
+      <div class="inline">
+        <span class="beat-name">Adam: </span>
+        <span class="beat-color adam"></span>
+        <span class="beat-name">Charlie: </span>
+        <span class="beat-color charlie"></span>
+        <span class="beat-name">Baker: </span>
+        <span class="beat-color baker"></span>
+      </div>
     </div>
   </div>
 </template>
@@ -33,12 +32,28 @@
 </script>
 
 <style lang="scss" scoped>
+  .legend {
+    display: flex;
+    flex-wrap: nowrap;
+
+    .legend-heading {
+      margin-bottom: 12px;
+
+      .inline {
+        display: inline-block;
+      }
+    }
+  }
   .forces {
+    display: inline-block;
+    flex-basis: 50%;
+
     .force-name {
-      margin-right: 10px;
+      margin-right: 6px;
     }
 
     .icon {
+      margin-right: 12px;
       height: 20px;
       width: 20px;
       background-size: cover;
@@ -55,12 +70,16 @@
   }
 
   .beats {
+    display: inline-block;
+    flex-basis: 50%;
 
     .beat-name {
-      margin-right: 10px;
+      margin-right: 6px;
+
     }
 
     .beat-color {
+      margin-right: 12px;
       height: 20px;
       width: 20px;
       display: inline-block;
