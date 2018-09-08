@@ -4,6 +4,7 @@ const path = require('path')
 const mongoose = require('mongoose')
 require('dotenv').config()
 
+const index = require('./routes/index')
 const api = require('./routes/api')
 
 mongoose.connect(process.env.DB_URL, (err, res) => {
@@ -22,6 +23,7 @@ app.use((req, res, next) => {
   next()
 })
 app.use('/api', api)
+app.use('/', index)
 
 app.listen(app.get('port'), () => {
   console.log(`App is running on ${app.get('port')}`)
