@@ -15,22 +15,51 @@
           <option v-for="date in dates" :value="date">{{ new Date(date).toDateString() }}</option>
         </select>
       </form>
-      <button type="button" class="btn-reset" v-on:click="resetDates">Reset dates</button>
+      <button
+        type="button"
+        class="btn-reset"
+        v-on:click="resetDates">Reset dates</button>
+      <button
+        type="button"
+        class="btn-load"
+        v-if="!this.allLoaded"
+        v-on:click="loadAll"
+        v-on:mouseover="displayWarning = true"
+        v-on:mouseleave="displayWarning = false">Load all reports</button>
+      <transition name="open" mode="in-out">
+        <div class="warning-container" v-if="this.displayWarning">
+          <p class="warning">
+            This will load thousands of reports. Application will be nonreponsive while reports are loading. Application will also filter and respond more slowly when handling many reports.
+          </p>
+        </div>
+      </transition>
     </div>
 
     <div class="filter incident-filters border-bottom">
       <h3 class="section-heading">Type of report</h3>
       <form>
         <label class="label">Arrest:</label>
-        <input type="checkbox" id="AR" :checked="true" @change="changeCode" />
+        <input
+          type="checkbox"
+          id="AR"
+          :checked="this.codes.includes('AR')"
+          @change="changeCode" />
       </form>
       <form>
         <label class="label">Traffic Control:</label>
-        <input type="checkbox" id="TC" :checked="true" @change="changeCode" />
+        <input
+          type="checkbox"
+          id="TC"
+          :checked="this.codes.includes('TC')"
+          @change="changeCode" />
       </form>
       <form>
         <label class="incident-label">Incidents:</label>
-        <input type="checkbox" id="LW" :checked="true" @change="changeCode" />
+        <input
+          type="checkbox"
+          id="LW"
+          :checked="this.codes.includes('LW')"
+          @change="changeCode" />
       </form>
     </div>
 
@@ -61,9 +90,15 @@
   import { debounce, throttle } from 'lodash'
 
   export default {
+    data() {
+      return {
+        allLoaded: false,
+        displayWarning: false
+      }
+    },
     computed: {
       ...mapState({
-        codes: selectedCodes => state.selectedCodes,
+        codes: state => state.selectedCodes,
         dates: state => state.bulletinDates,
         officers: state => state.officers,
         selectedOfficer: state => state.selectedOfficer,
@@ -73,6 +108,7 @@
     },
     methods: {
       ...mapActions({
+        getBulletinReports: 'getBulletinReports',
         updateCode: 'updateCode',
         updateOfficer: 'updateOfficer',
         updateDescriptions: 'updateDescriptions',
@@ -102,6 +138,10 @@
       resetDates() {
         this.updateBulletinDates({ start: null, end: null})
       },
+      loadAll() {
+        this.getBulletinReports()
+        this.allLoaded = true
+      }
     }
   }
 </script>
@@ -146,5 +186,46 @@
     .search-filter {
 
     }
+  }
+
+  .warning-container {
+    position: absolute;
+    z-index: 10;
+    background-color: pink;
+    padding: 12px;
+    border-radius: 6px;
+    box-shadow: 2px 12px 25px rgba(0, 0, 0, 0.2);
+    transition: all .3s ease;
+    margin: 6px 12px 0 0;
+
+    .warning {
+      color: red;
+    }
+  }
+
+  .open-enter {
+    max-height: 0px;
+    opacity: 0;
+  }
+  .open-enter-active {
+    transition: all 0.25s ease;
+  }
+  .open-enter-to {
+    max-height: 1000px;
+    opacity: 1;
+  }
+
+  .open-leave {
+    opacity: 1;
+    max-height: 1000px;
+  }
+
+  .open-leave-active {
+    transition: all 0.25s ease;
+  }
+
+  .open-leave-to {
+    opacity: 0;
+    max-height: 0px;
   }
 </style>

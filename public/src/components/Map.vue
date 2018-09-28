@@ -1,5 +1,8 @@
 <template>
-  <div id="map" class="map"></div>
+  <div class="wrapper">
+    <div id="map" class="map"></div>
+    <img v-if="loading" class="loading" src="/public/icons/loading.svg" />
+  </div>
 </template>
 
 <script>
@@ -12,7 +15,7 @@
   const ATTRIBUTION = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>'
   const apdIcon = L.icon({ iconUrl: "/public/icons/apd.png", iconSize: [25, 25] })
   const sheriffIcon = L.icon({ iconUrl: "/public/icons/sheriff.png", iconSize: [25, 25] })
-  const openIcon = L.icon({ iconUrl: "/public/icons/apd.png", iconSize: [25, 25] })
+  const openIcon = L.icon({ iconUrl: "/public/icons/open-icon.png", iconSize: [10, 10] })
 
   const bulletinPopup = report =>
     `<div>
@@ -59,7 +62,8 @@
     computed: {
       ...mapState({
         displayBulletinReports: state => state.displayBulletinReports,
-        displayOpenDataReports: state => state.displayOpenDataReports
+        displayOpenDataReports: state => state.displayOpenDataReports,
+        loading: state => state.loading
       })
     },
 
@@ -88,7 +92,7 @@
 
           case 'openData':
             const openDataMarkers = reports.filter(r => r.latLng != null)
-              .map(r => L.marker(r.latLng).bindPopup(openDataPopup(r)) )
+              .map(r => L.marker(r.latLng, { icon: openIcon}).bindPopup(openDataPopup(r)) )
             this.openDataMarkers = L.layerGroup([ ...openDataMarkers ])
             this.leafleftMap.addLayer(this.openDataMarkers)
             break
@@ -102,9 +106,46 @@
 </script>
 
 <style lang="scss" scoped>
-  .map {
-    height: 80vh;
-    width: 100%;
+  .wrapper {
+    position: relative;
     margin-bottom: 18px;
+    align-content: center;
+
+    .map {
+      height: 80vh;
+      width: 100%;
+      z-index: 0;
+    }
+
+    .loading {
+      z-index: 10;
+      height: 150px;
+      width: 150px;
+      left: 50%;
+      top: 50%;
+      position: absolute;
+      transform: translate(-50%, -50%);
+      -webkit-transform: translate(-50%, -50%);
+      -animation: spin 3s infinite linear;
+      -ms-animation: spin 3s infinite linear;
+      -webkit-animation: spinw 3s infinite linear;
+      -moz-animation: spinm 3s infinite linear;
+    }
   }
+
+  @keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
+  }
+
+  @-webkit-keyframes spinw {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+  }
+
+  @-moz-keyframes spinm {
+    from { -moz-transform: rotate(0deg);}
+    to { -moz-transform: rotate(360deg);}
+  }
+
 </style>

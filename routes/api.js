@@ -36,6 +36,7 @@ router.get('/open_data_reports/arrests', (req, res) => {
 
 /*
  * daily APD bulletins
+ * route works with or without query string
  */
 router.get('/bulletin_reports', (req, res) => {
   if (Object.keys(req.query).length) {
@@ -48,19 +49,6 @@ router.get('/bulletin_reports', (req, res) => {
       .then(reports => res.status(200).send(reports))
       .catch(err => res.status(500).send([]))
   }
-})
-
-router.get('/bulletin_reports/create_backup/:filename', (req, res) => {
-  ReportsController.bulletin()
-    .then(reports => {
-      fs.writeFile(req.params.filename, JSON.stringify(reports), 'utf8', (err, res) => {
-        if (err) {
-          console.log('err', err)
-        }
-        console.log(res)
-      })
-    })
-    .catch(err => res.status(500).send([]))
 })
 
 router.get('/bulletin_reports/seed_database/:filename', (req, res) => {
@@ -82,7 +70,7 @@ router.get('/bulletin_reports/officer/:officer', (req, res) => {
 })
 
 /*
- * start && end are formatted `yyyymmdd`
+ * start && end dates are formatted `yyyymmdd`
  */
 router.get('/bulletin_reports/range/:start/:end', (req, res) => {
   ReportsController.bulletin_dates(req.params.start, req.params.end)
@@ -90,4 +78,19 @@ router.get('/bulletin_reports/range/:start/:end', (req, res) => {
     .catch(err => res.status(500).send([]))
 })
 
+/*
+ * Backs up database to .json.
+ */
+router.get('/bulletin_reports/create_backup/:filename', (req, res) => {
+  ReportsController.bulletin()
+  .then(reports => {
+    fs.writeFile(req.params.filename, JSON.stringify(reports), 'utf8', (err, res) => {
+      if (err) {
+        console.log('err', err)
+      }
+      console.log(res)
+    })
+  })
+  .catch(err => res.status(500).send([]))
+})
 module.exports = router

@@ -4,10 +4,10 @@
     <div class="report-options">
       <form>
         <label class="label">APD Daily Bulletins</label>
-        <input type="checkbox" id="apd" :checked="false" @change="toggleBulletinDisplay" />
+        <input type="checkbox" id="apd" :checked="this.displayBulletinReports" @change="toggleBulletinDisplay" />
         <span class="horizontal-divider">|</span>
         <label class="label">Open Data Reports</label>
-        <input type="checkbox" id="open" :checked="false" @change="toggleODRDisplay" />
+        <input type="checkbox" id="open" :checked="this.displayOpenDataReports" @change="toggleODRDisplay" />
       </form>
     </div>
     <div class="display-block">

@@ -22,27 +22,51 @@
       <h3 class="section-heading">Report Details</h3>
       <form>
         <label class="label">Search (vehicle, driver, passenger):</label>
-        <input type="checkbox" id="search" :checked="false" @change="changeODRDetails" />
+        <input
+          type="checkbox"
+          id="search"
+          :checked="this.details.includes('search')"
+          @change="changeODRDetails" />
       </form>
       <form>
         <label class="label">Warrant:</label>
-        <input type="checkbox" id="warrant" :checked="false" @change="changeODRDetails" />
+        <input
+          type="checkbox"
+          id="warrant"
+          :checked="this.details.includes('warrant')"
+          @change="changeODRDetails" />
       </form>
       <form>
         <label class="label">Probable cause:</label>
-        <input type="checkbox" id="probable" :checked="false" @change="changeODRDetails" />
+        <input
+          type="checkbox"
+          id="probable"
+          :checked="this.details.includes('probable')"
+          @change="changeODRDetails" />
       </form>
       <form>
         <label class="label">Consent to a search:</label>
-        <input type="checkbox" id="consent" :checked="false" @change="changeODRDetails" />
+        <input
+          type="checkbox"
+          id="consent"
+          :checked="this.details.includes('consent')"
+          @change="changeODRDetails" />
       </form>
       <form>
         <label class="label">Physically resisted:</label>
-        <input type="checkbox" id="resist" :checked="false" @change="changeODRDetails" />
+        <input
+          type="checkbox"
+          id="resist"
+          :checked="this.details.includes('resist')"
+          @change="changeODRDetails" />
       </form>
       <form>
         <label class="label">Arrest (driver, passenger):</label>
-        <input type="checkbox" id="arrest" :checked="false" @change="changeODRDetails" />
+        <input
+          type="checkbox"
+          id="arrest"
+          :checked="this.details.includes('arrest')"
+          @change="changeODRDetails" />
       </form>
     </div>
 
@@ -55,7 +79,7 @@
   export default {
     computed: {
       ...mapState({
-        odrDetails: odrDetails => state.odrDetails, // ?
+        details: state => state.selectedODRDetails,
         dates: state => state.openDataDates,
         startDate: state => state.openStartDate,
         endDate: state => state.openEndDate

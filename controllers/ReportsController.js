@@ -108,12 +108,14 @@ module.exports = {
   bulletin: () => callandCache(allMongoData, 'mongo', cache),
 
   /*
-   * Database queries return filtered results, however,
-   * we filter the results because function calls may return cache.
+   * Database queries return filtered results.
+   * However, we filter the results because function calls may return cache.
    */
   byQueryString: query => resolvePromise(reportByQueryString(query), 'mongo', cache)
     .then(reports => reports.filter(report => {
-      // TODO: make query string work for dates
+      /*
+       * TODO: make query string work for dates
+       */
       for (let key in query) {
         if (
           report[key] &&

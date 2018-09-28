@@ -3,87 +3,37 @@ import Vuex from 'vuex'
 const R = require('ramda')
 
 import api from './api'
+import bulletins from './modules/bulletins'
+import reports from './modules/reports'
+import {
+  conditionalArray,
+  filterByCodes,
+  filterByDates,
+  filterByDescription,
+  filterByODRDetails,
+  filterByOfficer,
+  isTrue,
+  odrHashMap,
+  pastWeek,
+  previousWeek,
+  removeDuplicates,
+  toggleArray,
+  YYYYMMDD
+} from './functions'
 
 Vue.use(Vuex)
 
-// conditionalArray :: Boolean -> [a] -> [a]
-const conditionalArray = (bool, array) => bool
-  ? array
-  : []
-
-// pastWeek :: [Date] -> (Date, Date)
-const pastWeek = dates => {
-  const last = R.last(dates)
-  let previous = new Date(last)
-  previous.setDate(previous.getDate() - 7)
-  return [last, previous.toISOString()]
-}
-
-// removeDuplicates :: [a] -> [a]
-const removeDuplicates = array => array.filter((item, pos, arr) => arr.indexOf(item) == pos).sort()
-
-// filterByOfficer :: String -> [{}] -> [{}]
-const filterByOfficer = (officer, reports) => !officer
-  ? reports
-  : reports.filter(r => r.officer == officer)
-
-// filterByCodes :: [String] -> [{}] -> [{}]
-const filterByCodes = (codes, reports) => reports.filter(r => codes.includes(r.code))
-
-// filterByDates :: Date -> Date -> [{}] -> [{}]
-const filterByDates = (start, end, reports) => (!start || !end)
-  ? reports
-  : reports.filter(r => ((r.dateTime >= start) && (r.dateTime <= end)))
-
-// filterByDescription :: String -> [{}] -> [{}]
-const filterByDescription = (description, reports) => description.length
-  ? reports.filter(r => r.description.toLowerCase().includes(description.toLowerCase()))
-  : reports
-
-// const ordHashMap :: String -> Boolean
-const ordHashMap = {
-  warrant: report => (
-    report.t_search_warrant == 1
-  ),
-  consent: report => (
-    report.t_search_consent == 1
-  ),
-  probable: report => (
-    report.t_probable_cause == 1
-  ),
-  resist: report => (
-    report.off_phys_resis == 1
-  ),
-  search: report => (
-    report.driver_searched == 1 ||
-    report.passenger_searched == 1 ||
-    report.personal_effects_searched == 1 ||
-    report.search_initiated == 1 ||
-    report.vehicle_searched == 1
-  ),
-  arrest: report => (
-    report.driver_arrested == 1 ||
-    report.passenger_arrested == 1 ||
-    report.t_inc_arrest == 1
-  )
-}
-
-// isTrue :: a -> Boolean
-const isTrue = value => value == true
-
-// filterByODRDetails :: [String] -> [{}] -> [{}]
-const filterByODRDetails = (details, reports) => reports.filter(report =>
-  R.all(isTrue)(details.map(detail => ordHashMap[detail](report)))
-)
-
-// toggleArray :: [a] -> a -> [a]
-const toggleArray = (array, value) => array.includes(value)
-  ? array.filter(v => v != value)
-  : [...array, value]
-
 export default new Vuex.Store({
+  modules: {
+    bulletins,
+    reports,
+  },
   state: {
+    /* shared state */
+    loading: false,
+
     /* bulletin state */
+    allBulletinsLoaded: false,
     allBulletinReports: [],
     displayBulletinReports: false,
     displayedBulletinReports: [],
@@ -93,14 +43,7 @@ export default new Vuex.Store({
     selectedOfficer: null,
     officers: [],
     descriptionSearchTerm: '',
-
-    // BUG: codes and filtering
-    selectedCodes: ['AR', 'TC', 'LW'],
-    codes: {
-      'AR': true,
-      'TC': true,
-      'LW': true
-    },
+    selectedCodes: ['AR', 'TC', 'LW'], // intially w/ all values
 
     /* open data state */
     allOpenDataReports: [],
@@ -109,9 +52,16 @@ export default new Vuex.Store({
     openDataDates: [],
     openStartDate: null,
     openEndDate: null,
-    selectedODRDetails: [],
+    selectedODRDetails: [], // initially empty b/c few will contain all conditions
   },
   mutations: {
+    /*
+     * shared mutations
+     */
+    'TOGGLE_LOADING': (state) => {
+      state.loading = !state.loading
+    },
+
     /*
      * Bulletin Mutations
      */
@@ -157,6 +107,9 @@ export default new Vuex.Store({
     'UPDATE_BULLETIN_END': (state, end) => {
       state.bulletinEndDate = end
     },
+    'ALL_BULLETINS_LOADED': (state) => {
+      state.allBulletinsLoaded = true
+    },
 
     /*
      * Open Data Mutations
@@ -170,12 +123,12 @@ export default new Vuex.Store({
     },
     'FILTER_OPEN_DATA_REPORTS': (state) => {
       const dateReports = reports => filterByDates(state.openStartDate, state.openEndDate, reports)
-      const ordDetailReports = reports => filterByODRDetails(state.selectedODRDetails, reports)
+      const odrDetailReports = reports => filterByODRDetails(state.selectedODRDetails, reports)
       const conditionallyRendered = reports => conditionalArray(state.displayOpenDataReports, reports)
 
       state.displayedOpenDataReports = R.compose(
         dateReports,
-        ordDetailReports,
+        odrDetailReports,
         conditionallyRendered
       )(state.allOpenDataReports)
     },
@@ -204,95 +157,54 @@ export default new Vuex.Store({
      * bulletin actions
      */
     getBulletinReports: ({ commit }) => {
-      return api.get('bulletin_reports/range/20180801/20180815')
+      commit('TOGGLE_LOADING')
+      return api.get('bulletin_reports')
+        .then(reports => {
+          commit('SET_BULLETIN_REPORTS', reports)
+          commit('ALL_BULLETINS_LOADED')
+          commit('SET_BULLETIN_DATES')
+          commit('FILTER_BULLETIN_REPORTS')
+          commit('TOGGLE_LOADING')
+        })
+        .catch(err => console.log(err))
+    },
+
+    getInitialBulletinReports: ({ commit }) => {
+      const today = new Date('August 15, 2018')
+      // const today = new Date(Date.now())
+      const todayFormatted = YYYYMMDD(today)
+      const lastWeek = YYYYMMDD(new Date(previousWeek(today)))
+      commit('TOGGLE_LOADING')
+
+      return api.get(`bulletin_reports/range/${lastWeek}/${todayFormatted}`)
         .then(reports => {
           commit('SET_BULLETIN_REPORTS', reports)
           commit('SET_BULLETIN_DATES')
           commit('FILTER_BULLETIN_REPORTS')
+          commit('TOGGLE_LOADING')
         })
         .catch(err => console.log(err))
-    },
-    toggleBulletinDisplay: ({ commit }) => {
-      commit('TOGGLE_BULLETIN_DISPLAY')
-      commit('FILTER_BULLETIN_REPORTS')
-    },
-    updateOfficer: ({ commit }, officer) => {
-      commit('UPDATE_OFFICER', officer)
-      commit('FILTER_BULLETIN_REPORTS')
-    },
-    updateCode: ({ commit }, code) => {
-      commit('UPDATE_CODE', code)
-      commit('FILTER_BULLETIN_REPORTS')
-    },
-    updateBulletinDates: ({ commit }, dates) => {
-      commit('UPDATE_BULLETIN_DATES', dates)
-      commit('FILTER_BULLETIN_REPORTS')
-    },
-    updateBulletinStart: ({ commit }, start) => {
-      commit('UPDATE_BULLETIN_START', start)
-      commit('FILTER_BULLETIN_REPORTS')
-    },
-    updateBulletinEnd: ({ commit }, end) => {
-      commit('UPDATE_BULLETIN_END', end)
-      commit('FILTER_BULLETIN_REPORTS')
-    },
-    updateDetails: ({ commit}, detail) => {
-      commit('UPDATE_DETAILS', detail)
-      commit('FILTER_OPEN_DATA_REPORTS')
     },
 
     /*
      * Open Data actions
      */
     getOpenDataReports: ({ commit }) => {
+      commit('TOGGLE_LOADING')
       return api.get('open_data_reports')
         .then(reports => {
           commit('SET_OPEN_REPORTS', reports)
           commit('SET_OPEN_DATA_DATES')
           commit('FILTER_OPEN_DATA_REPORTS')
+          commit('TOGGLE_LOADING')
+
         })
         .catch(err => console.log(err))
-    },
-    toggleODRDisplay: ({ commit }) => {
-      commit('TOGGLE_OPEN_DATA_DISPLAY')
-      commit('FILTER_OPEN_DATA_REPORTS')
-    },
-    updateODRStart: ({ commit }, start) => {
-      commit('UPDATE_ODR_START', start)
-      commit('FILTER_OPEN_DATA_REPORTS')
-    },
-    updateODREnd: ({ commit }, end) => {
-      commit('UPDATE_ODR_END', end)
-      commit('FILTER_OPEN_DATA_REPORTS')
-    },
-    updateOpenDates: ({ commit }, dates) => {
-      commit('UPDATE_OPEN_DATES', dates)
-      commit('FILTER_OPEN_DATA_REPORTS')
-    },
-    updateDescriptions: ({ commit }, description) => {
-      commit('UPDATE_DESCRIPTION', description)
-      commit('FILTER_BULLETIN_REPORTS')
     },
   },
   getters: {
     allReports: state => state.allReports,
     displayedReports: state => state.displayedReports,
-
-    /*
-     * bulletin getters
-     */
-    displayBulletinReports: state => state.displayBulletinReports,
-    displayedBulletinReports: state => state.displayedBulletinReports,
-    selectedOfficer: state => state.selectedOfficer,
-
-
-    /*
-     * open data getters
-     */
-    displayOpenDataReports: state => state.displayOpenDataReports,
-    displayedOpenDataReports: state => state.displayedOpenDataReports,
   },
 
 })
-
-// use toggle to set displayed results to null

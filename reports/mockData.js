@@ -1,5 +1,4 @@
-export default {
-  "reports": [
+module.exports = [
     {
       "_id": {
         "$oid": "5a9adc8dc71e783dfb428187"
@@ -36,4 +35,3 @@ export default {
     }
 
   ]
-}
