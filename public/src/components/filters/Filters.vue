@@ -4,23 +4,27 @@
     <div class="report-options">
       <form>
         <label class="label">APD Daily Bulletins</label>
-        <input type="checkbox" id="apd" :checked="false" @change="toggleBulletinDisplay" />
+        <input type="checkbox" id="apd" :checked="this.displayBulletinReports" @change="toggleBulletinDisplay" />
         <span class="horizontal-divider">|</span>
         <label class="label">Open Data Reports</label>
-        <input type="checkbox" id="open" :checked="false" @change="toggleODRDisplay" />
+        <input type="checkbox" id="open" :checked="this.displayOpenDataReports" @change="toggleODRDisplay" />
       </form>
     </div>
     <div class="display-block">
       <button class="carat" @click="displayBulletinFilters = !displayBulletinFilters">
         Display APD Bulletin Filters
       </button>
-      <app-bulletin-filters v-show="displayBulletinFilters"></app-bulletin-filters>
+      <transition name="open" mode="in-out">
+        <app-bulletin-filters v-show="displayBulletinFilters"></app-bulletin-filters>
+      </transition>
     </div>
     <div class="display-block">
       <button class="carat" @click="displayOpenDataFilters = !displayOpenDataFilters">
         Display Open Data Filters
       </button>
-      <app-odr-filters v-show="displayOpenDataFilters"></app-odr-filters>
+      <transition name="open" mode="in-out">
+        <app-odr-filters v-show="displayOpenDataFilters"></app-odr-filters>
+      </transition>
     </div>
   </div>
 </template>
@@ -83,5 +87,32 @@
         margin-bottom: 12px;
       }
     }
+  }
+
+  /* animations */
+  .open-enter {
+    max-height: 0px;
+    opacity: 0;
+  }
+  .open-enter-active {
+    transition: all 0.5s ease;
+  }
+  .open-enter-to {
+    max-height: 1000px;
+    opacity: 1;
+  }
+
+  .open-leave {
+    opacity: 1;
+    max-height: 1000px;
+  }
+
+  .open-leave-active {
+    transition: all 0.5s ease;
+  }
+
+  .open-leave-to {
+    opacity: 0;
+    max-height: 0px;
   }
 </style>
