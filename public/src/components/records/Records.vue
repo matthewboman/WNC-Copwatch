@@ -8,7 +8,7 @@
     </div>
     <div v-if="shouldDisplayBulletins">
       <app-bulletin-record
-        v-for="record in bulletionReports"
+        v-for="record in bulletinReports"
         :record="record"
         :key="record._id"></app-bulletin-record>
     </div>
@@ -19,17 +19,17 @@
   import BulletinRecord from './BulletinRecord.vue'
   import OpenRecord from './OpenRecord.vue'
 
-
   export default {
     components: {
       appBulletinRecord: BulletinRecord,
       appOpenRecord: OpenRecord
     },
+
     computed: {
       openDataReports() {
         return this.$store.getters.displayedOpenDataReports
       },
-      bulletionReports() {
+      bulletinReports() {
         return this.$store.getters.displayedBulletinReports
       },
       shouldDisplayOpenData() {

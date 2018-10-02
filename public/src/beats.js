@@ -1,3 +1,11 @@
+/*
+ * Draws a map of APD's 3 beats.
+ *
+ * I clicked on a map of Asheville while looking at another map of police beats,
+ * so it'd be great to have a more accurate version.
+ *
+ */
+
 module.exports = {
 
   adamCoords: [

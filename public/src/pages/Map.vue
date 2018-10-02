@@ -30,11 +30,13 @@
       appMap: Map,
       appRecords: Records
     },
+
     mounted() {
       this.getOpenDataReports()
       // this.getBulletinReports()
       this.getInitialBulletinReports()
     },
+    
     methods: {
       ...mapActions({
         getBulletinReports: 'getBulletinReports',

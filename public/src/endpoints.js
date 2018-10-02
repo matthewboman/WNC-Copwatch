@@ -1,3 +1,8 @@
+/*
+ * JSON Array of various examples of returned data. Figured it was easier to
+ * update maintain than writing this in HTML for `./pages/Documentation.vue`.
+ */
+
 module.exports = {
   shared: [
     {

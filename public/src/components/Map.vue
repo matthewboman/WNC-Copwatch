@@ -44,14 +44,14 @@
 
     created() {
       this.$store.watch(
-        state => this.$store.state.displayedBulletinReports,
+        state => this.$store.state.bulletins.displayedBulletinReports,
         (current, previous) => {
           this.leafleftMap.removeLayer(this.bulletinMarkers)
           this.markersFromReports(current, 'bulletin')
         }
       )
       this.$store.watch(
-        state => this.$store.state.displayedOpenDataReports,
+        state => this.$store.state.reports.displayedOpenDataReports,
         (current, previous) => {
           this.leafleftMap.removeLayer(this.openDataMarkers)
           this.markersFromReports(current, 'openData')
@@ -61,8 +61,8 @@
 
     computed: {
       ...mapState({
-        displayBulletinReports: state => state.displayBulletinReports,
-        displayOpenDataReports: state => state.displayOpenDataReports,
+        displayBulletinReports: state => state.bulletins.displayBulletinReports,
+        displayOpenDataReports: state => state.reports.displayOpenDataReports,
         loading: state => state.loading
       })
     },

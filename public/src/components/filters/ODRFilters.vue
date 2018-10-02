@@ -79,12 +79,13 @@
   export default {
     computed: {
       ...mapState({
-        details: state => state.selectedODRDetails,
-        dates: state => state.openDataDates,
-        startDate: state => state.openStartDate,
-        endDate: state => state.openEndDate
+        details: state => state.reports.selectedODRDetails,
+        dates: state => state.reports.openDataDates,
+        startDate: state => state.reports.openStartDate,
+        endDate: state => state.reports.openEndDate
       })
     },
+    
     methods: {
       ...mapActions({
         updateDetails: 'updateDetails',

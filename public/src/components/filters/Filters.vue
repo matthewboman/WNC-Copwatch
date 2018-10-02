@@ -39,18 +39,21 @@
       appBulletinFilters: BulletinFilters,
       appOdrFilters: ODRFilters,
     },
+
     data() {
       return {
         displayBulletinFilters: false,
         displayOpenDataFilters: false
       }
     },
+
     computed: {
       ...mapState({
-        displayBulletinReports: state => state.displayBulletinReports,
-        displayOpenDataReports: state => state.displayOpenDataReports
+        displayBulletinReports: state => state.bulletins.displayBulletinReports,
+        displayOpenDataReports: state => state.reports.displayOpenDataReports
       })
     },
+    
     methods: {
       ...mapActions({
         toggleODRDisplay: 'toggleODRDisplay',
