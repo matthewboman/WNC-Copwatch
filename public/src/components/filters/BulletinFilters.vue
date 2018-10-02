@@ -96,16 +96,18 @@
         displayWarning: false
       }
     },
+
     computed: {
       ...mapState({
-        codes: state => state.selectedCodes,
-        dates: state => state.bulletinDates,
-        officers: state => state.officers,
-        selectedOfficer: state => state.selectedOfficer,
-        startDate: state => state.bulletinStartDate,
-        endDate: state => state.bulletinEndDate
+        codes: state => state.bulletins.selectedCodes,
+        dates: state => state.bulletins.bulletinDates,
+        officers: state => state.bulletins.officers,
+        selectedOfficer: state => state.bulletins.selectedOfficer,
+        startDate: state => state.bulletins.bulletinStartDate,
+        endDate: state => state.bulletins.bulletinEndDate
       })
     },
+    
     methods: {
       ...mapActions({
         getBulletinReports: 'getBulletinReports',

@@ -12,17 +12,17 @@
 </template>
 
 <script>
+  import { removeTrailingComma } from '../../vuex/functions'
 
   export default {
     props: [ 'record' ],
+
     methods: {
       formatForce: str => str.includes('apd')
         ? "Asheville Poilce Department"
         : "Buncome County Sheriff",
       formatDate: date => new Date(date).toDateString(),
-      removeTrailingComma: str => (str.slice(-1) == ',')
-        ? str.slice(0, -1)
-        : str
+      removeTrailingComma: str => removeTrailingComma(str)
     }
   }
 

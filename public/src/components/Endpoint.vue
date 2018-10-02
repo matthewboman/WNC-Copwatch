@@ -38,7 +38,6 @@
 
 <style lang="scss" scoped>
   .endpoint-doc {
-    // border-bottom: 1px solid #a09be7;
     margin-bottom: 48px;
 
     .title {
