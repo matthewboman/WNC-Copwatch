@@ -1,8 +1,7 @@
 /*
  * Uses Google's Map API to to return a valid [ lat, lng ].
+ * TODO: rewrite using Open Street Maps
  */
-
-// TODO: rewrite using Open Street Maps
 
 const GoogleMapsAPI = require('googlemaps')
 
@@ -13,7 +12,7 @@ const publicConfig = {
   secure: true
 }
 
-// geoLocation :: String -> Promise (Err {})
+// geoLocation :: String -> Promise (Err [{}])
 const geoLocation = address => new Promise((resolve, reject) => {
   const gmAPI = new GoogleMapsAPI(publicConfig)
   const geocodeParams = { address, language: 'en' }
