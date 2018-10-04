@@ -107,7 +107,7 @@
         endDate: state => state.bulletins.bulletinEndDate
       })
     },
-    
+
     methods: {
       ...mapActions({
         getBulletinReports: 'getBulletinReports',
@@ -142,6 +142,7 @@
       },
       loadAll() {
         this.getBulletinReports()
+        this.displayWarning = false
         this.allLoaded = true
       }
     }

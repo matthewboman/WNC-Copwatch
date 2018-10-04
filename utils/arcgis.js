@@ -3,6 +3,7 @@
  */
 
 const axios = require('axios')
+const fns = require('./functions')
 
 const details = [
   'address',
@@ -29,17 +30,6 @@ const details = [
 const fields = details.join(',')
 const BASE_URL = `https://services.arcgis.com/aJ16ENn1AaqdFlqx/arcgis/rest/services/APDTrafficStops/FeatureServer/0/query?where=1%3D1&outFields=${fields}&outSR=4326&f=json`
 
-// validDate :: String -> Date
-const validDate = date => {
-  const year = date.substring(0, 4)
-  const month = date.substring(4, 6) - 1
-  const day = date.substring(6, 8)
-  const hour = date.substring(8, 10)
-  const min = date.substring(10, 12)
-  const sec = date.substring(12)
-  return new Date(Date.UTC(year, month, day))
-}
-
 module.exports = {
 
   getApdData: () => axios.get(BASE_URL)
@@ -48,7 +38,7 @@ module.exports = {
           "force": `${stop.attributes.agency}_open`,
           "code": 'TC',
           "address": stop.attributes.address,
-          "dateTime": validDate(stop.attributes.date_occurred),
+          "dateTime": fns.validDate(stop.attributes.date_occurred),
           "latLng": {
             "lat": stop.geometry.y,
             "lng": stop.geometry.x,

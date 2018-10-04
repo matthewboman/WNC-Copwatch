@@ -17,7 +17,7 @@ const report = ('./models/report')
 const filePath = path.join(__dirname, `/reports/${process.argv[2]}`)
 const force = process.argv[2].substr(0, process.argv[2].indexOf('.'))
 
-MongoClient.connect(process.env.DB_URL_LOCAL, (err, client) => {
+MongoClient.connect(process.env.DB_URL, (err, client) => {
   if (err) {
     console.log('Error connecting to database:', err)
   }
@@ -29,7 +29,7 @@ MongoClient.connect(process.env.DB_URL_LOCAL, (err, client) => {
     .filter(e => e[0] != 'LW') // don't store incidents
     .map(e => ({
       'repord_id': e[1],
-      'force': force,
+      'force': force.toLowerCase(),
       'code': e[0],
       'description': e[4],
       'address': e[5].slice(4, e[5].length),

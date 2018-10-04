@@ -32,13 +32,13 @@ it("Sorts array and removes duplicates", () => {
   ).toEqual(['A', 'B', 'C'])
 })
 
-it("Returns the a date formatted YYYYMMDD", () => {
+it("Returns the current date formatted YYYYMMDD", () => {
   expect(
     fns.YYYYMMDD(new Date(Date.now()))
   ).toEqual("20180928") // this will need changed whenever the test is run
 })
 
-it("Returns the current date formatted YYYYMMDD", () => {
+it("Returns a date formatted YYYYMMDD", () => {
   expect(
     fns.YYYYMMDD(new Date("April 20, 2018"))
   ).toEqual("20180420")
