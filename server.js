@@ -41,6 +41,9 @@ app.use((req, res, next) => {
 // Application routes
 app.use('/api/v1', api)
 app.use('/', index)
+app.use('*', (req, res) => {
+  res.sendFile(__dirname + "/public/index.html")
+})
 
 // Handle errors for incorrect routes
 app.use((err, req, res, next) => {

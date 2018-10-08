@@ -65,7 +65,7 @@ If you'd like to contribute, clone, fork, and push your branch up for review.
 
 We're sharing a remote MongoDB instance. You can use your own for backend development, but if you'd like access to our database, email [avlcommunityaction@gmail.com](mailto:avlcommunityaction@gmail.com).
 
-For frontend development, you can get a list of REST endpoints and examples in [the documentation](https://copwatch.avlcommunityaction.com/) of our site.
+For frontend development, you can get a list of REST endpoints and examples in [the documentation](https://copwatch.avlcommunityaction.com/documentation) of our site.
 
 ### Version 1 development (in progress or looking for help)
 

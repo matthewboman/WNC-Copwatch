@@ -60,7 +60,7 @@
       </div>
       <div class="about">
         <p>
-          This applications is developed and maintained by volunteers. We're always looking to grow and expand our services. We're also open to suggestions. If you'd like to get involved, you can <a href="">email us</a> or <a href="" target="_blank">checkout our code repository</a>.
+          This applications is developed and maintained by volunteers. We're always looking to grow and expand our services. We're also open to suggestions. If you'd like to get involved, you can <a href="mailto:alvcommunityaction@gmail.com">email us</a> or <a href="https://github.com/crashspringfield/WNC-Copwatch" target="_blank">checkout our code repository</a>.
         </p>
       </div>
     </div>
