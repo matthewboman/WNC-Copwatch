@@ -1,5 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
+require('dotenv').config()
 
 module.exports = {
   entry: './public/src/main.js',
@@ -46,7 +47,7 @@ module.exports = {
   },
   resolve: {
     alias: {
-      'vue$': 'vue/dist/vue.esm.js'
+      'vue$': 'vue/dist/vue.min.js'
     },
     extensions: ['*', '.js', '.vue', '.json']
   },

@@ -11,15 +11,16 @@ const path = require('path')
 const xlsx = require('node-xlsx')
 require('dotenv').config()
 
-const geoLocation = require('./utils/geoLocation')
-const dateParser = require('./utils/dateParser')
-const report = ('./models/report')
-const filePath = path.join(__dirname, `/reports/${process.argv[2]}`)
+const winston = require('../config/winston')
+const geoLocation = require('./geoLocation')
+const dateParser = require('./dateParser')
+const report = ('../models/report')
+const filePath = path.join(__dirname, `../reports/${process.argv[2]}`)
 const force = process.argv[2].substr(0, process.argv[2].indexOf('.'))
 
 MongoClient.connect(process.env.DB_URL, (err, client) => {
   if (err) {
-    console.log('Error connecting to database:', err)
+    winston.error(`DB CONNECTION FAILED: ${err}`)
   }
   const db = client.db('police_reports')
 
@@ -47,7 +48,7 @@ MongoClient.connect(process.env.DB_URL, (err, client) => {
       db.collection('reports').insertMany(reports)
         .then(res => client.close())
         .catch(err => {
-          console.log('Error uploading reports: ', err)
+          winston.error(err)
           client.close()
         })
     })

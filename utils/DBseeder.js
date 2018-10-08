@@ -6,12 +6,13 @@
 const mongoose = require('mongoose')
 const MongoClient = require('mongodb').MongoClient
 const Report = require ('./models/report')
+const winston = require('../config/winston')
 
 const reports = process.argv[2]
 
 mongoose.connect(process.env.DB_URL_LOCAL, (err, res) => {
   if (err) {
-    console.error('Database connection failed: ', err)
+    winston.error(`DB CONNECTION FAILED: ${err}`)
   }
   reports.forEach(r => {
     const report = new Report({
@@ -28,7 +29,7 @@ mongoose.connect(process.env.DB_URL_LOCAL, (err, res) => {
 
     report.save((err) => {
       if (err) {
-        console.log(err)
+        winston.error(err)
       }
     })
   })

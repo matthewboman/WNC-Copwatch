@@ -32,7 +32,7 @@
         }
       }
 
-      .active {
+      .router-link-exact-active {
         font-weight: 600;
       }
     }

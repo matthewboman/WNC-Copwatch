@@ -51,6 +51,7 @@ const mutations = {
       descriptionReports,
       conditionallyRendered,
     )(state.allBulletinReports)
+
   },
   'TOGGLE_BULLETIN_DISPLAY': (state) => {
     state.displayBulletinReports = !state.displayBulletinReports

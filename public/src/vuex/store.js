@@ -57,17 +57,23 @@ export default new Vuex.Store({
     },
 
     getInitialBulletinReports: ({ commit }) => {
-      const today = new Date('August 15, 2018') // testing or whatever
-      // const today = new Date(Date.now()) // if database is kept up-to-date
+      // const today = new Date('August 15, 2018') // testing or whatever
+      const today = new Date(Date.now()) // if database is kept up-to-date
       const todayFormatted = YYYYMMDD(today)
       const lastWeek = YYYYMMDD(new Date(previousWeek(today)))
       commit('TOGGLE_LOADING')
 
       return api.get(`bulletin_reports/range/${lastWeek}/${todayFormatted}`)
         .then(reports => {
-          commit('SET_BULLETIN_REPORTS', reports)
-          commit('SET_BULLETIN_DATES')
-          commit('FILTER_BULLETIN_REPORTS')
+          // if there are no reports, `SET_BULLETIN_DATES` throws an error`
+          // this happens when DB is not up to date
+          if (reports.length) {
+            commit('SET_BULLETIN_REPORTS', reports)
+            commit('SET_BULLETIN_DATES')
+            commit('FILTER_BULLETIN_REPORTS')
+          } else {
+            // do nothing
+          }
           commit('TOGGLE_LOADING')
         })
         .catch(err => console.log(err))

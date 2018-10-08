@@ -28,7 +28,6 @@ const mutations = {
   'SET_OPEN_REPORTS': (state, reports) => {
     state.allOpenDataReports = reports
     state.openDataDates = removeDuplicates(reports.map(r => r.dateTime))
-    console.log(`allOpenDataReports`, state.allOpenDataReports)
   },
   'SET_OPEN_DATA_DATES': (state) => {
     [state.openEndDate, state.openStartDate] = pastWeek(state.openDataDates)
@@ -43,7 +42,6 @@ const mutations = {
       odrDetailReports,
       conditionallyRendered
     )(state.allOpenDataReports)
-    console.log('state now', state.displayedOpenDataReports)
   },
   'TOGGLE_OPEN_DATA_DISPLAY': (state) => {
     state.displayOpenDataReports = !state.displayOpenDataReports

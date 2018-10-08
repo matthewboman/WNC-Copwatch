@@ -36,17 +36,15 @@
   $font-color-dark: #444444;
   $font-color-med: #666;
   $font-color-light: white;
-  $font-base: 14px;
-  $font-ratio: 1.2;
   $font-light: 300;
   $font-normal: 400;
-  $font-bold: 600;
+  $font-bold: 500;
 
-  $text-xs: $font-base;
-  $text-sm: calc(#{$font-base} * #{$font-ratio} );
-  $text-md: calc(#{$font-base} * #{$font-ratio} * #{$font-ratio} );
-  $text-lg: calc(#{$font-base} * #{$font-ratio} * #{$font-ratio}  * #{$font-ratio} );
-  $text-xl: calc(#{$font-base} * #{$font-ratio} * #{$font-ratio}  * #{$font-ratio} * #{$font-ratio} );
+  $text-xs: 12px;
+  $text-sm: 16px;
+  $text-md: 24px;
+  $text-lg: 36px;
+  $text-xl: 48px;
 
   h1 {
     font-size: $text-xl;

@@ -7,14 +7,15 @@
 
 <script>
   import { mapGetters, mapState } from 'vuex'
-  import { adamCoords, charlieCoords, bakerCoords } from '../beats'
+  import { adamCoords, charlieCoords, bakerCoords } from '../data/beats'
+  import L from 'leaflet'
 
   const DEFAULT_CENTER = [35.575058, -82.551487]
   const DEFAULT_ZOOM = 12
   const BASEMAP = 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png'
   const ATTRIBUTION = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>'
-  const apdIcon = L.icon({ iconUrl: "/public/icons/apd.png", iconSize: [25, 25] })
-  const sheriffIcon = L.icon({ iconUrl: "/public/icons/sheriff.png", iconSize: [25, 25] })
+  const apdIcon = L.icon({ iconUrl: "/public/icons/apd.png", iconSize: [15, 15] })
+  const sheriffIcon = L.icon({ iconUrl: "/public/icons/sheriff.png", iconSize: [15, 15] })
   const openIcon = L.icon({ iconUrl: "/public/icons/open-icon.png", iconSize: [10, 10] })
 
   const bulletinPopup = report =>

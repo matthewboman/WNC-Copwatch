@@ -7,6 +7,8 @@
         <span class="icon apd"></span>
         <span class="force-name">Buncombe County Sheriff</span>
         <span class="icon sheriff"></span>
+        <span class="force-name">Traffic Control Records</span>
+        <span class="icon open"></span>
       </div>
     </div>
     <div class="beats">
@@ -61,6 +63,9 @@
     }
     .sheriff {
       background-image: url("/public/icons/sheriff.png");
+    }
+    .open {
+      background-image: url("/public/icons/open-icon.png")
     }
 
   }

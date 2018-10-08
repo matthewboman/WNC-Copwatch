@@ -6,7 +6,7 @@
         We make the REST endpoints we use to populate our map application publically available, opening the possibility for others to collect and process the data we've pulled. All endpoints are appended to the base url of <span class="base-url">http://copwatch.avlcommunityaction.com</span>, take GET requests, and return JSON.
       </p>
     </div>
-    <div class="block all-reports">
+    <!-- <div class="block all-reports">
       <h2 class="block-heading">Combined Reports</h2>
       <p>
         These endpoints combine reports from APD Traffic Stop Open Data and daily bulletins (more below).
@@ -15,7 +15,7 @@
         v-for="(endpoint, index) in shared"
         :key="index"
         v-bind:endpoint="endpoint"></app-endpoint>
-    </div>
+    </div> -->
 
     <div class="block open-data">
       <h2 class="block-heading">Open Data Reports</h2>
@@ -43,7 +43,7 @@
 
 <script>
   import { Endpoint } from '../components'
-  import { shared, open_data, bulletins } from '../endpoints'
+  import { shared, open_data, bulletins } from '../data/endpoints'
 
   export default {
     components: {
