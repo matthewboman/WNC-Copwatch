@@ -15,8 +15,9 @@ const winston = require('../config/winston')
 const geoLocation = require('./geoLocation')
 const dateParser = require('./dateParser')
 const report = ('../models/report')
-const filePath = path.join(__dirname, `../reports/${process.argv[2]}`)
-const force = process.argv[2].substr(0, process.argv[2].indexOf('.'))
+const fileName = process.argv[2]
+const filePath = path.join(__dirname, `../reports/${fileName}`)
+const [force, date, type] = fileName.split('.') // ex. [apd, 2018-10-10, xls]
 
 MongoClient.connect(process.env.DB_URL, (err, client) => {
   if (err) {
@@ -34,7 +35,7 @@ MongoClient.connect(process.env.DB_URL, (err, client) => {
       'code': e[0],
       'description': e[4],
       'address': e[5].slice(4, e[5].length),
-      'dateTime': dateParser(e[6]),
+      'dateTime': dateParser(date),
       'race': e[11],
       'officer': e[8],
     }))
