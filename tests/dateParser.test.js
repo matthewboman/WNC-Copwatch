@@ -74,3 +74,12 @@ it("Doesn't return 1970 (v5)", () => {
     dateParser("on 18:20, 2/23/2018. Reported: 18:20, 2/23/2018.").getFullYear()
   ).toBeGreaterThan(1970)
 })
+
+/*
+ * '2018-10-10' - formatted from file name
+ */
+it("Parses dates from filenames (2018-10-10)", () => {
+  expect(
+    dateParser('2018-10-10')
+  ).toBeInstanceOf(Date)
+})

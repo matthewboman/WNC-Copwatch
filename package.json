@@ -1,6 +1,6 @@
 {
   "name": "wnc-copwatch",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "JavaScript app that makes tracking police activity easy",
   "main": "server.js",
   "scripts": {
