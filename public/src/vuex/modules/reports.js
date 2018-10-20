@@ -1,5 +1,7 @@
 const R = require('ramda')
+import api from '../api'
 import {
+  categoryPerDay,
   conditionalArray,
   filterByCodes,
   filterByDates,
@@ -17,11 +19,13 @@ import {
 
 const state = {
   allOpenDataReports: [],
+  arrestsPerDay: [],
   displayOpenDataReports: false,
   displayedOpenDataReports: [],
   openDataDates: [],
   openStartDate: null,
   openEndDate: null,
+  searchesPerDay: [],
   selectedODRDetails: [], // initially empty b/c few will contain all conditions
 }
 const mutations = {
@@ -42,6 +46,13 @@ const mutations = {
       odrDetailReports,
       conditionallyRendered
     )(state.allOpenDataReports)
+  },
+  'SET_ARRESTS_PER_DAY': (state, reports) => {
+    state.arrestsPerDay = categoryPerDay('arrests', reports)
+    // console.log(state.arrestsPerDay)
+  },
+  'SET_SEARCHES_PER_DAY': (state, reports) => {
+    state.searchesPerDay = categoryPerDay('searches', reports)
   },
   'TOGGLE_OPEN_DATA_DISPLAY': (state) => {
     state.displayOpenDataReports = !state.displayOpenDataReports
@@ -85,6 +96,22 @@ const actions = {
     commit('UPDATE_DESCRIPTION', description)
     commit('FILTER_BULLETIN_REPORTS')
   },
+  getArrests: ({ commit }) => {
+    return api.get('open_data_reports/arrests')
+      .then(reports => {
+        // console.log('arrests returned', reports)
+        commit('SET_ARRESTS_PER_DAY', reports)
+      })
+      .catch(err => console.log(err))
+  },
+  getSearches: ({ commit }) => {
+    return api.get('open_data_reports/searches')
+      .then(reports => {
+        commit('SET_SEARCHES_PER_DAY', reports)
+      })
+      .catch(err => console.log(err))
+  }
+
 }
 
 const getters = {

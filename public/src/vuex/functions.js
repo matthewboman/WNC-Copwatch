@@ -4,6 +4,17 @@ const R = require('ramda')
  * Higer-order functions for filtering reports, processing dates & strings, etc.
  */
 
+// categoryPerDay :: String -> [{}] -> [{ Date, Int }]
+const categoryPerDay = (category, array) => array
+  .map(i => ({ date: i.dateTime, [category]: 1 }))
+  .reduce((acc, val, index, arr) => {
+    if (acc.map(i => i.date).includes(val.date)) {
+      acc[acc.length - 1][category] += 1 // assuming these are sorted, just increase category count of last item
+      return [...acc]
+    }
+    return [...acc, val]
+  }, [])
+
 // conditionalArray :: Boolean -> [a] -> [a]
 const conditionalArray = (bool, array) => bool
   ? array
@@ -104,6 +115,7 @@ const YYYYMMDD = date => {
  * before Node runs them.
  */
 module.exports = {
+  categoryPerDay,
   conditionalArray,
   filterByCodes,
   filterByDates,
