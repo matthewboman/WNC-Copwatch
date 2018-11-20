@@ -56,9 +56,6 @@ const mutations = {
     state.openStartDate = dates.start
     state.openEndDate = dates.end
   },
-  'UPDATE_DESCRIPTION': (state, description) => {
-    state.descriptionSearchTerm = description
-  },
   'UPDATE_DETAILS': (state, detail) => {
     state.selectedODRDetails = toggleArray(state.selectedODRDetails, detail)
   }
@@ -80,10 +77,6 @@ const actions = {
   updateOpenDates: ({ commit }, dates) => {
     commit('UPDATE_OPEN_DATES', dates)
     commit('FILTER_OPEN_DATA_REPORTS')
-  },
-  updateDescriptions: ({ commit }, description) => {
-    commit('UPDATE_DESCRIPTION', description)
-    commit('FILTER_BULLETIN_REPORTS')
   },
 }
 

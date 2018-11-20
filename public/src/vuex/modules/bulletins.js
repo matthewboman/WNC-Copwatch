@@ -72,6 +72,9 @@ const mutations = {
   'UPDATE_BULLETIN_END': (state, end) => {
     state.bulletinEndDate = end
   },
+  'UPDATE_DESCRIPTION': (state, description) => {
+    state.descriptionSearchTerm = description
+  },
   'ALL_BULLETINS_LOADED': (state) => {
     state.allBulletinsLoaded = true
   },
@@ -105,6 +108,10 @@ const actions = {
   updateDetails: ({ commit}, detail) => {
     commit('UPDATE_DETAILS', detail)
     commit('FILTER_OPEN_DATA_REPORTS')
+  },
+  updateDescriptions: ({ commit }, description) => {
+    commit('UPDATE_DESCRIPTION', description)
+    commit('FILTER_BULLETIN_REPORTS')
   },
 }
 
