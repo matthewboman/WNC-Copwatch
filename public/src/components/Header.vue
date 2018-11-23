@@ -3,6 +3,7 @@
     <nav class="navbar">
       <router-link class="nav-item" activeClass="active" to="/">About</router-link>
       <router-link class="nav-item" activeClass="active" to="/map">Map</router-link>
+      <router-link class="nav-item" activeClass="active" to="/studies">Studies</router-link>
       <router-link class="nav-item" activeClass="active" to="/documentation">Documentation</router-link>
     </nav>
   </div>

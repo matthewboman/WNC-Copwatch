@@ -1,5 +1,6 @@
 const R = require('ramda')
 const reports = require('../reports/mockData')
+const open_reports = require('../reports/mockOpenData')
 const fns = require('../public/src/vuex/functions')
 
 it("Returns the array", () => {
@@ -35,7 +36,7 @@ it("Sorts array and removes duplicates", () => {
 it("Returns the current date formatted YYYYMMDD", () => {
   expect(
     fns.YYYYMMDD(new Date(Date.now()))
-  ).toEqual("20180928") // this will need changed whenever the test is run
+  ).toEqual("20181016") // this will need changed whenever the test is run
 })
 
 it("Returns a date formatted YYYYMMDD", () => {
@@ -48,4 +49,21 @@ it("Returns a week before the given date", () => {
   expect(
     new Date(fns.previousWeek(new Date("April 20, 2018"))).getUTCDate()
   ).toEqual(13)
+})
+
+it("Returns an array of {date: Date, searches: Int}", () => {
+  expect(
+    fns.categoryPerDay('searches', open_reports.searches)
+  ).toEqual([
+    { date: "2017-10-01T00:00:00.000Z", searches: 2 },
+    { date: "2017-10-02T00:00:00.000Z", searches: 1 }
+  ])
+})
+
+it("Returns an array of {date: Date, arrests: Int}", () => {
+  expect(
+    fns.categoryPerDay('arrests', open_reports.arrests)
+  ).toEqual([
+    { date: "2017-10-01T00:00:00.000Z", arrests: 2 }
+  ])
 })

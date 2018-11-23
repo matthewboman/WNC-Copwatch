@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
-    "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
+    "dev": "cross-env NODE_ENV=development webpack --watch",
     "devserver": "NODE_ENV=development node server.js",
     "parser": "node ./utils/parser.js",
     "prod": "NODE_ENV=production node server.js",
@@ -20,6 +20,7 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^0.18.0",
+    "d3": "^5.7.0",
     "dotenv": "^6.0.0",
     "express": "^4.16.2",
     "googlemaps": "^1.12.0",

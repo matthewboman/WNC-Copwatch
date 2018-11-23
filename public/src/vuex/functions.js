@@ -4,6 +4,21 @@ const R = require('ramda')
  * Higer-order functions for filtering reports, processing dates & strings, etc.
  */
 
+// categoryPerDay :: String -> [{}] -> [{ Date, Int }]
+const categoryPerDay = (category, array) => array
+  .map(i => ({
+    date: i.dateTime,
+    [category]: 1,
+    // ...i
+  }))
+  .reduce((acc, val, index, arr) => {
+    if (acc.map(i => i.date).includes(val.date)) {
+      acc[acc.length - 1][category] += 1 // assuming these are sorted, just increase category count of last item
+      return [...acc]
+    }
+    return [...acc, val]
+  }, [])
+
 // conditionalArray :: Boolean -> [a] -> [a]
 const conditionalArray = (bool, array) => bool
   ? array
@@ -31,6 +46,92 @@ const filterByODRDetails = (details, reports) => reports.filter(report =>
 const filterByOfficer = (officer, reports) => !officer
   ? reports
   : reports.filter(r => r.officer == officer)
+
+// formatDataset :: [{}] -> String -> [{}]
+const formatDataset = (arr, name) => categoryPerDay(name, arr).map(d => ({
+  date: new Date(d.date),
+  category: d[name]
+}))
+
+// formatTrafficStops :: [{}] -> [{}]
+const formatTrafficStops = reports => {
+  let dataset = [ ]
+  reports.forEach(report => {
+    const existingDates = dataset.map(d => d.date.getTime())
+    const date = new Date(report.dateTime)
+
+    // only count for one search or arrest
+    let searches = 0
+    let arrests = 0
+    if (
+      report.driver_searched == 1 ||
+      report.passenger_searched == 1 ||
+      report.search_initiated == 1 ||
+      report.vehicle_searched == 1 ||
+      report.personal_effects_searched == 1 ||
+      report.t_search_consent == 1 ||
+      report.t_search_warrant == 1
+    ) {
+      searches = 1
+    }
+
+    if (
+      report.driver_arrested == 1 ||
+      report.passenger_arrested == 1
+    ) {
+      arrests = 1
+    }
+
+    // update the previous object b/c it's from the same day
+    if (existingDates.includes(date.getTime())) {
+      let sameDay = dataset[dataset.length - 1]
+      const index = dataset.indexOf(sameDay)
+
+      sameDay = {
+        date: sameDay.date,
+        stops: sameDay.stops + 1,
+        // searches
+        searches: sameDay.searches + searches,
+        driver_searched: sameDay.driver_searched + parseInt(report.driver_searched),
+        passenger_searched: sameDay.passenger_searched + parseInt(report.passenger_searched),
+        search_initiated: sameDay.search_initiated + parseInt(report.search_initiated),
+        vehicle_searched: sameDay.vehicle_searched + parseInt(report.vehicle_searched),
+        personal_effects_searched: sameDay.personal_effects_searched + parseInt(report.personal_effects_searched),
+        t_search_consent: sameDay.t_search_consent + parseInt(report.t_search_consent),
+        t_search_warrant: sameDay.t_search_warrant + parseInt(report.t_search_warrant),
+        // arrests
+        arrests: sameDay.arrests + arrests,
+        driver_arrested: sameDay.driver_arrested + parseInt(report.driver_arrested),
+        passenger_arrested: sameDay.passenger_arrested + parseInt(report.passenger_arrested)
+      }
+
+      // replace w/ updated version
+      dataset[index] = sameDay
+    } else {
+      // create a new object
+      dataset.push({
+        date: date,
+        // details: {
+          stops: 1,
+          // searches
+          searches: searches,
+          driver_searched: parseInt(report.driver_searched),
+          passenger_searched: parseInt(report.passenger_searched),
+          search_initiated: parseInt(report.search_initiated),
+          vehicle_searched: parseInt(report.vehicle_searched),
+          personal_effects_searched: parseInt(report.personal_effects_searched),
+          t_search_consent: parseInt(report.t_search_consent),
+          t_search_warrant: parseInt(report.t_search_warrant),
+          // arrests
+          arrests: arrests,
+          driver_arrested: parseInt(report.driver_arrested),
+          passenger_arrested: parseInt(report.passenger_arrested)
+        // }
+      })
+    }
+  })
+  return dataset
+}
 
 // isTrue :: a -> Boolean
 const isTrue = value => value == true
@@ -86,6 +187,9 @@ const removeTrailingComma = str => (str.slice(-1) == ',')
   ? str.slice(0, -1)
   : str
 
+// sortByProp :: String -> [{}] -> [{}]
+const sortByProp = property => R.sortBy(R.prop(property))
+
 // toggleArray :: [a] -> a -> [a]
 const toggleArray = (array, value) => array.includes(value)
   ? array.filter(v => v != value)
@@ -104,12 +208,15 @@ const YYYYMMDD = date => {
  * before Node runs them.
  */
 module.exports = {
+  categoryPerDay,
   conditionalArray,
   filterByCodes,
   filterByDates,
   filterByDescription,
   filterByODRDetails,
   filterByOfficer,
+  formatDataset,
+  formatTrafficStops,
   isTrue,
   odrHashMap,
   pastWeek,
@@ -117,5 +224,6 @@ module.exports = {
   removeDuplicates,
   removeTrailingComma,
   toggleArray,
+  sortByProp,
   YYYYMMDD
 }
