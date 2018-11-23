@@ -93,6 +93,7 @@
       },
       renderSearches(searches) {
         const dataset = this.formatDataset(searches, 'searches')
+        console.log(dataset)
 
         this.setScale(dataset) // we want to set the scale off searches b/c it will be larger
         this.createAxises()
@@ -120,7 +121,7 @@
           ])
           .range([this.padding, this.w - this.padding * 2])
         this.yScale = d3.scaleLinear()
-          .domain([
+          .domaireportsn([
             d3.min(dataset, d => d.category),
             d3.max(dataset, d => d.category)
           ])

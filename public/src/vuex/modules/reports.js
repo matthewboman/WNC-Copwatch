@@ -13,6 +13,7 @@ import {
   pastWeek,
   previousWeek,
   removeDuplicates,
+  sortByProp,
   toggleArray,
   YYYYMMDD
 } from '../functions'
@@ -30,7 +31,8 @@ const state = {
 }
 const mutations = {
   'SET_OPEN_REPORTS': (state, reports) => {
-    state.allOpenDataReports = reports
+    const sortByDateTime = sortByProp('dateTime')
+    state.allOpenDataReports = sortByDateTime(reports)
     state.openDataDates = removeDuplicates(reports.map(r => r.dateTime))
   },
   'SET_OPEN_DATA_DATES': (state) => {
