@@ -19,6 +19,7 @@ const details = [
   'passenger_searched', //
   'personal_effects_searched', //
   'search_initiated', //
+  'stop_sbi_desc',
   't_inc_arrest', //
   't_pro_frisk',
   't_probable_cause', //
@@ -40,8 +41,8 @@ module.exports = {
           "address": stop.attributes.address,
           "dateTime": fns.validDate(stop.attributes.date_occurred),
           "latLng": {
-            "lat": stop.geometry.y,
-            "lng": stop.geometry.x,
+            "lat": stop.geometry ? stop.geometry.y : 'none',
+            "lng": stop.geometry ? stop.geometry.x : 'none',
           },
           "driver_searched": stop.attributes.driver_searched || '',
           "driver_arrested": stop.attributes.driver_arrested || '',
@@ -52,6 +53,7 @@ module.exports = {
           "passenger_searched": stop.attributes.passenger_searched || '',
           "personal_effects_searched": stop.attributes.personal_effects_searched || '',
           "search_initiated": stop.attributes.search_initiated || '',
+          "stop_sbi_desc": stop.attributes.stop_sbi_desc || '',
           "t_inc_arrest": stop.attributes.t_inc_arrest || '',
           "t_pro_frisk": stop.attributes.t_pro_frisk || '',
           "t_probable_cause": stop.attributes.t_probable_cause || '',

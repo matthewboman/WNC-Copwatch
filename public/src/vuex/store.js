@@ -84,7 +84,7 @@ export default new Vuex.Store({
      */
     getOpenDataReports: ({ commit }) => {
       commit('TOGGLE_LOADING')
-      return api.get('open_data_reports')
+      return api.get('traffic_stops')
         .then(reports => {
           commit('SET_OPEN_REPORTS', reports)
           commit('SET_OPEN_DATA_DATES')

@@ -46,6 +46,10 @@ If you'd like to contribute, clone, fork, and push your branch up for review.
 * parses an .xlsx file and saves it to a database
 * `filename` will be in force.YYYY-MM-DD.xlsx format (sheriff.2018-02-28.xlsx or apd.2018-02-28.xlsx)
 
+`npm run traffic-stops`
+* pulls traffic stops from date range specified in `./utils/open_data.js`
+* adds lat/lng to report and stores in database
+
 `npm run dev`
 * launches Vue app with hot-reload server (see `webpack.config.json`)
 * runs at localhost:8080
@@ -78,6 +82,7 @@ For frontend development, you can get a list of REST endpoints and examples in [
 #### Backend Application
 * Build spider for automatically downloading .xls
 * Caching with Redis
+* Continue replacing methods that pull from Asheville's Open Data with our DB/services
 
 #### Site Configuration
 * Create Docker container

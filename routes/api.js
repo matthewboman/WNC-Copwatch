@@ -8,28 +8,10 @@ const BulletinController = require('../controllers/BulletinController')
 const OpenDataController = require('../controllers/OpenDataController')
 
 /*
- * open data from arcgis
+ * Traffic Stops (from our database)
  */
-router.get('/open_data_reports', (req, res) => {
-  OpenDataController.odr()
-    .then(reports => res.status(200).send(reports))
-    .catch(err => {
-      winston.error(err)
-      res.status(500).send([])
-    })
-})
-
-router.get('/open_data_reports/searches', (req, res) => {
-  OpenDataController.odr_searches()
-    .then(reports => res.status(200).send(reports))
-    .catch(err => {
-      winston.error(err)
-      res.status(500).send([])
-    })
-})
-
-router.get('/open_data_reports/arrests', (req, res) => {
-  OpenDataController.odr_arrests()
+router.get('/traffic_stops', (req, res) => {
+  OpenDataController.traffic_stops()
     .then(reports => res.status(200).send(reports))
     .catch(err => {
       winston.error(err)
@@ -83,6 +65,38 @@ router.get('/bulletin_reports/officer/:officer', (req, res) => {
  */
 router.get('/bulletin_reports/range/:start/:end', (req, res) => {
   BulletinController.bulletin_dates(req.params.start, req.params.end)
+    .then(reports => res.status(200).send(reports))
+    .catch(err => {
+      winston.error(err)
+      res.status(500).send([])
+    })
+})
+
+
+/*
+ * @deprecated
+ * open data from arcgis
+ */
+router.get('/open_data_reports', (req, res) => {
+  OpenDataController.odr()
+    .then(reports => res.status(200).send(reports))
+    .catch(err => {
+      winston.error(err)
+      res.status(500).send([])
+    })
+})
+
+router.get('/open_data_reports/searches', (req, res) => {
+  OpenDataController.odr_searches()
+    .then(reports => res.status(200).send(reports))
+    .catch(err => {
+      winston.error(err)
+      res.status(500).send([])
+    })
+})
+
+router.get('/open_data_reports/arrests', (req, res) => {
+  OpenDataController.odr_arrests()
     .then(reports => res.status(200).send(reports))
     .catch(err => {
       winston.error(err)
