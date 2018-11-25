@@ -8,18 +8,6 @@ const BulletinController = require('../controllers/BulletinController')
 const OpenDataController = require('../controllers/OpenDataController')
 
 /*
- * Traffic Stops (from our database)
- */
-router.get('/traffic_stops', (req, res) => {
-  OpenDataController.traffic_stops()
-    .then(reports => res.status(200).send(reports))
-    .catch(err => {
-      winston.error(err)
-      res.status(500).send([])
-    })
-})
-
-/*
  * daily APD bulletins
  * route works with or without query string
  */
@@ -74,11 +62,10 @@ router.get('/bulletin_reports/range/:start/:end', (req, res) => {
 
 
 /*
- * @deprecated
- * open data from arcgis
+ * Open Data from the city -- traffic stops
  */
-router.get('/open_data_reports', (req, res) => {
-  OpenDataController.odr()
+router.get('/open_data/traffic_stops', (req, res) => {
+  OpenDataController.traffic_stops()
     .then(reports => res.status(200).send(reports))
     .catch(err => {
       winston.error(err)
@@ -86,8 +73,8 @@ router.get('/open_data_reports', (req, res) => {
     })
 })
 
-router.get('/open_data_reports/searches', (req, res) => {
-  OpenDataController.odr_searches()
+router.get('/open_data/traffic_stops/searches', (req, res) => {
+  OpenDataController.ts_searches()
     .then(reports => res.status(200).send(reports))
     .catch(err => {
       winston.error(err)
@@ -95,8 +82,17 @@ router.get('/open_data_reports/searches', (req, res) => {
     })
 })
 
-router.get('/open_data_reports/arrests', (req, res) => {
-  OpenDataController.odr_arrests()
+router.get('/open_data/traffic_stops/arrests', (req, res) => {
+  OpenDataController.ts_arrests()
+    .then(reports => res.status(200).send(reports))
+    .catch(err => {
+      winston.error(err)
+      res.status(500).send([])
+    })
+})
+
+router.get('/open_data/traffic_stops/use-of-force', (req, res) => {
+  OpenDataController.ts_use_of_force()
     .then(reports => res.status(200).send(reports))
     .catch(err => {
       winston.error(err)

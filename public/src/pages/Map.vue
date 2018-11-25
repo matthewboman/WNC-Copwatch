@@ -32,16 +32,16 @@
     },
 
     mounted() {
-      this.getOpenDataReports()
+      this.getTSReports()
       // this.getBulletinReports()
       this.getInitialBulletinReports()
     },
-    
+
     methods: {
       ...mapActions({
         getBulletinReports: 'getBulletinReports',
         getInitialBulletinReports: 'getInitialBulletinReports',
-        getOpenDataReports: 'getOpenDataReports'
+        getTSReports: 'getTSReports'
       }),
     }
   }

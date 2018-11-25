@@ -1,5 +1,5 @@
 <template>
-  <div class="filter-group open-data">
+  <div class="filter-group traffic-data">
 
     <div class="filter date-filters border-bottom">
       <h3 class="section-heading">Date range</h3>
@@ -26,7 +26,7 @@
           type="checkbox"
           id="search"
           :checked="this.details.includes('search')"
-          @change="changeODRDetails" />
+          @change="changeTrafficDetails" />
       </form>
       <form>
         <label class="label">Warrant:</label>
@@ -34,7 +34,7 @@
           type="checkbox"
           id="warrant"
           :checked="this.details.includes('warrant')"
-          @change="changeODRDetails" />
+          @change="changeTrafficDetails" />
       </form>
       <form>
         <label class="label">Probable cause:</label>
@@ -42,7 +42,7 @@
           type="checkbox"
           id="probable"
           :checked="this.details.includes('probable')"
-          @change="changeODRDetails" />
+          @change="changeTrafficDetails" />
       </form>
       <form>
         <label class="label">Consent to a search:</label>
@@ -50,7 +50,7 @@
           type="checkbox"
           id="consent"
           :checked="this.details.includes('consent')"
-          @change="changeODRDetails" />
+          @change="changeTrafficDetails" />
       </form>
       <form>
         <label class="label">Physically resisted:</label>
@@ -58,7 +58,7 @@
           type="checkbox"
           id="resist"
           :checked="this.details.includes('resist')"
-          @change="changeODRDetails" />
+          @change="changeTrafficDetails" />
       </form>
       <form>
         <label class="label">Arrest (driver, passenger):</label>
@@ -66,7 +66,7 @@
           type="checkbox"
           id="arrest"
           :checked="this.details.includes('arrest')"
-          @change="changeODRDetails" />
+          @change="changeTrafficDetails" />
       </form>
     </div>
 
@@ -79,21 +79,21 @@
   export default {
     computed: {
       ...mapState({
-        details: state => state.reports.selectedODRDetails,
-        dates: state => state.reports.openDataDates,
-        startDate: state => state.reports.openStartDate,
-        endDate: state => state.reports.openEndDate
+        details: state => state.traffic_reports.selectedTrafficDetails,
+        dates: state => state.traffic_reports.trafficDates,
+        startDate: state => state.traffic_reports.trafficStartDate,
+        endDate: state => state.traffic_reports.trafficEndDate
       })
     },
-    
+
     methods: {
       ...mapActions({
         updateDetails: 'updateDetails',
-        updateStart: 'updateODRStart',
-        updateEnd: 'updateODREnd',
-        updateOpenDates: 'updateOpenDates'
+        updateStart: 'updateTrafficStart',
+        updateEnd: 'updateTrafficEnd',
+        updateTrafficDates: 'updateTrafficDates'
       }),
-      changeODRDetails(e) {
+      changeTrafficDetails(e) {
         this.updateDetails(e.target.id)
       },
       changeStart(e) {
@@ -103,14 +103,14 @@
         this.updateEnd(e.target.value)
       },
       resetDates() {
-        this.updateOpenDates({ start: null, end: null})
+        this.updateTrafficDates({ start: null, end: null})
       }
     },
   }
 </script>
 
 <style lang="scss" scoped>
-  .open-data {
+  .traffic-data {
     padding: 18px;
     border-radius: 6px;
     box-shadow: 2px 6px 25px rgba(0, 0, 0, 0.1);

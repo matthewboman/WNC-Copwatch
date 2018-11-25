@@ -1,7 +1,9 @@
 import Vue from 'vue'
 
-const API_URL = window.location.host == `localhost:8080`
-  ? 'http://localhost:3000/api/v1'
+const API_URL = (
+  window.location.host == `localhost:3000` ||
+  window.location.host == `localhost:8080`  
+) ? 'http://localhost:3000/api/v1'
   : 'https://copwatch.avlcommunityaction.com/api/v1'
 
 export default {

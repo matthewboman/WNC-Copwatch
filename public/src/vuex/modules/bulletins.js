@@ -13,7 +13,7 @@ import {
   removeDuplicates,
   toggleArray,
   YYYYMMDD
-} from '../functions'
+} from '../../utils/functions'
 
 const state = {
   allBulletinsLoaded: false,

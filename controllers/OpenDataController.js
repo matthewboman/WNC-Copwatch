@@ -1,22 +1,32 @@
-const arcgis = require('../utils/arcgis')
+const OpenDataService = require('../services/OpenDataService')
 const traffic_stop = require('../models/traffic_stop')
 const fns = require('../utils/functions')
 
 let cache = {
-  // pulled directly from Traffic Stop API
-  arcgis: {
+  traffic: {
     date_cached: new Date(Date.now()),
     data: []
   },
-  // reformatted with lat/lng and stored in DB
-  traffic: {
+  arrests: {
+    date_cached: new Date(Date.now()),
+    data: []
+  },
+  searches: {
+    date_cached: new Date(Date.now()),
+    data: []
+  },
+  use_of_force: {
     date_cached: new Date(Date.now()),
     data: []
   }
 }
 
-// allTrafficStops :: Promise [TrafficStop]
-const allTrafficStops = () => new Promise((resolve, reject) => {
+/**
+ * Sometimes the city's endpoint stops working.
+ * This allows us to access what we've stored in our DB
+ */
+// dbTrafficStops :: Promise [TrafficStop]
+const dbTrafficStops = () => new Promise((resolve, reject) => {
   traffic_stop.find({}, (err, stops) => {
     if (err) {
       reject(err)
@@ -25,54 +35,36 @@ const allTrafficStops = () => new Promise((resolve, reject) => {
   })
 })
 
-// @deprecated
-// allArcgisData :: [Report]
-const allArcgisData = () => arcgis.getApdData()
+// allTrafficStops :: [Report]
+const allTrafficStops = () => OpenDataService.getTSData()
 
 module.exports = {
 
   /*
    * APD Traffic Stops after Oct. 2017
    */
+  // traffic_stops: () => fns.callandCache(dbTrafficStops, 'traffic', cache),
   traffic_stops: () => fns.callandCache(allTrafficStops, 'traffic', cache),
 
-  /*
-   *
-   */
-  arrests: () => {
-    // TODO:
-  },
-
-  /*
-   *
-   */
-  searches: () => {
-    // TODO:
-  },
-
-  /*
-   * @deprecated
-   * API calls to Open Data Reports
-   */
-  odr: () => fns.callandCache(allArcgisData, 'arcgis', cache),
-
-  /*
-   * @deprecated
-   */
-  odr_arrests: (param) => fns.callandCache(allArcgisData ,'arcgis', cache)
+  ts_arrests: (param) => fns.callandCache(allTrafficStops ,'arrests', cache)
     .then(reports => reports.filter(report => (
         report.driver_arrested == 1 ||
         report.passenger_arrested == 1
       ))),
-  /*
-   * @deprecated
-   */
-  odr_searches: (param) => fns.callandCache(allArcgisData, 'arcgis', cache)
+
+  ts_searches: (param) => fns.callandCache(allTrafficStops, 'searches', cache)
     .then(reports => reports.filter(report => (
         report.driver_searched == 1 ||
         report.passenger_searched == 1||
         report.personal_effects_searched == 1 ||
         report.search_initiated == 1 ||
+        report.t_search_consent == 1 ||
+        report.t_search_warrant == 1 ||
         report.vehicle_searched == 1
       ))),
+
+  ts_use_of_force: () => fns.callandCache(allTrafficStops, 'use_of_force', cache)
+    .then(reports => reports.filter(report => (
+      report.off_use_force == 1
+    ))),
 }

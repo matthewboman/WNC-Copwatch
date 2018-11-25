@@ -11,7 +11,7 @@
 </template>
 
 <script>
-  import { removeTrailingComma } from '../../vuex/functions'
+  import { removeTrailingComma } from '../../utils/functions'
 
   export default {
     props: [ 'record' ],

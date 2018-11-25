@@ -37,9 +37,9 @@ const filterByDescription = (description, reports) => description.length
   ? reports.filter(r => r.description.toLowerCase().includes(description.toLowerCase()))
   : reports
 
-// filterByODRDetails :: [String] -> [{}] -> [{}]
-const filterByODRDetails = (details, reports) => reports.filter(report =>
-  R.all(isTrue)(details.map(detail => odrHashMap[detail](report)))
+// filterByTrafficDetails :: [String] -> [{}] -> [{}]
+const filterByTrafficDetails = (details, reports) => reports.filter(report =>
+  R.all(isTrue)(details.map(detail => trafficHashMap[detail](report)))
 )
 
 // filterByOfficer :: String -> [{}] -> [{}]
@@ -136,9 +136,9 @@ const formatTrafficStops = reports => {
 // isTrue :: a -> Boolean
 const isTrue = value => value == true
 
-// const odrHashMap :: String -> Boolean
+// const trafficHashMap :: String -> Boolean
 // (not actually a function)
-const odrHashMap = {
+const trafficHashMap = {
   warrant: report => (
     report.t_search_warrant == 1
   ),
@@ -213,12 +213,12 @@ module.exports = {
   filterByCodes,
   filterByDates,
   filterByDescription,
-  filterByODRDetails,
+  filterByTrafficDetails,
   filterByOfficer,
   formatDataset,
   formatTrafficStops,
   isTrue,
-  odrHashMap,
+  trafficHashMap,
   pastWeek,
   previousWeek,
   removeDuplicates,

@@ -1,5 +1,6 @@
 /*
- * Pure functions implemented by controllers and other utilies.
+ * Pure functions implemented by controllers, services, and other utilies.
+ *
  * The reason functions aren't class methods of an abstract controller class
  * to be inherited by BulletinController and OpenDataController is because
  * `async function` is a syntax error in ES2015. Maybe it'd work in ES2017?
@@ -12,6 +13,12 @@ async function callandCache(apiCall, cache_name, cache) {
     : await apiCall()
   cache[cache_name] = { ...cache[cache_name], data: result }
   return result
+}
+
+// dateFromFilename :: String -> Date
+const dateFromFilename = str => {
+  const [y, m, d] = str.split('-')
+  return new Date(`${m}/${d}/${y}`)
 }
 
 // dateFromParam :: String -> Date
@@ -49,6 +56,7 @@ const validDate = date => {
 
 module.exports = {
   callandCache,
+  dateFromFilename,
   dateFromParam,
   genRegExp,
   resolvePromise,
