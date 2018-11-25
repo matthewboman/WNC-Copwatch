@@ -4,29 +4,18 @@ const R = require('ramda')
 
 import api from './api'
 import bulletins from './modules/bulletins'
-import reports from './modules/reports'
+import traffic_reports from './modules/traffic_reports'
 import {
-  conditionalArray,
-  filterByCodes,
-  filterByDates,
-  filterByDescription,
-  filterByODRDetails,
-  filterByOfficer,
-  isTrue,
-  odrHashMap,
-  pastWeek,
   previousWeek,
-  removeDuplicates,
-  toggleArray,
   YYYYMMDD
-} from './functions'
+} from '../utils/functions'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
     bulletins,
-    reports,
+    traffic_reports,
   },
 
   state: {
@@ -80,15 +69,15 @@ export default new Vuex.Store({
     },
 
     /*
-     * Open Data actions
+     * Traffic Stops actions
      */
-    getOpenDataReports: ({ commit }) => {
+    getTSReports: ({ commit }) => {
       commit('TOGGLE_LOADING')
-      return api.get('traffic_stops')
+      return api.get('open_data/traffic_stops')
         .then(reports => {
-          commit('SET_OPEN_REPORTS', reports)
-          commit('SET_OPEN_DATA_DATES')
-          commit('FILTER_OPEN_DATA_REPORTS')
+          commit('SET_TS_REPORTS', reports)
+          commit('SET_TS_DATES')
+          commit('FILTER_TS_REPORTS')
           commit('TOGGLE_LOADING')
 
         })

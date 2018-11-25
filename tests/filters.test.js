@@ -1,7 +1,7 @@
 const R = require('ramda')
 const reports = require('../reports/mockData')
 const open_reports = require('../reports/mockOpenData')
-const fns = require('../public/src/vuex/functions')
+const fns = require('../public/src/utils/functions')
 
 it("Returns the array", () => {
   expect(
@@ -36,7 +36,7 @@ it("Sorts array and removes duplicates", () => {
 it("Returns the current date formatted YYYYMMDD", () => {
   expect(
     fns.YYYYMMDD(new Date(Date.now()))
-  ).toEqual("20181016") // this will need changed whenever the test is run
+  ).toEqual("20181125") // this will need changed whenever the test is run
 })
 
 it("Returns a date formatted YYYYMMDD", () => {

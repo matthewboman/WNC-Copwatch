@@ -58,13 +58,13 @@ module.exports = {
   //     `
   //   },
   // ],
-  open_data: [
+  traffic_stops: [
     {
-      title: 'All Open Data Reports',
-      description: "Returns all reports from APD's open data since October 2017",
-      url: '/api/v1/open_data_reports',
+      title: 'All Open Data Traffic Stop Reports',
+      description: "Returns all open data traffic stop reports since October 2017",
+      url: '/api/v1/open_data/traffic_stops',
       parameters: [],
-      example: 'http://copwatch.avlcommunityaction.com/api/v1/open_data_reports',
+      example: 'http://copwatch.avlcommunityaction.com/api/v1/open_data/traffic_stops',
       result: `
       {
         'force': 'APD_open',
@@ -96,11 +96,11 @@ module.exports = {
       `
     },
     {
-      title: 'Open Data Reports - Searches',
+      title: 'Traffic Stops - Searches',
       description: "Returns reports where driver, passenger, car, and/or property have been searched. This inclues both searches where consent has been given and reports where officer claimed 'reasonable suspicion'.",
-      url: '/api/v1/open_data_reports/searches',
+      url: '/api/v1/open_data/traffic_stops/searches',
       parameters: [],
-      example: 'http://copwatch.avlcommunityaction.com/api/v1/open_data_reports/searches',
+      example: 'http://copwatch.avlcommunityaction.com/api/v1/open_data/traffic_stops/searches',
       result: `
       {
         "force": "APD_open",
@@ -157,11 +157,11 @@ module.exports = {
       `
     },
     {
-      title: 'Open Data Reports - Arrests',
+      title: 'Traffic Stops - Arrests',
       description: 'Returns reports where driver and/or passenger were arrested. Includes arrest from outstanding warrants and as a result of searches.',
-      url: '/api/v1/open_data_reports/arrests',
+      url: '/api/v1/open_data/traffic_stops/arrests',
       parameters: [],
-      example: 'http://copwatch.avlcommunityaction.com/api/v1/open_data_reports/arrests',
+      example: 'http://copwatch.avlcommunityaction.com/api/v1/open_data/traffic_stops/arrests',
       result: `
       {
         "force": "APD_open",
@@ -202,6 +202,67 @@ module.exports = {
         "no_contraband_found": "0",
         "off_phys_resis": "0",
         "off_use_force": "0",
+        "passenger_arrested": "0",
+        "passenger_searched": "0",
+        "personal_effects_searched": "0",
+        "search_initiated": "0",
+        "t_inc_arrest": "0",
+        "t_pro_frisk": "0",
+        "t_probable_cause": "0",
+        "t_search_consent": "0",
+        "t_search_warrant": "0",
+        "traffic_stop_id": "128170",
+        "vehicle_searched": "0"
+      },
+      ...
+      `
+    },
+    {
+      title: 'Traffic Stops - Use of Force',
+      description: 'Returns reports where officer reported using force.',
+      url: '/api/v1/open_data/traffic_stops/use-of-force',
+      parameters: [],
+      example: 'http://copwatch.avlcommunityaction.com/api/v1/open_data/traffic_stops/use-of-force',
+      result: `
+      {
+        "force": "APD_open",
+        "code": "TC",
+        "address": "1000-BLK HENDERSONVILLE RD",
+        "dateTime": "2017-10-01T00:00:00.000Z",
+        "latLng": {
+          "lat": 35.53515188780291,
+          "lng": -82.52822178864606
+        },
+        "driver_searched": "0",
+        "driver_arrested": "1",
+        "no_contraband_found": "0",
+        "off_phys_resis": "0",
+        "off_use_force": "1",
+        "passenger_arrested": "0",
+        "passenger_searched": "0",
+        "personal_effects_searched": "0",
+        "search_initiated": "0",
+        "t_inc_arrest": "0",
+        "t_pro_frisk": "0",
+        "t_probable_cause": "0",
+        "t_search_consent": "0",
+        "t_search_warrant": "0",
+        "traffic_stop_id": "128176",
+        "vehicle_searched": "0"
+      }, {
+        "force": "APD_open",
+        "code": "TC",
+        "address": "100-BLK ORA ST/RALPH ST",
+        "dateTime": "2017-10-01T00:00:00.000Z",
+        "latLng": {
+          "lat": 35.57896646773841,
+          "lng": -82.56056842536388
+        },
+        "driver_searched": "0",
+        "driver_arrested": "1",
+        "no_contraband_found": "0",
+        "off_phys_resis": "0",
+        "off_use_force": "1",
         "passenger_arrested": "0",
         "passenger_searched": "0",
         "personal_effects_searched": "0",
@@ -342,7 +403,7 @@ module.exports = {
     },
     {
       title: 'Daily Bulletin Reports - Date Range',
-      description: 'Returns reports between start and end date',
+      description: 'Returns reports between start and end date. Dates are formatted YYYYMMDD.',
       url: '/api/v1/bulletin_reports/range/:start/:end',
       parameters: [ 'start', 'end' ],
       example: 'http://copwatch.avlcommunityaction.com/api/v1/bulletin_reports/range/20180725/20180727',

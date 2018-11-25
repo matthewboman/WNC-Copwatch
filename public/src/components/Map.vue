@@ -14,9 +14,9 @@
   const DEFAULT_ZOOM = 12
   const BASEMAP = 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png'
   const ATTRIBUTION = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>'
-  const apdIcon = L.icon({ iconUrl: "/public/icons/apd.png", iconSize: [15, 15] })
-  const sheriffIcon = L.icon({ iconUrl: "/public/icons/sheriff.png", iconSize: [15, 15] })
-  const openIcon = L.icon({ iconUrl: "/public/icons/open-icon.png", iconSize: [10, 10] })
+  const apdIcon = L.icon({ iconUrl: "/icons/apd.png", iconSize: [15, 15] })
+  const sheriffIcon = L.icon({ iconUrl: "/icons/sheriff.png", iconSize: [15, 15] })
+  const openIcon = L.icon({ iconUrl: "/icons/open-icon.png", iconSize: [10, 10] })
 
   const bulletinPopup = report =>
     `<div>
@@ -24,7 +24,7 @@
       <p>officer: ${report.officer}</p>
     </div>`
 
-  const openDataPopup = report =>
+  const trafficStopPopup = report =>
     `<div>
       <p>date: ${new Date(report.dateTime).toDateString()}</p>
     </div>`
@@ -35,7 +35,7 @@
         leafleftMap: null,
         tileLayer: null,
         bulletinMarkers: [],
-        openDataMarkers: []
+        trafficStopMarkers: []
       }
     },
 
@@ -52,10 +52,10 @@
         }
       )
       this.$store.watch(
-        state => this.$store.state.reports.displayedOpenDataReports,
+        state => this.$store.state.traffic_reports.displayedTrafficReports,
         (current, previous) => {
-          this.leafleftMap.removeLayer(this.openDataMarkers)
-          this.markersFromReports(current, 'openData')
+          this.leafleftMap.removeLayer(this.trafficStopMarkers)
+          this.markersFromReports(current, 'traffic')
         }
       )
     },
@@ -63,7 +63,7 @@
     computed: {
       ...mapState({
         displayBulletinReports: state => state.bulletins.displayBulletinReports,
-        displayOpenDataReports: state => state.reports.displayOpenDataReports,
+        displayTrafficReports: state => state.traffic_reports.displayTrafficReports,
         loading: state => state.loading
       })
     },
@@ -91,11 +91,11 @@
             this.leafleftMap.addLayer(this.bulletinMarkers)
             break
 
-          case 'openData':
-            const openDataMarkers = reports.filter(r => r.latLng != null)
-              .map(r => L.marker(r.latLng, { icon: openIcon}).bindPopup(openDataPopup(r)) )
-            this.openDataMarkers = L.layerGroup([ ...openDataMarkers ])
-            this.leafleftMap.addLayer(this.openDataMarkers)
+          case 'traffic':
+            const trafficStopMarkers = reports.filter(r => r.latLng != null)
+              .map(r => L.marker(r.latLng, { icon: openIcon}).bindPopup(trafficStopPopup(r)) )
+            this.trafficStopMarkers = L.layerGroup([ ...trafficStopMarkers ])
+            this.leafleftMap.addLayer(this.trafficStopMarkers)
             break
           default:
             return

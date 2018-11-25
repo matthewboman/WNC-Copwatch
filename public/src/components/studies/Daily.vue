@@ -9,7 +9,7 @@
   import * as d3 from 'd3'
   import * as R from 'ramda'
   import { mapActions, mapState } from 'vuex'
-  import { categoryPerDay, formatDataset, formatTrafficStops } from '../../vuex/functions'
+  import { categoryPerDay, formatDataset, formatTrafficStops } from '../../utils/functions'
 
   let arrests, searches, svg, stops, xScale, yScale;
   let padding = 30

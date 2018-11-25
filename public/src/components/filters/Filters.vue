@@ -6,24 +6,24 @@
         <label class="label">APD Daily Bulletins</label>
         <input type="checkbox" id="apd" :checked="this.displayBulletinReports" @change="toggleBulletinDisplay" />
         <span class="horizontal-divider">|</span>
-        <label class="label">Open Data Reports</label>
-        <input type="checkbox" id="open" :checked="this.displayOpenDataReports" @change="toggleODRDisplay" />
+        <label class="label">Traffic Stop Reports</label>
+        <input type="checkbox" id="traffic" :checked="this.displayTrafficReports" @change="toggleTrafficDisplay" />
       </form>
     </div>
     <div class="display-block">
       <button class="carat" @click="displayBulletinFilters = !displayBulletinFilters">
         Display APD Bulletin Filters
       </button>
-      <transition name="open" mode="in-out">
+      <transition name="traffic" mode="in-out">
         <app-bulletin-filters v-show="displayBulletinFilters"></app-bulletin-filters>
       </transition>
     </div>
     <div class="display-block">
-      <button class="carat" @click="displayOpenDataFilters = !displayOpenDataFilters">
-        Display Open Data Filters
+      <button class="carat" @click="displayTrafficStopFilters = !displayTrafficStopFilters">
+        Display Traffic Stop Filters
       </button>
-      <transition name="open" mode="in-out">
-        <app-odr-filters v-show="displayOpenDataFilters"></app-odr-filters>
+      <transition name="traffic" mode="in-out">
+        <app-traffic-stop-filters v-show="displayTrafficStopFilters"></app-traffic-stop-filters>
       </transition>
     </div>
   </div>
@@ -32,31 +32,31 @@
 <script>
   import { mapActions, mapState } from 'vuex'
   import BulletinFilters from './BulletinFilters'
-  import ODRFilters from './ODRFilters'
+  import TrafficStopFilters from './TrafficStopFilters'
 
   export default {
     components: {
       appBulletinFilters: BulletinFilters,
-      appOdrFilters: ODRFilters,
+      appTrafficStopFilters: TrafficStopFilters,
     },
 
     data() {
       return {
         displayBulletinFilters: false,
-        displayOpenDataFilters: false
+        displayTrafficStopFilters: false
       }
     },
 
     computed: {
       ...mapState({
         displayBulletinReports: state => state.bulletins.displayBulletinReports,
-        displayOpenDataReports: state => state.reports.displayOpenDataReports
+        displayTrafficReports: state => state.traffic_reports.displayTrafficReports
       })
     },
-    
+
     methods: {
       ...mapActions({
-        toggleODRDisplay: 'toggleODRDisplay',
+        toggleTrafficDisplay: 'toggleTrafficDisplay',
         toggleBulletinDisplay: 'toggleBulletinDisplay'
       }),
     }
@@ -93,28 +93,28 @@
   }
 
   /* animations */
-  .open-enter {
+  .traffic-enter {
     max-height: 0px;
     opacity: 0;
   }
-  .open-enter-active {
+  .traffic-enter-active {
     transition: all 0.5s ease;
   }
-  .open-enter-to {
+  .traffic-enter-to {
     max-height: 1000px;
     opacity: 1;
   }
 
-  .open-leave {
+  .traffic-leave {
     opacity: 1;
     max-height: 1000px;
   }
 
-  .open-leave-active {
+  .traffic-leave-active {
     transition: all 0.5s ease;
   }
 
-  .open-leave-to {
+  .traffic-leave-to {
     opacity: 0;
     max-height: 0px;
   }

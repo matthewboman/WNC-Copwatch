@@ -18,12 +18,12 @@
     </div> -->
 
     <div class="block open-data">
-      <h2 class="block-heading">Open Data Reports</h2>
+      <h2 class="block-heading">Open Data Traffic Stops</h2>
       <p>
         These endpoints pull from and simplify <a href="http://data.ashevillenc.gov/datasets/apd-traffic-stops-after-oct-1-2017" target="_blank" rel="nofollow" referrerpolicy="no-referrer">Asheville's open data API</a>. For a better understanding of the data, you can refer to their page.
       </p>
       <app-endpoint
-        v-for="(endpoint, index) in open_data"
+        v-for="(endpoint, index) in traffic_stops"
         :key="index"
         v-bind:endpoint="endpoint"></app-endpoint>
     </div>
@@ -43,7 +43,7 @@
 
 <script>
   import { Endpoint } from '../components'
-  import { shared, open_data, bulletins } from '../data/endpoints'
+  import { shared, traffic_stops, bulletins } from '../data/endpoints'
 
   export default {
     components: {
@@ -52,7 +52,7 @@
     data() {
       return {
         shared: shared,
-        open_data,
+        traffic_stops,
         bulletins
       }
     }
