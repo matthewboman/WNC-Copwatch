@@ -1,63 +1,97 @@
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const nodeSassMagicImporter = require('node-sass-magic-importer')
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const path = require('path')
-const webpack = require('webpack')
-require('dotenv').config()
+const { VueLoaderPlugin } = require('vue-loader')
 
-module.exports = {
-  entry: './public/src/main.js',
+const env = process.env.NODE_ENV
+const sourceMap = env === 'development'
+const minify = env === 'production'
+
+const config = {
+  entry: ['./public/src/main.js'],
+  mode: env,
   output: {
-    path: path.resolve(__dirname, './public/dist'),
-    publicPath: '/dist/',
-    filename: 'build.js'
+    path: path.join(__dirname, 'public', 'dist'),
+    publicPath: '/public/dist/',
+  },
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
+  },
+  devtool: sourceMap ? 'cheap-module-eval-source-map' : undefined,
+  devServer: {
+    contentBase: path.join(__dirname, 'public', 'dist'),
+    compress: true,
+    port: 8080
   },
   module: {
     rules: [
       {
-        test: /\.css$/,
-        use: [ 'vue-style-loader', 'css-loader' ]
-      },
-      {
-        test: /\.scss$/,
-        use: [ 'vue-style-loader', 'css-loader', 'sass-loader' ]
-      },
-      {
-        test: /\.sass$/,
-        use: [ 'vue-style-loader', 'css-loader', 'sass-loader?indentedSyntax' ]
-      },
-      {
         test: /\.vue$/,
-        loader: 'vue-loader',
-        options: {
-          loaders: {
-            'scss': [ 'vue-style-loader', 'css-loader', 'sass-loader' ],
-            'sass': [ 'vue-style-loader', 'css-loader', 'sass-loader?indentedSyntax' ]
-          }
-        }
+        loader: `vue-loader`,
       },
       {
         test: /\.js$/,
-        loader: 'babel-loader',
-        exclude: /node_modules/
+        loader: `babel-loader`,
+        include: [path.join(__dirname, `public`)],
       },
       {
-        test: /\.(png|jpg|gif|svg)$/,
-        loader: 'file-loader',
-        options: { name: '[name].[ext]?[hash]' }
-      }
-    ]
+        test:/\.css$/,
+        use: [
+          'vue-style-loader',
+          {
+            loader: 'css-loader',
+            options: { sourceMap }
+          }
+        ]
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          `vue-style-loader`,
+          {
+            loader: `css-loader`,
+            options: { sourceMap },
+          },
+          {
+            loader: `sass-loader`,
+            options: {
+              importer: nodeSassMagicImporter(),
+              sourceMap,
+            },
+          },
+        ],
+      },
+    ],
   },
-  resolve: {
-    alias: {
-      'vue$': 'vue/dist/vue.min.js'
-    },
-    extensions: ['*', '.js', '.vue', '.json']
-  },
-  devServer: {
-    historyApiFallback: true,
-    noInfo: true,
-    overlay: true
-  },
-  performance: {
-    hints: false
-  },
-  devtool: '#eval-source-map'
+  plugins: [
+    new VueLoaderPlugin(),
+    new HtmlWebpackPlugin({
+      filename: path.join(__dirname, 'public', 'index.html'),
+      template: path.join(__dirname, 'index.html'),
+      inject: true,
+      minify: minify ? {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotas: true
+      } : false
+    }),
+  ],
 }
+
+if (minify) {
+  config.optimization.minimizer = [
+    new OptimizeCSSAssetsPlugin()
+  ]
+}
+
+if (env !== 'development') {
+  config.plugins.push(new MiniCssExtractPlugin())
+  const sassLoader = config.module.rules.find(({test}) => test.test('.scss') ) // || test.test('.css')
+  sassLoader.use[0] = MiniCssExtractPlugin.loader
+}
+
+module.exports = config

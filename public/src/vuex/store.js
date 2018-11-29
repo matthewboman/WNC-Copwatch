@@ -84,9 +84,5 @@ export default new Vuex.Store({
         .catch(err => console.log(err))
     },
   },
-  getters: {
-    allReports: state => state.allReports,
-    // displayedReports: state => state.displayedReports,
-  },
 
 })

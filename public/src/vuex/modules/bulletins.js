@@ -4,15 +4,10 @@ import {
   filterByCodes,
   filterByDates,
   filterByDescription,
-  filterByODRDetails,
   filterByOfficer,
-  isTrue,
-  odrHashMap,
   pastWeek,
-  previousWeek,
   removeDuplicates,
   toggleArray,
-  YYYYMMDD
 } from '../../utils/functions'
 
 const state = {

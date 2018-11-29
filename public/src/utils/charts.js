@@ -18,7 +18,8 @@ const createXScale = (dataset, padding, width) => {
     .range([padding, width])
 }
 
-// createXScale :: Array -> Array -> Int -> Int -> Function
+// TODO: rename to createYScaleArea
+// createYScale :: Array -> Array -> Int -> Int -> Function
 const createYScale = (dataset, keys, padding, height) => {
   return d3.scaleLinear()
     .domain([
@@ -28,9 +29,20 @@ const createYScale = (dataset, keys, padding, height) => {
     .range([height - padding, padding])
 }
 
+// createYScaleArea :: Array -> Int -> Int -> Function
+const createYScaleLine = (dataset, padding, height) => {
+  return d3.scaleLinear()
+    .domain([
+      0,
+      d3.max(dataset, d => d.category)
+    ])
+    .range([height - padding, padding])
+}
+
 module.exports = {
   createYAxis,
   createXScale,
   createXTimeAxis,
   createYScale,
+  createYScaleLine
 }

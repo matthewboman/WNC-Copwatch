@@ -6,7 +6,7 @@
         <div class="block">
         <div class="q"><span>What we do</span></div>
         <span class="a">
-          WNC Copwatch makes it easy for citizens to analyze police data and document systematic discrimination.
+          WNC Copwatch makes it easy for community members to analyze police data and document systemic discrimination.
         </span>
       </div>
       <div class="block">
@@ -31,10 +31,10 @@
       <div class="left">
         <div class="content">
           <p>
-            For example, this map compares all times a driver, passenger, and/or vehicle were searched in October 2017. The red dots represent cases in which consent to a search was given, whereas the green represents times that the parties gave no consent.
+            This map compares all times a driver, passenger, and/or vehicle were searched in October 2017. The red dots represent cases in which consent to a search was given, whereas the green represents times that the parties gave no consent.
           </p>
           <p>
-            By using our map, one could toggle not only between these two views, but also see in which cases there was "probable cause".
+            By using our map, one could toggle not only between these two views, but also see in which cases an officer cited "probable cause".
           </p>
         </div>
       </div>
@@ -76,7 +76,6 @@
 
     .top {
       padding: 0 25%;
-      // margin-bottom: 64px;
       min-height: 90vh;
 
       .what-we-do {

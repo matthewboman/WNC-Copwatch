@@ -55,7 +55,7 @@
 
     created() {
       this.$store.watch(
-        state => this.$store.state.reports.allOpenDataReports,
+        state => this.$store.state.traffic_reports.allOpenDataReports,
         (current, previous) => {
           this.renderGraph(current, this.keys)
         }

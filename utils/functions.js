@@ -8,7 +8,7 @@
 
 // callandCache :: Function -> Cache.name -> Cache -> [{}]
 async function callandCache(apiCall, cache_name, cache) {
-  const result = (cache[cache_name].data.length && same_day(cache_name, cache))
+  const result = (cache[cache_name].data.length && sameDay(cache_name, cache))
     ? cache[cache_name].data
     : await apiCall()
   cache[cache_name] = { ...cache[cache_name], data: result }
@@ -33,14 +33,14 @@ const genRegExp = str => new RegExp(`${str}`, 'i')
 
 // resolvePromise :: Function -> Cache.name -> Cache -> [{}]
 async function resolvePromise(apiCall, cache_name, cache) {
-  const result = (cache[cache_name].data.length && same_day(cache_name, cache))
+  const result = (cache[cache_name].data.length && sameDay(cache_name, cache))
     ? cache[cache_name].data
     : await apiCall
   return result
 }
 
-// same_day :: Cache.name -> Cache -> Bool
-const same_day = (cache_name, cache) =>
+// sameDay :: Cache.name -> Cache -> Bool
+const sameDay = (cache_name, cache) =>
   new Date(Date.now()).getDay() == cache[cache_name].date_cached.getDay()
 
 // validDate :: String -> Date
@@ -60,6 +60,6 @@ module.exports = {
   dateFromParam,
   genRegExp,
   resolvePromise,
-  same_day,
+  sameDay,
   validDate
 }

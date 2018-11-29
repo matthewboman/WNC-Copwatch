@@ -31,8 +31,8 @@
 
 <script>
   import { mapActions, mapState } from 'vuex'
-  import BulletinFilters from './BulletinFilters'
-  import TrafficStopFilters from './TrafficStopFilters'
+  import BulletinFilters from './BulletinFilters.vue'
+  import TrafficStopFilters from './TrafficStopFilters.vue'
 
   export default {
     components: {

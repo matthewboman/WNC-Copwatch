@@ -3,26 +3,21 @@ import api from '../api'
 import {
   categoryPerDay,
   conditionalArray,
-  filterByCodes,
   filterByDates,
-  filterByDescription,
   filterByTrafficDetails,
-  filterByOfficer,
-  isTrue,
-  odrHashMap,
+  formatTrafficStops,
   pastWeek,
-  previousWeek,
   removeDuplicates,
   sortByProp,
   toggleArray,
-  YYYYMMDD
 } from '../../utils/functions'
 
 const state = {
   allTrafficReports: [],
   arrestsPerDay: [],
   displayTrafficReports: false,
-  displayedTrafficReports: [],
+  displayedTrafficReports: [], // currently displayed on map
+  formattedTrafficReports: [], // for d3 components
   trafficDates: [],
   trafficStartDate: null,
   trafficEndDate: null,
@@ -33,6 +28,7 @@ const mutations = {
   'SET_TS_REPORTS': (state, reports) => {
     const sortByDateTime = sortByProp('dateTime')
     state.allTrafficReports = sortByDateTime(reports)
+    state.formattedTrafficReports = formatTrafficStops(state.allTrafficReports)
     state.trafficDates = removeDuplicates(reports.map(r => r.dateTime))
   },
   'SET_TS_DATES': (state) => {

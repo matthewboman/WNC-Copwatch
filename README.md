@@ -35,11 +35,12 @@ If you'd like to contribute, clone, fork, and push your branch up for review.
 * runs at localhost:8080
 
 `npm run devserver`
-* launches Express server RestAPI
+* launches Express server RestAPI in development mode
 * requires connection to MongoDB
+* runs at localhost:3000
 
-'npm run prod'
-* launches express server
+`npm run prod`
+* launches express server RestAPI in production mode
 
 `npm run test`
 * runs Jest unit tests

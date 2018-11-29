@@ -47,13 +47,13 @@
 
     created() {
       this.$store.watch(
-        state => this.$store.state.reports.searchesPerDay,
+        state => this.$store.state.traffic_reports.searchesPerDay,
         (current, previous) => {
           this.renderSearches(current)
         }
       ),
       this.$store.watch(
-        state => this.$store.state.reports.arrestsPerDay,
+        state => this.$store.state.traffic_reports.arrestsPerDay,
         (current, previous) => {
           this.renderArrests(current)
         }

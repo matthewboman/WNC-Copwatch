@@ -50,7 +50,7 @@
     // TODO: this doesn't run b/c store isn't updated
     created() {
       this.$store.watch(
-        state => this.$store.state.reports.allOpenDataReports,
+        state => this.$store.state.traffic_reports.allOpenDataReports,
         (current, previous) => {
           this.renderGraph(current, this.keys)
         }

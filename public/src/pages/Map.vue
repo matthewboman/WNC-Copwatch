@@ -21,7 +21,7 @@
 <script>
   import { mapActions } from 'vuex'
   import { Legend, Map, Records } from '../components'
-  import Filters from '../components/filters/Filters'
+  import Filters from '../components/filters/Filters.vue'
 
   export default {
     components: {
@@ -33,7 +33,6 @@
 
     mounted() {
       this.getTSReports()
-      // this.getBulletinReports()
       this.getInitialBulletinReports()
     },
 

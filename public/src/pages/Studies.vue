@@ -14,9 +14,9 @@
       <p></p>
     </div>
     <div>
-      Simple chart
+      <app-stops></app-stops>
     </div>
-    <div v-if="displaySearches">
+    <!-- <div v-if="displaySearches">
       <h2>APD traffic stops resulting in searches</h2>
       <a href="#" v-on:click="displaySearches=false">Display arrests</a>
       <app-searches></app-searches>
@@ -25,7 +25,7 @@
       <h2>APD traffic stops resulting in arrests</h2>
       <a href="#" v-on:click="displaySearches=true">Display searches</a>
       <app-arrests></app-arrests>
-    </div>
+    </div> -->
 
     <!-- TODO: make these work together -->
     <!-- <app-searches></app-searches>
@@ -37,7 +37,7 @@
 <script>
 
   import { mapActions, mapState } from 'vuex'
-  import { Arrests, Daily, PerDay, Searches } from "../components/studies"
+  import { Arrests, Daily, PerDay, Searches, Stops } from "../components/studies"
   import { fns } from '../utils'
 
   export default {
@@ -45,7 +45,8 @@
       appArrests: Arrests,
       appDaily: Daily,
       appPerDay: PerDay,
-      appSearches: Searches
+      appSearches: Searches,
+      appStops: Stops
     },
 
     data() {
@@ -66,7 +67,7 @@
 
     created() {
       this.$store.watch(
-        state => this.$store.state.reports.allOpenDataReports,
+        state => this.$store.state.traffic_reports.allTrafficReports,
         (current, previous) => {
           this.calculateStats(current)
         }
@@ -78,12 +79,12 @@
     },
 
     mounted() {
-      this.getOpenDataReports()
+      this.getTSReports()
     },
 
     methods: {
       ...mapActions({
-        getOpenDataReports: 'getOpenDataReports'
+        getTSReports: 'getTSReports'
       }),
 
       calculateStats(reports) {
@@ -138,7 +139,9 @@
         for (const [key, value] of Object.entries(details)) {
           this[key] = value
         }
-      }
+      },
+
+      
     }
 
   }
