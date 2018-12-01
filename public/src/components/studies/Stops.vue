@@ -1,23 +1,31 @@
 <template>
-  <div class="study daily">
-    <div class="legend">
-      <div class="inline">
-        <span>Stops per day</span>
-        <span class="line-color blue"></span>
-      </div>
-      <div class="inline">
-        <span>Arrests per day</span>
-        <span class="line-color red"></span>
-      </div>
-      <div class="inline">
-        <span>Searches per day</span>
-        <span class="line-color teal"></span>
-      </div>
-      <button v-on:click="toggleGraphs()">toggle graphs</button>
+  <div class="chart-container">
+    <div class="row">
+      <h2></h2>
     </div>
-    <div class="graph-container">
-      <svg id="all-stops" ></svg>
+
+    <div class="chart">
+      <div class="legend">
+        <div class="key">
+          <span class="value">Stops per day</span>
+          <span class="color blue"></span>
+        </div>
+        <div class="key">
+          <span class="value">Arrests per day</span>
+          <span class="color red"></span>
+        </div>
+        <div class="key">
+          <span class="value">Searches per day</span>
+          <span class="color teal"></span>
+        </div>
+        <button v-on:click="toggleGraphs()">toggle graphs</button>
+      </div>
+
+      <div class="graph">
+        <svg id="all-stops" ></svg>
+      </div>
     </div>
+
   </div>
 </template>
 
@@ -55,6 +63,15 @@
       )
     },
 
+    beforeDestroy() {
+      this.stops = []
+      this.searches = []
+      this.arrests = []
+      this.svg = null
+      this.xScale = null
+      this.yScale = null
+    },
+
     methods: {
       createSVG() {
         this.svg = d3.select("#all-stops")
@@ -69,14 +86,11 @@
         })
 
         /**
-         * Scale chart according to total stops
+         * Scale chart according to total stops, create axis-rendering functions
          */
         this.xScale = charts.createXScale(this.stops, this.padding, this.w)
         this.yScale = charts.createYScaleLine(this.stops, this.padding, this.h)
 
-        /**
-         * Create axes && line-drawing function
-         */
         const formatTime = d3.timeFormat("%B %Y")
         const xAxis = charts.createXTimeAxis(this.xScale, 10, formatTime)
         const yAxis = charts.createYAxis(this.yScale, 10)
@@ -101,7 +115,6 @@
           .call(yAxis)
       },
       renderLineGraph(stops, searches, arrests) {
-        console.log('rendering line graph')
         const line = d3.line()
           .x(d => this.xScale(d.date))
           .y(d => this.yScale(d.category))
@@ -128,8 +141,7 @@
           .text("Arrests")
       },
       renderScatterPlot(stops, searches, arrests) {
-        console.log('rendering scatter plot')
-        const any = arr => arr.filter(i => i.category > 0)
+        const any = arr => arr.filter(i => i.category > 0) // filter out 0 values
 
         this.svg.selectAll("#stops")
           .data(stops)

@@ -13,8 +13,11 @@ const config = {
   entry: ['./public/src/main.js'],
   mode: env,
   output: {
-    path: path.join(__dirname, 'public', 'dist'),
-    publicPath: '/public/dist/',
+    // path: path.join(__dirname, 'public', 'dist'),
+    // publicPath: '/public/dist/',
+    path: path.join(__dirname, 'dist'),
+    publicPath: '/',
+
   },
   optimization: {
     splitChunks: {
@@ -23,9 +26,10 @@ const config = {
   },
   devtool: sourceMap ? 'cheap-module-eval-source-map' : undefined,
   devServer: {
-    contentBase: path.join(__dirname, 'public', 'dist'),
+    contentBase: path.join(__dirname, 'dist'),
     compress: true,
-    port: 8080
+    port: 8080,
+    historyApiFallback: { disableDotRule: true }
   },
   module: {
     rules: [
@@ -70,7 +74,7 @@ const config = {
   plugins: [
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
-      filename: path.join(__dirname, 'public', 'index.html'),
+      filename: path.join(__dirname, 'dist', 'index.html'),
       template: path.join(__dirname, 'index.html'),
       inject: true,
       minify: minify ? {

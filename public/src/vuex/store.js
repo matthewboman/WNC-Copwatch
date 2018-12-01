@@ -75,9 +75,12 @@ export default new Vuex.Store({
       commit('TOGGLE_LOADING')
       return api.get('open_data/traffic_stops')
         .then(reports => {
+          console.log('reports', reports)
           commit('SET_TS_REPORTS', reports)
           commit('SET_TS_DATES')
           commit('FILTER_TS_REPORTS')
+          commit('FORMAT_TS_REPORTS')
+          // commit('CALCULATE_STATS') // doesn't work
           commit('TOGGLE_LOADING')
 
         })

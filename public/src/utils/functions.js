@@ -4,12 +4,63 @@ const R = require('ramda')
  * Higer-order functions for filtering reports, processing dates & strings, etc.
  */
 
+// TODO: This doesn't work outside Vue component--why?
+// calculateStats :: [{}] -> {}
+const calculateStats = reports => {
+  const accumulator = {
+    stops: 0,
+    searches: 0,
+    arrests: 0,
+    searchWithoutArrest: 0,
+    arrestWithoutSearch: 0,
+    seachWithConsent: 0,
+    searchWithProbableCause: 0,
+    searchWithWarrant: 0,
+    searchWithoutConsentWarrantOrProbableCause: 0
+  }
+
+  reports.reduce((acc, val) => {
+    const searchWithoutArrest = (
+      (val.searches >= 1 && val.arrests === 0) ||
+      (val.searches > val.arrests)
+    ) ? (val.searches - val.arrests) : 0
+    const arrestWithoutSearch = (
+      (val.searches === 0 && val.arrests >= 1) ||
+      (val.searches < val.arrests)
+    ) ? (val.arrests - val.searches) : 0
+    const seachWithConsent = (
+      val.t_search_consent >= 1
+    ) ? val.t_search_consent : 0
+    const searchWithProbableCause = (
+      val.t_probable_cause >= 1
+    ) ? val.t_probable_cause : 0
+    const searchWithWarrant = (
+      val.t_search_warrant >= 1
+    ) ? val.t_search_warrant : 0
+    const searchWithoutConsentWarrantOrProbableCause = (
+      (val.searches >= 1 && val.t_search_consent === 0 && val.t_probable_cause === 0 && val.t_probable_cause === 0) ||
+      (val.searches > (val.t_search_consent + val.t_probable_cause + val.t_probable_cause))
+    ) ? (val.searches - val.t_search_consent - val.t_probable_cause - val.t_probable_cause) : 0
+    return {
+      stops: acc.stops += val.stops,
+      searches: acc.searches += val.searches,
+      arrests: acc.arrests += val.arrests,
+      searchWithoutArrest: acc.searchWithoutArrest += searchWithoutArrest,
+      arrestWithoutSearch: acc.arrestWithoutSearch += arrestWithoutSearch,
+      searchWithProbableCause: acc.searchWithProbableCause += searchWithProbableCause,
+      searchWithWarrant: acc.searchWithWarrant += searchWithWarrant,
+      searchWithoutConsentWarrantOrProbableCause: acc.searchWithoutConsentWarrantOrProbableCause += searchWithoutConsentWarrantOrProbableCause
+    }
+  }, accumulator)
+
+  return accumulator
+}
+
 // categoryPerDay :: String -> [{}] -> [{ Date, Int }]
 const categoryPerDay = (category, array) => array
   .map(i => ({
     date: i.dateTime,
     [category]: 1,
-    // ...i
   }))
   .reduce((acc, val, index, arr) => {
     if (acc.map(i => i.date).includes(val.date)) {
@@ -70,7 +121,8 @@ const formatTrafficStops = reports => {
       report.vehicle_searched == 1 ||
       report.personal_effects_searched == 1 ||
       report.t_search_consent == 1 ||
-      report.t_search_warrant == 1
+      report.t_search_warrant == 1 ||
+      report.t_probable_cause == 1
     ) {
       searches = 1
     }
@@ -90,17 +142,22 @@ const formatTrafficStops = reports => {
       sameDay = {
         date: sameDay.date,
         stops: sameDay.stops + 1,
+
         // searches
         searches: sameDay.searches + searches,
+
         driver_searched: sameDay.driver_searched + parseInt(report.driver_searched),
         passenger_searched: sameDay.passenger_searched + parseInt(report.passenger_searched),
-        search_initiated: sameDay.search_initiated + parseInt(report.search_initiated),
-        vehicle_searched: sameDay.vehicle_searched + parseInt(report.vehicle_searched),
         personal_effects_searched: sameDay.personal_effects_searched + parseInt(report.personal_effects_searched),
+        search_initiated: sameDay.search_initiated + parseInt(report.search_initiated),
+        t_probable_cause: sameDay.t_probable_cause + parseInt(report.t_probable_cause),
         t_search_consent: sameDay.t_search_consent + parseInt(report.t_search_consent),
         t_search_warrant: sameDay.t_search_warrant + parseInt(report.t_search_warrant),
+        vehicle_searched: sameDay.vehicle_searched + parseInt(report.vehicle_searched),
+
         // arrests
         arrests: sameDay.arrests + arrests,
+
         driver_arrested: sameDay.driver_arrested + parseInt(report.driver_arrested),
         passenger_arrested: sameDay.passenger_arrested + parseInt(report.passenger_arrested)
       }
@@ -111,22 +168,25 @@ const formatTrafficStops = reports => {
       // create a new object
       dataset.push({
         date: date,
-        // details: {
-          stops: 1,
-          // searches
-          searches: searches,
-          driver_searched: parseInt(report.driver_searched),
-          passenger_searched: parseInt(report.passenger_searched),
-          search_initiated: parseInt(report.search_initiated),
-          vehicle_searched: parseInt(report.vehicle_searched),
-          personal_effects_searched: parseInt(report.personal_effects_searched),
-          t_search_consent: parseInt(report.t_search_consent),
-          t_search_warrant: parseInt(report.t_search_warrant),
-          // arrests
-          arrests: arrests,
-          driver_arrested: parseInt(report.driver_arrested),
-          passenger_arrested: parseInt(report.passenger_arrested)
-        // }
+        stops: 1,
+
+        // searches
+        searches: searches,
+
+        driver_searched: parseInt(report.driver_searched),
+        passenger_searched: parseInt(report.passenger_searched),
+        personal_effects_searched: parseInt(report.personal_effects_searched),
+        search_initiated: parseInt(report.search_initiated),
+        t_probable_cause: parseInt(report.t_probable_cause),
+        t_search_consent: parseInt(report.t_search_consent),
+        t_search_warrant: parseInt(report.t_search_warrant),
+        vehicle_searched: parseInt(report.vehicle_searched),
+
+        // arrests
+        arrests: arrests,
+
+        driver_arrested: parseInt(report.driver_arrested),
+        passenger_arrested: parseInt(report.passenger_arrested)
       })
     }
   })
@@ -208,6 +268,7 @@ const YYYYMMDD = date => {
  * before Node runs them.
  */
 module.exports = {
+  calculateStats,
   categoryPerDay,
   conditionalArray,
   filterByCodes,

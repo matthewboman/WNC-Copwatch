@@ -1,6 +1,30 @@
 <template>
-  <div>
-    <svg id="search"></svg>
+  <div class="chart-container">
+    <div class="row">
+      <h2></h2>
+    </div>
+
+    <div class="chart">
+      <div class="legend">
+        <div class="key">
+          <span class="value"></span>
+          <span class="color blue"></span>
+        </div>
+        <div class="key">
+          <span class="value"></span>
+          <span class="color red"></span>
+        </div>
+        <div class="key">
+          <span class="value"></span>
+          <span class="color teal"></span>
+        </div>
+      </div>
+
+      <div class="graph">
+        <svg id="search" ></svg>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -21,7 +45,7 @@
     if (hidden) {
       backButton.classed("unclickable", false)
         .transition()
-        .duration(100)
+        .duration(200)
         .attr("opacity", 1)
     } else {
       backButton.classed("unclickable", true)
@@ -55,7 +79,7 @@
 
     created() {
       this.$store.watch(
-        state => this.$store.state.traffic_reports.allOpenDataReports,
+        state => this.$store.state.traffic_reports.formattedTrafficReports,
         (current, previous) => {
           this.renderGraph(current, this.keys)
         }
@@ -66,28 +90,32 @@
       this.createSVG()
     },
 
+    beforeDestroy() {
+      this.xScale = null
+      this.yScale = null
+      this.yAxis = null
+      this.svg = null
+      this.area = null
+      this.currentDataset = []
+    },
+
     methods: {
       createSVG() {
         this.svg = d3.select('#search')
           .attr('width', w)
           .attr('height', h)
       },
-      renderGraph(reports, keys) {
+      renderGraph(dataset, keys) {
         // avoid `this` if we can b/c it gets messy w/ vue/d3
         const component = this
-        const dataset = formatTrafficStops(reports)
 
         /**
-         * Scale initial data
+         * Scale initial data, create axis-rendering functions
          */
         component.xScale = charts.createXScale(dataset, padding, w)
-        component.yScale = charts.createYScale(dataset, keys, padding, h)
+        component.yScale = charts.createYScaleArea(dataset, keys, padding, h)
 
-        /**
-         * Create axes
-         */
-        const formatTime = d3.timeFormat("%B %Y")
-        const xAxis = charts.createXTimeAxis(component.xScale, 10, formatTime)
+        const xAxis = charts.createXTimeAxis(component.xScale, 10, charts.formatTime)
         component.yAxis = charts.createYAxis(component.yScale, 10)
 
         /**
@@ -141,8 +169,6 @@
               .data(thisTypeSeries, d => d.key)
               .classed("unclickable", true)
 
-            console.log(paths)
-
             const areaTransitions = paths.transition()
               .duration(1000)
               .attr('d', component.area)
@@ -164,11 +190,10 @@
               .transition()
               .on("start", () => {
                 d3.selectAll("g#searches path")
-                  .attr()
-                  .attr("opacity", 0) // sort of works
+                  .attr("opacity", 0)
               })
               .duration(1000)
-              // .attr("opacity", 1) // sort of works
+              .attr("opacity", 1)
               .on("end", (d, i) => {
                 if (i == 0) {
                   toggleBackButton()
@@ -280,15 +305,9 @@
 
 <style>
 
-  .area {
-		stroke: none;
-		cursor: pointer;
-	}
-
-	.area:hover {
-		fill: yellow;
-	}
-
+  /**
+   * Style SVGs
+   */
   #searchBackButton {
 		cursor: pointer;
 	}
@@ -301,7 +320,7 @@
 		font-family: Helvetica, sans-serif;
 		font-weight: bold;
 		font-size: 14px;
-		fill: black;
+		fill: #666;
 	}
 
 </style>

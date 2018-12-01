@@ -1,6 +1,7 @@
 const R = require('ramda')
 import api from '../api'
 import {
+  calculateStats,
   categoryPerDay,
   conditionalArray,
   filterByDates,
@@ -21,6 +22,7 @@ const state = {
   trafficDates: [],
   trafficStartDate: null,
   trafficEndDate: null,
+  trafficStopStats: null,
   searchesPerDay: [],
   selectedTrafficDetails: [], // initially empty b/c few will contain all conditions
 }
@@ -28,11 +30,16 @@ const mutations = {
   'SET_TS_REPORTS': (state, reports) => {
     const sortByDateTime = sortByProp('dateTime')
     state.allTrafficReports = sortByDateTime(reports)
-    state.formattedTrafficReports = formatTrafficStops(state.allTrafficReports)
     state.trafficDates = removeDuplicates(reports.map(r => r.dateTime))
   },
   'SET_TS_DATES': (state) => {
     [state.trafficEndDate, state.trafficStartDate] = pastWeek(state.trafficDates)
+  },
+  'FORMAT_TS_REPORTS': (state) => {
+    state.formattedTrafficReports = formatTrafficStops(state.allTrafficReports)
+  },
+  'CALCULATE_STATS': () => {
+    state.trafficStopStats = calculateStats(state.formattedTrafficReports)
   },
   'FILTER_TS_REPORTS': (state) => {
     const dateReports = reports => filterByDates(state.trafficStartDate, state.trafficEndDate, reports)

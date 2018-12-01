@@ -1,6 +1,30 @@
 <template>
-  <div>
-    <svg id="arrest"></svg>
+  <div class="chart-container">
+    <div class="row">
+      <h2></h2>
+    </div>
+
+    <div class="chart">
+      <div class="legend">
+        <div class="key">
+          <span class="value"></span>
+          <span class="color blue"></span>
+        </div>
+        <div class="key">
+          <span class="value"></span>
+          <span class="color red"></span>
+        </div>
+        <div class="key">
+          <span class="value"></span>
+          <span class="color teal"></span>
+        </div>
+      </div>
+
+      <div class="graph">
+        <svg id="arrest"></svg>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -15,7 +39,7 @@
   let thisTypeDataset = []
 
   const toggleBackButton = () => {
-    const backButton = d3.select("#backButton")
+    const backButton = d3.select("#arrestBackButton")
     const hidden = backButton.classed("unclickable")
 
     if (hidden) {
@@ -41,16 +65,16 @@
         ],
         xScale: null,
         yScale: null,
+        yAxis: null,
         svg: null,
         area: null,
         currentDataset: []
       }
     },
 
-    // TODO: this doesn't run b/c store isn't updated
     created() {
       this.$store.watch(
-        state => this.$store.state.traffic_reports.allOpenDataReports,
+        state => this.$store.state.traffic_reports.formattedTrafficReports,
         (current, previous) => {
           this.renderGraph(current, this.keys)
         }
@@ -59,8 +83,15 @@
 
     mounted() {
       this.createSVG()
-      console.log('mounted')
-      // this.renderGraph()
+    },
+
+    beforeDestroy() {
+      this.xScale = null
+      this.yScale = null
+      this.yAxis = null
+      this.svg = null
+      this.area = null
+      this.currentDataset = []
     },
 
     methods: {
@@ -69,24 +100,18 @@
           .attr('width', w)
           .attr('height', h)
       },
-      renderGraph(reports, keys) {
-        console.log('rendering a')
+      renderGraph(dataset, keys) {
         // avoid `this` if we can b/c it gets messy w/ vue/d3
         const component = this
-        const dataset = formatTrafficStops(reports)
 
         /**
-         * Scale initial data
+         * Scale initial data, create axis-rendering functions
          */
         component.xScale = charts.createXScale(dataset, padding, w)
-        component.yScale = charts.createYScale(dataset, keys, padding, h)
+        component.yScale = charts.createYScaleArea(dataset, keys, padding, h)
 
-        /**
-         * Create axes
-         */
-        const formatTime = d3.timeFormat("%B %Y")
-        const xAxis = charts.createXTimeAxis(component.xScale, 10, formatTime)
-        const yAxis = charts.createYAxis(component.yScale, 10)
+        const xAxis = charts.createXTimeAxis(component.xScale, 10, charts.formatTime)
+        component.yAxis = charts.createYAxis(component.yScale, 10)
 
         /**
          * Create area, stack, and series
@@ -95,6 +120,7 @@
           .x(d => component.xScale(d.data.date))
           .y0(d => component.yScale(d[0]))
           .y1(d => component.yScale(d[1]))
+
         const stack = d3.stack()
           .keys(keys)
         const series = stack(dataset)
@@ -147,16 +173,17 @@
                 d3.select("g.axis.y.arrests")
                   .transition()
                   .duration(1000)
-                  .call(yAxis)
+                  .call(component.yAxis)
               })
               .duration(1000)
               .attr("d", component.area)
               .transition()
               .on("start", () => {
                 d3.selectAll("g#arrests path")
-                  .attr("opacity", 1)
+                  .attr("opacity", 0)
               })
               .duration(1000)
+              .attr("opacity", 1)
               .on("end", (d, i) => {
                 if (i == 0) {
                   toggleBackButton()
@@ -180,10 +207,10 @@
           component.svg.append("g")
             .attr("class", "axis y arrests")
             .attr("transform", `translate(${padding}, 0)`)
-            .call(yAxis)
+            .call(component.yAxis)
 
           const backButton = component.svg.append("g")
-            .attr("id", "backButton")
+            .attr("id", "arrestBackButton")
             .attr("opacity", 0)
             .classed("unclickable", true)
             .attr("transform", `translate(${component.xScale.range()[0]}, ${component.yScale.range()[1]})`)
@@ -217,10 +244,10 @@
             areaTransitions.transition()
               .delay(200)
               .on("start", () => {
-                d3.select("g.axis.y")
+                d3.select("g.axis.y.arrests")
                   .transition()
                   .duration(1000)
-                  .call(yAxis)
+                  .call(component.yAxis)
               })
               .duration(1000)
               .attr("d", component.area)
@@ -253,24 +280,18 @@
 
 <style>
 
-  .area {
-		stroke: none;
+  /**
+   * style SVGs
+   */
+  #arrestBackButton {
 		cursor: pointer;
 	}
 
-	.area:hover {
-		fill: yellow;
-	}
-
-  #backButton {
-		cursor: pointer;
-	}
-
-	#backButton rect {
+	#arrestBackButton rect {
 		fill: #ccc;
 	}
 
-	#backButton text {
+	#arrestBackButton text {
 		font-family: Helvetica, sans-serif;
 		font-weight: bold;
 		font-size: 14px;
