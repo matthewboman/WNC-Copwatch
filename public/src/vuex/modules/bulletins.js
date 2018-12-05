@@ -100,10 +100,6 @@ const actions = {
     commit('UPDATE_BULLETIN_END', end)
     commit('FILTER_BULLETIN_REPORTS')
   },
-  updateDetails: ({ commit}, detail) => {
-    commit('UPDATE_DETAILS', detail)
-    commit('FILTER_OPEN_DATA_REPORTS')
-  },
   updateDescriptions: ({ commit }, description) => {
     commit('UPDATE_DESCRIPTION', description)
     commit('FILTER_BULLETIN_REPORTS')

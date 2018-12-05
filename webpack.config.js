@@ -9,16 +9,19 @@ const env = process.env.NODE_ENV
 const sourceMap = env === 'development'
 const minify = env === 'production'
 
+const output = (env === 'development') ?
+  {
+    path: path.join(__dirname, 'dist'),
+    publicPath: '/',
+  } : {
+    path: path.join(__dirname, 'public', 'dist'),
+    publicPath: '/public/dist/',
+  }
+
 const config = {
   entry: ['./public/src/main.js'],
   mode: env,
-  output: {
-    // path: path.join(__dirname, 'public', 'dist'),
-    // publicPath: '/public/dist/',
-    path: path.join(__dirname, 'dist'),
-    publicPath: '/',
-
-  },
+  output: output,
   optimization: {
     splitChunks: {
       chunks: 'all',
@@ -69,6 +72,30 @@ const config = {
           },
         ],
       },
+      {
+        test: /\.png$/,
+        use: "url-loader?name=images/[name].[ext]"
+      },
+      {
+        test: /\.jpg$/,
+        use: "file-loader"
+      },
+      {
+        test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
+        use: 'url-loader?limit=10000&mimetype=application/font-woff'
+      },
+      {
+        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+        use: 'url-loader?limit=10000&mimetype=application/octet-stream'
+      },
+      {
+        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+        use: 'file-loader'
+      },
+      {
+        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+        use: 'url-loader?limit=10000&mimetype=image/svg+xml'
+      }
     ],
   },
   plugins: [

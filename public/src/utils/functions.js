@@ -193,6 +193,10 @@ const formatTrafficStops = reports => {
   return dataset
 }
 
+// isMobile :: Bolean
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+  ? true : false
+
 // isTrue :: a -> Boolean
 const isTrue = value => value == true
 
@@ -247,6 +251,14 @@ const removeTrailingComma = str => (str.slice(-1) == ',')
   ? str.slice(0, -1)
   : str
 
+// scaleWidth :: Int -> Int
+const scaleWidth = padding => {
+  const width = window.innerWidth
+    || document.documentElement.clientWidth
+    || document.body.clientWidth
+  return width - (padding / 2)
+}
+
 // sortByProp :: String -> [{}] -> [{}]
 const sortByProp = property => R.sortBy(R.prop(property))
 
@@ -278,6 +290,7 @@ module.exports = {
   filterByOfficer,
   formatDataset,
   formatTrafficStops,
+  isMobile,
   isTrue,
   trafficHashMap,
   pastWeek,
@@ -285,6 +298,7 @@ module.exports = {
   removeDuplicates,
   removeTrailingComma,
   toggleArray,
+  scaleWidth,
   sortByProp,
   YYYYMMDD
 }

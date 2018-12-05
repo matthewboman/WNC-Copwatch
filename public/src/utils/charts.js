@@ -45,6 +45,9 @@ const createYScaleLine = (dataset, padding, height) => {
 // formatTime :: Function
 const formatTime = d3.timeFormat("%B %Y")
 
+// formatMobileTime :: Function
+const formatMobileTime = d3.timeFormat("%b")
+
 module.exports = {
   createArc,
   createYAxis,
@@ -53,4 +56,5 @@ module.exports = {
   createYScaleArea,
   createYScaleLine,
   formatTime,
+  formatMobileTime
 }

@@ -42,7 +42,7 @@ app.use((req, res, next) => {
 app.use('/api/v1', api)
 app.use('/', index)
 app.use('*', (req, res) => {
-  res.sendFile(__dirname + "/public/index.html")
+  res.sendFile(__dirname + "./public/index.html")
 })
 
 // Handle errors for incorrect routes

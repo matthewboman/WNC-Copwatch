@@ -1,27 +1,25 @@
 <template>
   <div class="chart-container">
-    <div class="row">
-      <h2></h2>
-    </div>
+    <h2 class="title">Daily Traffic Stops Since October 2017</h2>
 
-    <div class="chart">
-      <div class="legend">
+    <div class="row">
+      <div class="col col-md-2 offset-md-1 legend">
         <div class="key">
           <span class="value">Stops per day</span>
-          <span class="color blue"></span>
+          <span class="bg-color bg-purple"></span>
         </div>
         <div class="key">
           <span class="value">Arrests per day</span>
-          <span class="color red"></span>
+          <span class="bg-color bg-light-blue"></span>
         </div>
         <div class="key">
           <span class="value">Searches per day</span>
-          <span class="color teal"></span>
+          <span class="bg-color bg-seafoam"></span>
         </div>
-        <button v-on:click="toggleGraphs()">toggle graphs</button>
+        <button class="btn btn-main" v-on:click="toggleGraphs()">Toggle graphs</button>
       </div>
 
-      <div class="graph">
+      <div class="col col-md-8">
         <svg id="all-stops" ></svg>
       </div>
     </div>
@@ -35,6 +33,8 @@
   import { charts, fns } from '../../utils'
 
   export default {
+    props: ['isMobile'],
+
     data() {
       return {
         svg: null,
@@ -74,6 +74,10 @@
 
     methods: {
       createSVG() {
+        if (this.isMobile) {
+          this.w = fns.scaleWidth(40)
+          this.h = fns.scaleWidth(40)
+        }
         this.svg = d3.select("#all-stops")
           .attr('width', this.w)
           .attr('height', this.h)
@@ -91,8 +95,8 @@
         this.xScale = charts.createXScale(this.stops, this.padding, this.w)
         this.yScale = charts.createYScaleLine(this.stops, this.padding, this.h)
 
-        const formatTime = d3.timeFormat("%B %Y")
-        const xAxis = charts.createXTimeAxis(this.xScale, 10, formatTime)
+        const t = this.isMobile ? charts.formatMobileTime : charts.formatTime
+        const xAxis = charts.createXTimeAxis(this.xScale, 10, t)
         const yAxis = charts.createYAxis(this.yScale, 10)
 
         /**
@@ -149,8 +153,8 @@
           .append("circle")
           .attr("cx", d => this.xScale(d.date))
           .attr("cy", d => this.yScale(d.category))
-          .attr("r", 2)
-          .attr("fill", "blue")
+          .attr("r", 3)
+          .attr("fill", "rgb(110, 64, 170)")
           .attr('id', 'stops')
           .append('title')
           .text(d => `${d.category} stops on ${d.date}`)
@@ -161,8 +165,8 @@
           .append("circle")
           .attr("cx", d => this.xScale(d.date))
           .attr("cy", d => this.yScale(d.category))
-          .attr("r", 2)
-          .attr("fill", "red")
+          .attr("r", 3)
+          .attr("fill", "rgb(43, 158, 222)")
           .attr('id', 'arrests')
           .append('title')
           .text(d => `${d.category} arrests on ${d.date}`)
@@ -173,8 +177,8 @@
           .append("circle")
           .attr("cx", d => this.xScale(d.date))
           .attr("cy", d => this.yScale(d.category))
-          .attr("r", 2)
-          .attr("fill", "green")
+          .attr("r", 3)
+          .attr("fill", "rgb(28, 220, 168)")
           .attr('id', 'searches')
           .append('title')
           .text(d => `${d.category} searches on ${d.date}`)
@@ -219,54 +223,26 @@
 
 <!-- we can't use scss or scope the style -->
 <style>
-
-  .daily {
-    display: flex;
-    padding: 0 5vw;
-  }
-  .legend {
-    flex-basis: 20%;
-  }
-  .inline {
-
-  }
-  .line-color {
-    margin-right: 12px;
-    height: 20px;
-    width: 20px;
-    display: inline-block;
-  }
-  .blue {
-    background-color: blue;
-  }
-  .red {
-    background-color: red;
-  }
-  .teal {
-    background-color: teal;
-  }
-
-  .graph-container {
-    flex-basis: 80%;
-  }
-
   /* style svgs */
   .line {
     cursor: pointer;
   }
+  circle {
+    cursor: pointer;
+  }
   .arrests {
     fill: none;
-    stroke: red;
+    stroke: rgb(43, 158, 222);
     stroke-width: 1.5;
   }
   .searches {
     fill: none;
-    stroke: teal;
+    stroke: rgb(28, 220, 168);
     stroke-width: 1.5;
   }
   .stops {
     fill: none;
-    stroke: blue;
+    stroke: rgb(110, 64, 170);
     stroke-width: 1.5;
   }
 </style>

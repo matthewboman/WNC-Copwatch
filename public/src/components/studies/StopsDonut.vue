@@ -1,29 +1,27 @@
 <template>
   <div class="chart-container">
-    <div class="row">
-      <h2>Since October 2017, APD has reported {{ stops }} traffic stops.</h2>
-    </div>
+    <h2 class="title">Since October 2017, APD has reported {{ stops }} traffic stops.</h2>
 
-    <div class="chart">
-      <div class="graph">
+    <div class="row">
+      <div class="col-md-4 offset-md-2 col-sm-12">
         <svg id="all-stops"></svg>
       </div>
 
-      <div class="legend">
+      <div class="col-md-6 col-sm-12 legend">
         <div class="key">
-          <span class="color bg-orange">{{ uneventful }}</span>
+          <span class="color purple">{{ uneventful }}</span>
           <span class="value">{{ uneventfulText }}</span>
         </div>
         <div class="key">
-          <span class="color bg-green">{{ searchWithoutArrest }}</span>
+          <span class="color violet">{{ searchWithoutArrest }}</span>
           <span class="value">{{ searchWithoutArrestText }}</span>
         </div>
         <div class="key">
-          <span class="color bg-yellow">{{ combined }}</span>
+          <span class="color light-blue">{{ combined }}</span>
           <span class="value">{{ combinedText }}</span>
         </div>
         <div class="key">
-          <span class="color bg-red">{{ arrestWithoutSearch }}</span>
+          <span class="color seafoam">{{ arrestWithoutSearch }}</span>
           <span class="value">{{ arrestWithoutSearchText }}</span>
         </div>
       </div>
@@ -42,19 +40,20 @@
       "searches",
       "arrests",
       "arrestWithoutSearch",
-      "searchWithoutArrest"
+      "searchWithoutArrest",
+      "isMobile"
     ],
     data() {
       return {
         svg: null,
-        width: 300,
-        height: 300,
+        width: 400,
+        height: 400,
         uneventful: 0,
         combined: 0,
-        arrestWithoutSearchText: "Arrest without search",
-        searchWithoutArrestText: "Search initiated, no arrest",
+        arrestWithoutSearchText: "Arrests without search",
+        searchWithoutArrestText: "Searches initiated, no arrest",
         uneventfulText: "Stops without incident",
-        combinedText: "Search followed by arrest"
+        combinedText: "Searches followed by arrest"
       }
     },
 
@@ -65,6 +64,10 @@
 
     methods: {
       createSVG() {
+        if (this.isMobile) {
+          this.width = fns.scaleWidth(40)
+          this.height = fns.scaleWidth(40)
+        }
         this.svg = d3.select("#all-stops")
           .attr('width', this.width)
           .attr('height', this.height)
@@ -107,6 +110,7 @@
           .attr("d", arc)
 
         arcs.append("text")
+          .attr("class", "white-text")
           .attr("transform", d => `translate(${arc.centroid(d)})`)
           .attr("text-anchor", "middle")
           .text(d => d.value)
@@ -117,6 +121,7 @@
           .text(d => `${this.dataMapper(d.data.name)['text']}: ${d.value}`)
 
         arcs.append("text")
+          .attr("class", "text-center")
           .attr("text-anchor", "middle")
           .attr("y", 10)
           .text(`${this.stops} total stops`)
@@ -127,25 +132,25 @@
           case 'combined':
             return ({
               text: this.combinedText,
-              color: 'yellow'
+              color: 'rgb(43, 158, 222)'
             })
             break
           case 'uneventful':
             return ({
               text: this.uneventfulText,
-              color: 'orange'
+              color: 'rgb(110, 64, 170)'
             })
             break
           case 'searchWithoutArrest':
             return ({
               text: this.searchWithoutArrestText,
-              color: 'green'
+              color: 'rgb(91, 91, 207)'
             })
             break
           case 'arrestWithoutSearch':
             return ({
               text: this.arrestWithoutSearchText,
-              color: 'red'
+              color: 'rgb(28, 220, 168)'
             })
             break
         }

@@ -81,6 +81,10 @@ const actions = {
     commit('TOGGLE_TS_DISPLAY')
     commit('FILTER_TS_REPORTS')
   },
+  updateDetails: ({ commit}, detail) => {
+    commit('UPDATE_DETAILS', detail)
+    commit('FILTER_TS_REPORTS')
+  },
   updateTrafficStart: ({ commit }, start) => {
     commit('UPDATE_TS_START', start)
     commit('FILTER_TS_REPORTS')

@@ -1,0 +1,14 @@
+$color-primary: #863ddc;
+$color-primary-dark: #5f00ba;
+
+.btn-main {
+  background-color: rgb(110, 64, 170);
+  color: #fff;
+
+  &:hover {
+    background-color: $color-primary-dark;
+  }
+  &:active {
+    background-color: $color-primary-dark;
+  }
+}

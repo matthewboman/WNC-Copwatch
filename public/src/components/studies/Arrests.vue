@@ -1,26 +1,21 @@
 <template>
   <div class="chart-container">
-    <div class="row">
-      <h2></h2>
-    </div>
+    <h2 class="title">Traffic Stops Leading to Arrests Since October 2017</h2>
 
-    <div class="chart">
-      <div class="legend">
+
+    <div class="row">
+      <div class="col col-md-2 offset-md-1 legend">
         <div class="key">
-          <span class="value"></span>
-          <span class="color blue"></span>
+          <span class="value">{{ driverArrestedText }}</span>
+          <span class="bg-color bg-light-blue"></span>
         </div>
         <div class="key">
-          <span class="value"></span>
-          <span class="color red"></span>
-        </div>
-        <div class="key">
-          <span class="value"></span>
-          <span class="color teal"></span>
+          <span class="value">{{ passenderArrestedText }}</span>
+          <span class="bg-color bg-light-green"></span>
         </div>
       </div>
 
-      <div class="graph">
+      <div class="col col-md-8">
         <svg id="arrest"></svg>
       </div>
     </div>
@@ -31,11 +26,9 @@
 <script>
   import * as d3 from 'd3'
   import { formatTrafficStops } from '../../utils/functions'
-  import { charts } from '../../utils'
+  import { charts, fns } from '../../utils'
 
   let padding = 30
-  let h = 500
-  let w = 1200
   let thisTypeDataset = []
 
   const toggleBackButton = () => {
@@ -56,6 +49,7 @@
   }
 
   export default {
+    props: ['isMobile'],
 
     data() {
       return {
@@ -63,12 +57,16 @@
           'driver_arrested',
           'passenger_arrested',
         ],
+        h: 500,
+        w: 1200,
         xScale: null,
         yScale: null,
         yAxis: null,
         svg: null,
         area: null,
-        currentDataset: []
+        currentDataset: [],
+        driverArrestedText: "Driver arrested",
+        passenderArrestedText: "Passenger arrested"
       }
     },
 
@@ -96,9 +94,13 @@
 
     methods: {
       createSVG() {
+        if (this.isMobile) {
+          this.w = fns.scaleWidth(40)
+          this.h = fns.scaleWidth(40)
+        }
         this.svg = d3.select('#arrest')
-          .attr('width', w)
-          .attr('height', h)
+          .attr('width', this.w)
+          .attr('height', this.h)
       },
       renderGraph(dataset, keys) {
         // avoid `this` if we can b/c it gets messy w/ vue/d3
@@ -107,10 +109,11 @@
         /**
          * Scale initial data, create axis-rendering functions
          */
-        component.xScale = charts.createXScale(dataset, padding, w)
-        component.yScale = charts.createYScaleArea(dataset, keys, padding, h)
+        component.xScale = charts.createXScale(dataset, padding, this.w)
+        component.yScale = charts.createYScaleArea(dataset, keys, padding, this.h)
 
-        const xAxis = charts.createXTimeAxis(component.xScale, 10, charts.formatTime)
+        const t = this.isMobile ? charts.formatMobileTime : charts.formatTime
+        const xAxis = charts.createXTimeAxis(component.xScale, 10, t)
         component.yAxis = charts.createYAxis(component.yScale, 10)
 
         /**
@@ -191,17 +194,17 @@
               })
 
             paths.append("title")
-              .text(d => d.key)
+              .text(d => this.textMapper(d.key))
           })
           .append("title")
-          .text(d => d.key)
+          .text(d => this.textMapper(d.key))
 
           /*
            * Attach axes && back button
            */
           component.svg.append("g")
             .attr("class", "axis x")
-            .attr("transform", `translate(0,${h - padding})`)
+            .attr("transform", `translate(0,${this.h - padding})`)
             .call(xAxis)
 
           component.svg.append("g")
@@ -256,7 +259,6 @@
               })
           })
       },
-
       arrestColors(d, i) {
         const spread = 0.2
         let startingPoint
@@ -272,6 +274,14 @@
         const normalized = startingPoint + ((i / 7) * spread)
         return d3.interpolateCool(normalized)
       },
+      textMapper(name) {
+        switch (name) {
+          case 'driver_arrested':
+            return this.driverArrestedText
+          case 'passenger_arrested':
+            return this.passenderArrestedText
+        }
+      }
 
     }
 

@@ -2,26 +2,32 @@
   <div class="filter-group bulletin">
 
     <div class="filter date-filters border-bottom">
-      <h3 class="section-heading">Date range</h3>
-      <form class="form-group">
-        <select id="start" :value="startDate" @change="changeStart">
-          <option v-if="startDate" :value="startDate">{{ new Date(startDate).toDateString() }}</option>
-          <option disabled value="">Choose a start date</option>
-          <option v-for="date in dates" :value="date">{{ new Date(date).toDateString() }}</option>
-        </select>
-        <select id="end ":value="endDate" @change="changeEnd">
-          <option v-if="endDate" :value="endDate">{{ new Date(endDate).toDateString() }}</option>
-          <option disabled value="">Choose a end date</option>
-          <option v-for="date in dates" :value="date">{{ new Date(date).toDateString() }}</option>
-        </select>
+      <h3>Date range</h3>
+      <form>
+        <div class="form-group">
+          <label for="start">Start date:</label>
+          <select id="start" class="form-control" :value="startDate" @change="changeStart">
+            <option v-if="startDate" :value="startDate">{{ new Date(startDate).toDateString() }}</option>
+            <option disabled value="">Choose a start date</option>
+            <option v-for="date in dates" :value="date">{{ new Date(date).toDateString() }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="end">End date:</label>
+          <select id="end" class="form-control" :value="endDate" @change="changeEnd">
+            <option v-if="endDate" :value="endDate">{{ new Date(endDate).toDateString() }}</option>
+            <option disabled value="">Choose a end date</option>
+            <option v-for="date in dates" :value="date">{{ new Date(date).toDateString() }}</option>
+          </select>
+        </div>
       </form>
       <button
         type="button"
-        class="btn-reset"
+        class="btn btn-main"
         v-on:click="resetDates">Reset dates</button>
       <button
         type="button"
-        class="btn-load"
+        class="btn btn-main"
         v-if="!this.allLoaded"
         v-on:click="loadAll"
         v-on:mouseover="displayWarning = true"
@@ -36,49 +42,58 @@
     </div>
 
     <div class="filter incident-filters border-bottom">
-      <h3 class="section-heading">Type of report</h3>
+      <h3>Type of report</h3>
       <form>
-        <label class="label">Arrest:</label>
-        <input
-          type="checkbox"
-          id="AR"
-          :checked="this.codes.includes('AR')"
-          @change="changeCode" />
-      </form>
-      <form>
-        <label class="label">Traffic Control:</label>
-        <input
-          type="checkbox"
-          id="TC"
-          :checked="this.codes.includes('TC')"
-          @change="changeCode" />
-      </form>
-      <form>
-        <label class="incident-label">Incidents:</label>
-        <input
-          type="checkbox"
-          id="LW"
-          :checked="this.codes.includes('LW')"
-          @change="changeCode" />
+        <div class="form-group form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="AR"
+            :checked="this.codes.includes('AR')"
+            @change="changeCode" />
+          <label for="AR" class="form-check-label">Arrest</label>
+        </div>
+        <div class="form-group form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="TC"
+            :checked="this.codes.includes('TC')"
+            @change="changeCode" />
+          <label for="TC" class="form-check-label">Traffic Control</label>
+        </div>
+        <div class="form-group form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="LW"
+            :checked="this.codes.includes('LW')"
+            @change="changeCode" />
+          <label for="LW" class="form-check-label">Incidents</label>
+        </div>
       </form>
     </div>
 
     <div class="filter officer-filters border-bottom">
-      <h3 class="section-heading">Officer who filed report</h3>
-      <form class="form-group">
-        <select :value="selectedOfficer" @change="changeOfficer">
-          <option disabled value="select an officer"></option>
-          <option v-for="officer in officers" :value="officer">{{ officer }}</option>
-        </select>
-        <button type="button" class="btn-reset" v-on:click="resetOfficer">Reset officer</button>
+      <h3>Officer who filed report</h3>
+      <form>
+        <div class="form-group">
+          <label for="officer">Select an officer:</label>
+          <select if="officer" class="form-control" :value="selectedOfficer" @change="changeOfficer">
+            <option v-for="officer in officers" :value="officer">{{ officer }}</option>
+          </select>
+        </div>
+        <button type="button" class="btn btn-main" v-on:click="resetOfficer">Reset officer</button>
       </form>
     </div>
 
     <div class="filter search-filter">
-      <h3 class="section-heading">Search description</h3>
-      <form class="form-group">
-        <label class="label">Search for:</label>
-        <input type="text"  @input="filterByDescription" />
+      <h3>Search description</h3>
+      <form>
+        <div class="form-group">
+          <label for="description" class="label">Search for:</label>
+          <input id="description" class="form-control" type="text" @input="filterByDescription" />
+        </div>
       </form>
     </div>
 
@@ -160,18 +175,6 @@
 
     .filter {
 
-      .section-heading {
-        margin-bottom: 6px;
-      }
-
-      .form-group {
-        margin-bottom: 12px;
-
-        select {
-          margin-right: 12px;
-        }
-      }
-
     }
 
     .date-filters {
@@ -206,6 +209,7 @@
     }
   }
 
+  /* animations */
   .open-enter {
     max-height: 0px;
     opacity: 0;
