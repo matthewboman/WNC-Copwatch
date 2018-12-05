@@ -4,60 +4,6 @@
  */
 
 module.exports = {
-  // shared: [
-    // {
-    //   title: 'All Reports',
-    //   description: 'Returns all Open Data and Daily Bulletin reports',
-    //   url: '/api/v1/reports',
-    //   parameters: [],
-    //   example: 'http://copwatch.avlcommunityaction.com/api/v1/reports',
-    //   result: `
-    //   {
-    //     'force': 'APD_open',
-    //     'code': 'TC',
-    //     'address': '700-BLK HENDERSONVILLE RD',
-    //     'dateTime': '2017-10-01T00:00:00.000Z',
-    //     'latLng': {
-    //         'lat': 35.54585783101094,
-    //         'lng': -82.53175793170404
-    //       },
-    //     'driver_searched': '0',
-    //     'driver_arrested': '0',
-    //     'no_contraband_found': '0',
-    //     'off_phys_resis': '0',
-    //     'off_use_force': '0',
-    //     'passenger_arrested': '0',
-    //     'passenger_searched': '0',
-    //     'personal_effects_searched': '0',
-    //     'search_initiated': '0',
-    //     't_inc_arrest': '0',
-    //     't_pro_frisk': '0',
-    //     't_probable_cause': '0',
-    //     't_search_consent': '0',
-    //     't_search_warrant': '0',
-    //     'traffic_stop_id': '128151',
-    //     'vehicle_searched': '0'
-    //   },
-  //     {
-  //       'report_id': '',
-  //       'force': 'apd',
-  //       'code': 'AR',
-  //       'description': ' Arrest on chrg of Driving While Impaired (M),',
-  //       'address': '100-BLK Merrimon Ave, Asheville, NC, ',
-  //       'race': 'White',
-  //       'officer': 'Mccain, J P',
-  //       '_id': '5b7df923aa4ccb2d189dd5b0',
-  //       'dateTime': '2018-07-12T04:00:00.000Z',
-  //       'latLng': {
-  //           'lat': 35.602685,
-  //           'lng': -82.55385799999999
-  //       },
-  //       '__v': 0
-  //     },
-  //     ...
-  //     `
-  //   },
-  // ],
   traffic_stops: [
     {
       title: 'All Open Data Traffic Stop Reports',

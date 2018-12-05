@@ -1,14 +1,14 @@
 <template>
   <div class="records">
-    <div v-if="shouldDisplayOpenData">
-      <app-open-record
-        v-for="record in openDataReports"
+    <div v-if="displayTrafficReports">
+      <app-ts-record
+        v-for="record in displayedTrafficReports"
         :record="record"
-        :key="record._id"></app-open-record>
+        :key="record._id"></app-ts-record>
     </div>
-    <div v-if="shouldDisplayBulletins">
+    <div v-if="displayBulletinReports">
       <app-bulletin-record
-        v-for="record in bulletinReports"
+        v-for="record in displayedBulletinReports"
         :record="record"
         :key="record._id"></app-bulletin-record>
     </div>
@@ -16,28 +16,24 @@
 </template>
 
 <script>
+  import { mapGetters, mapState } from 'vuex'
   import BulletinRecord from './BulletinRecord.vue'
-  import OpenRecord from './OpenRecord.vue'
+  import TSRecord from './TSRecord.vue'
 
   export default {
     components: {
       appBulletinRecord: BulletinRecord,
-      appOpenRecord: OpenRecord
+      appTsRecord: TSRecord
     },
 
     computed: {
-      openDataReports() {
-        return this.$store.getters.displayedOpenDataReports
-      },
-      bulletinReports() {
-        return this.$store.getters.displayedBulletinReports
-      },
-      shouldDisplayOpenData() {
-        return this.$store.getters.displayOpenDataReports
-      },
-      shouldDisplayBulletins() {
-        return this.$store.getters.displayBulletinReports
-      }
+      ...mapState({
+        displayTrafficReports: state => state.traffic_reports.displayTrafficReports,
+        displayedTrafficReports: state => state.traffic_reports.displayedTrafficReports,
+
+        displayBulletinReports: state => state.bulletins.displayBulletinReports,
+        displayedBulletinReports: state => state.bulletins.displayedBulletinReports,
+      }),
     }
   }
 

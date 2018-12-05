@@ -1,5 +1,9 @@
 const d3 = require('d3')
 
+// createArc :: Int -> Int -> Function
+const createArc = (inner, outer) =>
+  d3.arc().innerRadius(inner).outerRadius(outer)
+
 // createXTimeAxis :: Function -> Int -> Function -> Function
 const createXTimeAxis = (scale, ticks, format) =>
   d3.axisBottom().scale(scale).ticks(ticks).tickFormat(format)
@@ -18,8 +22,8 @@ const createXScale = (dataset, padding, width) => {
     .range([padding, width])
 }
 
-// createXScale :: Array -> Array -> Int -> Int -> Function
-const createYScale = (dataset, keys, padding, height) => {
+// createYScaleArea :: Array -> Array -> Int -> Int -> Function
+const createYScaleArea = (dataset, keys, padding, height) => {
   return d3.scaleLinear()
     .domain([
       0,
@@ -28,9 +32,29 @@ const createYScale = (dataset, keys, padding, height) => {
     .range([height - padding, padding])
 }
 
+// createYScaleLine :: Array -> Int -> Int -> Function
+const createYScaleLine = (dataset, padding, height) => {
+  return d3.scaleLinear()
+    .domain([
+      0,
+      d3.max(dataset, d => d.category)
+    ])
+    .range([height - padding, padding])
+}
+
+// formatTime :: Function
+const formatTime = d3.timeFormat("%B %Y")
+
+// formatMobileTime :: Function
+const formatMobileTime = d3.timeFormat("%b")
+
 module.exports = {
+  createArc,
   createYAxis,
   createXScale,
   createXTimeAxis,
-  createYScale,
+  createYScaleArea,
+  createYScaleLine,
+  formatTime,
+  formatMobileTime
 }

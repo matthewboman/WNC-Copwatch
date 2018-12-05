@@ -5,10 +5,10 @@
     <p>URL: <a :href="BASE_URL + endpoint.url" class="url" target="_blank">{{ endpoint.url }}</a></p>
     <p v-if="endpoint.parameters.length" >
     Parameters:
+    </p>
       <ul class="parameters">
         <li v-for="parameter in endpoint.parameters" class="parameter">{{ parameter }}</li>
       </ul>
-    </p>
     <div class="example-block">
       <div class="url" @click="displayResult = !displayResult">
         <span class="label">Example URL: </span>
@@ -40,13 +40,8 @@
   .endpoint-doc {
     margin-bottom: 48px;
 
-    .title {
-      margin-bottom: 12px;
-    }
-
     .description {
       font-weight: 400;
-      margin-bottom: 12px;
     }
 
     .url {
@@ -55,18 +50,6 @@
       &:hover {
         color: #5f00ba;
         cursor: pointer;
-      }
-    }
-
-    .parameters {
-      display: inline;
-      padding: 0;
-
-      .parameter {
-        display: inline;
-        list-style-type: none;
-        margin-left: 12px;
-        font-weight: 300;
       }
     }
 

@@ -1,21 +1,38 @@
 <template>
-  <div>
-    <svg id="arrest"></svg>
+  <div class="chart-container">
+    <h2 class="title">Traffic Stops Leading to Arrests Since October 2017</h2>
+
+
+    <div class="row">
+      <div class="col col-md-2 offset-md-1 legend">
+        <div class="key">
+          <span class="value">{{ driverArrestedText }}</span>
+          <span class="bg-color bg-light-blue"></span>
+        </div>
+        <div class="key">
+          <span class="value">{{ passenderArrestedText }}</span>
+          <span class="bg-color bg-light-green"></span>
+        </div>
+      </div>
+
+      <div class="col col-md-8">
+        <svg id="arrest"></svg>
+      </div>
+    </div>
+
   </div>
 </template>
 
 <script>
   import * as d3 from 'd3'
   import { formatTrafficStops } from '../../utils/functions'
-  import { charts } from '../../utils'
+  import { charts, fns } from '../../utils'
 
   let padding = 30
-  let h = 500
-  let w = 1200
   let thisTypeDataset = []
 
   const toggleBackButton = () => {
-    const backButton = d3.select("#backButton")
+    const backButton = d3.select("#arrestBackButton")
     const hidden = backButton.classed("unclickable")
 
     if (hidden) {
@@ -32,6 +49,7 @@
   }
 
   export default {
+    props: ['isMobile'],
 
     data() {
       return {
@@ -39,18 +57,22 @@
           'driver_arrested',
           'passenger_arrested',
         ],
+        h: 500,
+        w: 1200,
         xScale: null,
         yScale: null,
+        yAxis: null,
         svg: null,
         area: null,
-        currentDataset: []
+        currentDataset: [],
+        driverArrestedText: "Driver arrested",
+        passenderArrestedText: "Passenger arrested"
       }
     },
 
-    // TODO: this doesn't run b/c store isn't updated
     created() {
       this.$store.watch(
-        state => this.$store.state.reports.allOpenDataReports,
+        state => this.$store.state.traffic_reports.formattedTrafficReports,
         (current, previous) => {
           this.renderGraph(current, this.keys)
         }
@@ -59,34 +81,40 @@
 
     mounted() {
       this.createSVG()
-      console.log('mounted')
-      // this.renderGraph()
+    },
+
+    beforeDestroy() {
+      this.xScale = null
+      this.yScale = null
+      this.yAxis = null
+      this.svg = null
+      this.area = null
+      this.currentDataset = []
     },
 
     methods: {
       createSVG() {
+        if (this.isMobile) {
+          this.w = fns.scaleWidth(40)
+          this.h = fns.scaleWidth(40)
+        }
         this.svg = d3.select('#arrest')
-          .attr('width', w)
-          .attr('height', h)
+          .attr('width', this.w)
+          .attr('height', this.h)
       },
-      renderGraph(reports, keys) {
-        console.log('rendering a')
+      renderGraph(dataset, keys) {
         // avoid `this` if we can b/c it gets messy w/ vue/d3
         const component = this
-        const dataset = formatTrafficStops(reports)
 
         /**
-         * Scale initial data
+         * Scale initial data, create axis-rendering functions
          */
-        component.xScale = charts.createXScale(dataset, padding, w)
-        component.yScale = charts.createYScale(dataset, keys, padding, h)
+        component.xScale = charts.createXScale(dataset, padding, this.w)
+        component.yScale = charts.createYScaleArea(dataset, keys, padding, this.h)
 
-        /**
-         * Create axes
-         */
-        const formatTime = d3.timeFormat("%B %Y")
-        const xAxis = charts.createXTimeAxis(component.xScale, 10, formatTime)
-        const yAxis = charts.createYAxis(component.yScale, 10)
+        const t = this.isMobile ? charts.formatMobileTime : charts.formatTime
+        const xAxis = charts.createXTimeAxis(component.xScale, 10, t)
+        component.yAxis = charts.createYAxis(component.yScale, 10)
 
         /**
          * Create area, stack, and series
@@ -95,6 +123,7 @@
           .x(d => component.xScale(d.data.date))
           .y0(d => component.yScale(d[0]))
           .y1(d => component.yScale(d[1]))
+
         const stack = d3.stack()
           .keys(keys)
         const series = stack(dataset)
@@ -147,16 +176,17 @@
                 d3.select("g.axis.y.arrests")
                   .transition()
                   .duration(1000)
-                  .call(yAxis)
+                  .call(component.yAxis)
               })
               .duration(1000)
               .attr("d", component.area)
               .transition()
               .on("start", () => {
                 d3.selectAll("g#arrests path")
-                  .attr("opacity", 1)
+                  .attr("opacity", 0)
               })
               .duration(1000)
+              .attr("opacity", 1)
               .on("end", (d, i) => {
                 if (i == 0) {
                   toggleBackButton()
@@ -164,26 +194,26 @@
               })
 
             paths.append("title")
-              .text(d => d.key)
+              .text(d => this.textMapper(d.key))
           })
           .append("title")
-          .text(d => d.key)
+          .text(d => this.textMapper(d.key))
 
           /*
            * Attach axes && back button
            */
           component.svg.append("g")
             .attr("class", "axis x")
-            .attr("transform", `translate(0,${h - padding})`)
+            .attr("transform", `translate(0,${this.h - padding})`)
             .call(xAxis)
 
           component.svg.append("g")
             .attr("class", "axis y arrests")
             .attr("transform", `translate(${padding}, 0)`)
-            .call(yAxis)
+            .call(component.yAxis)
 
           const backButton = component.svg.append("g")
-            .attr("id", "backButton")
+            .attr("id", "arrestBackButton")
             .attr("opacity", 0)
             .classed("unclickable", true)
             .attr("transform", `translate(${component.xScale.range()[0]}, ${component.yScale.range()[1]})`)
@@ -217,10 +247,10 @@
             areaTransitions.transition()
               .delay(200)
               .on("start", () => {
-                d3.select("g.axis.y")
+                d3.select("g.axis.y.arrests")
                   .transition()
                   .duration(1000)
-                  .call(yAxis)
+                  .call(component.yAxis)
               })
               .duration(1000)
               .attr("d", component.area)
@@ -229,7 +259,6 @@
               })
           })
       },
-
       arrestColors(d, i) {
         const spread = 0.2
         let startingPoint
@@ -245,6 +274,14 @@
         const normalized = startingPoint + ((i / 7) * spread)
         return d3.interpolateCool(normalized)
       },
+      textMapper(name) {
+        switch (name) {
+          case 'driver_arrested':
+            return this.driverArrestedText
+          case 'passenger_arrested':
+            return this.passenderArrestedText
+        }
+      }
 
     }
 
@@ -253,24 +290,18 @@
 
 <style>
 
-  .area {
-		stroke: none;
+  /**
+   * style SVGs
+   */
+  #arrestBackButton {
 		cursor: pointer;
 	}
 
-	.area:hover {
-		fill: yellow;
-	}
-
-  #backButton {
-		cursor: pointer;
-	}
-
-	#backButton rect {
+	#arrestBackButton rect {
 		fill: #ccc;
 	}
 
-	#backButton text {
+	#arrestBackButton text {
 		font-family: Helvetica, sans-serif;
 		font-weight: bold;
 		font-size: 14px;

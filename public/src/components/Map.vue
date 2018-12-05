@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <div id="map" class="map"></div>
-    <img v-if="loading" class="loading" src="/public/icons/loading.svg" />
+    <img v-if="loading" class="loading" src="../../icons/loading.svg" />
   </div>
 </template>
 
@@ -14,9 +14,12 @@
   const DEFAULT_ZOOM = 12
   const BASEMAP = 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png'
   const ATTRIBUTION = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>'
-  const apdIcon = L.icon({ iconUrl: "/icons/apd.png", iconSize: [15, 15] })
+  const apdIcon = L.icon({ iconUrl: "../../icons/apd.png", iconSize: [15, 15] })
   const sheriffIcon = L.icon({ iconUrl: "/icons/sheriff.png", iconSize: [15, 15] })
-  const openIcon = L.icon({ iconUrl: "/icons/open-icon.png", iconSize: [10, 10] })
+  const openIcon = L.icon({ iconUrl: "../../icons/open-icon.png", iconSize: [10, 10] })
+
+  // TODO: get icons working in DEV
+  const renderIcon = url => L.icon({ iconUrl: url, iconSize: [10, 10] })
 
   const bulletinPopup = report =>
     `<div>
@@ -87,13 +90,15 @@
             const sheriffMarkers = reports.filter(r => r.latLng != null)
               .filter(r => r.force == 'sheriff')
               .map(r => L.marker(r.latLng, { icon: sheriffIcon }).bindPopup(bulletinPopup(r)) )
+
             this.bulletinMarkers = L.layerGroup([...apdMarkers, ...sheriffMarkers])
             this.leafleftMap.addLayer(this.bulletinMarkers)
             break
 
           case 'traffic':
             const trafficStopMarkers = reports.filter(r => r.latLng != null)
-              .map(r => L.marker(r.latLng, { icon: openIcon}).bindPopup(trafficStopPopup(r)) )
+              .map(r => L.marker(r.latLng, { icon: openIcon }).bindPopup(trafficStopPopup(r)) )
+
             this.trafficStopMarkers = L.layerGroup([ ...trafficStopMarkers ])
             this.leafleftMap.addLayer(this.trafficStopMarkers)
             break

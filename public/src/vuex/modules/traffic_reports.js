@@ -1,31 +1,28 @@
 const R = require('ramda')
 import api from '../api'
 import {
+  calculateStats,
   categoryPerDay,
   conditionalArray,
-  filterByCodes,
   filterByDates,
-  filterByDescription,
   filterByTrafficDetails,
-  filterByOfficer,
-  isTrue,
-  odrHashMap,
+  formatTrafficStops,
   pastWeek,
-  previousWeek,
   removeDuplicates,
   sortByProp,
   toggleArray,
-  YYYYMMDD
 } from '../../utils/functions'
 
 const state = {
   allTrafficReports: [],
   arrestsPerDay: [],
   displayTrafficReports: false,
-  displayedTrafficReports: [],
+  displayedTrafficReports: [], // currently displayed on map
+  formattedTrafficReports: [], // for d3 components
   trafficDates: [],
   trafficStartDate: null,
   trafficEndDate: null,
+  trafficStopStats: null,
   searchesPerDay: [],
   selectedTrafficDetails: [], // initially empty b/c few will contain all conditions
 }
@@ -37,6 +34,12 @@ const mutations = {
   },
   'SET_TS_DATES': (state) => {
     [state.trafficEndDate, state.trafficStartDate] = pastWeek(state.trafficDates)
+  },
+  'FORMAT_TS_REPORTS': (state) => {
+    state.formattedTrafficReports = formatTrafficStops(state.allTrafficReports)
+  },
+  'CALCULATE_STATS': () => {
+    state.trafficStopStats = calculateStats(state.formattedTrafficReports)
   },
   'FILTER_TS_REPORTS': (state) => {
     const dateReports = reports => filterByDates(state.trafficStartDate, state.trafficEndDate, reports)
@@ -76,6 +79,10 @@ const mutations = {
 const actions = {
   toggleTrafficDisplay: ({ commit }) => {
     commit('TOGGLE_TS_DISPLAY')
+    commit('FILTER_TS_REPORTS')
+  },
+  updateDetails: ({ commit}, detail) => {
+    commit('UPDATE_DETAILS', detail)
     commit('FILTER_TS_REPORTS')
   },
   updateTrafficStart: ({ commit }, start) => {

@@ -1,11 +1,13 @@
 import Arrests from './Arrests.vue'
-import Daily from './Daily.vue'
-import PerDay from './PerDay.vue'
 import Searches from './Searches.vue'
+import SearchesDonut from './SearchesDonut.vue'
+import Stops from './Stops.vue'
+import StopsDonut from './StopsDonut.vue'
 
 export {
   Arrests,
-  Daily,
-  PerDay,
-  Searches
+  Searches,
+  SearchesDonut,
+  Stops,
+  StopsDonut
 }

@@ -78,15 +78,13 @@ export default new Vuex.Store({
           commit('SET_TS_REPORTS', reports)
           commit('SET_TS_DATES')
           commit('FILTER_TS_REPORTS')
+          commit('FORMAT_TS_REPORTS')
+          // commit('CALCULATE_STATS') // doesn't work
           commit('TOGGLE_LOADING')
 
         })
         .catch(err => console.log(err))
     },
-  },
-  getters: {
-    allReports: state => state.allReports,
-    // displayedReports: state => state.displayedReports,
   },
 
 })

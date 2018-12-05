@@ -1,17 +1,21 @@
 <template>
   <div class="filters-container">
     <h2>Filters which reports are displayed</h2>
-    <div class="report-options">
+    <div class="selectors">
       <form>
-        <label class="label">APD Daily Bulletins</label>
-        <input type="checkbox" id="apd" :checked="this.displayBulletinReports" @change="toggleBulletinDisplay" />
-        <span class="horizontal-divider">|</span>
-        <label class="label">Traffic Stop Reports</label>
-        <input type="checkbox" id="traffic" :checked="this.displayTrafficReports" @change="toggleTrafficDisplay" />
+        <div class="form-group">
+          <input class="form-check-input" type="checkbox" id="apd" :checked="this.displayBulletinReports" @change="toggleBulletinDisplay" />
+          <label class="form-check-label" for="apd">APD Daily Bulletins</label>
+        </div>
+        <div class="form-group">
+          <input class="form-check-input" type="checkbox" id="traffic" :checked="this.displayTrafficReports" @change="toggleTrafficDisplay" />
+          <label class="form-check-label" for="traffic">Traffic Stop Reports</label>
+        </div>
       </form>
     </div>
+
     <div class="display-block">
-      <button class="carat" @click="displayBulletinFilters = !displayBulletinFilters">
+      <button class="btn btn-main carat" @click="displayBulletinFilters = !displayBulletinFilters">
         Display APD Bulletin Filters
       </button>
       <transition name="traffic" mode="in-out">
@@ -19,7 +23,7 @@
       </transition>
     </div>
     <div class="display-block">
-      <button class="carat" @click="displayTrafficStopFilters = !displayTrafficStopFilters">
+      <button class="btn btn-main carat" @click="displayTrafficStopFilters = !displayTrafficStopFilters">
         Display Traffic Stop Filters
       </button>
       <transition name="traffic" mode="in-out">
@@ -31,8 +35,8 @@
 
 <script>
   import { mapActions, mapState } from 'vuex'
-  import BulletinFilters from './BulletinFilters'
-  import TrafficStopFilters from './TrafficStopFilters'
+  import BulletinFilters from './BulletinFilters.vue'
+  import TrafficStopFilters from './TrafficStopFilters.vue'
 
   export default {
     components: {
@@ -69,9 +73,8 @@
     margin: 0 12px;
   }
   .filters-container {
-
-    .report-options {
-      margin-bottom: 24px;
+    .selectors {
+      margin-left: 1.5rem;
     }
 
     .display-block {
@@ -83,7 +86,7 @@
 
       .carat {
         padding-right: 24px;
-        background-image: url('/public/icons/carat-down-white.png');
+        background-image: url('../../../icons/carat-down-white.png');
         background-size: 24px;
         background-repeat: no-repeat;
         background-position: right;
