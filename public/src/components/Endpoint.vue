@@ -71,7 +71,7 @@
         .carat {
           margin-left: 12px;
           padding-right: 24px;
-          background-image: url('/public/icons/carat-down.png');
+          background-image: url('../../icons/carat-down.png'); 
           background-size: 24px;
           background-repeat: no-repeat;
           background-position: right;

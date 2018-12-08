@@ -18,6 +18,10 @@ let cache = {
   use_of_force: {
     date_cached: new Date(Date.now()),
     data: []
+  },
+  daily: {
+    date_cached: new Date(Date.now()),
+    data: []
   }
 }
 
@@ -43,15 +47,25 @@ module.exports = {
   /*
    * APD Traffic Stops after Oct. 2017
    */
-  // traffic_stops: () => fns.callandCache(dbTrafficStops, 'traffic', cache),
+  db_traffic_stops: () => fns.callandCache(dbTrafficStops, 'traffic', cache),
+
   traffic_stops: () => fns.callandCache(allTrafficStops, 'traffic', cache),
 
+  ts_daily: () => fns.callandCache(allTrafficStops, 'traffic', cache)
+    .then(reports => fns.formatTrafficStops(reports)),
+
+  /*
+   * TODO: query the city's service based on params
+   */
   ts_arrests: (param) => fns.callandCache(allTrafficStops ,'arrests', cache)
     .then(reports => reports.filter(report => (
         report.driver_arrested == 1 ||
         report.passenger_arrested == 1
       ))),
 
+  /*
+   * TODO: query the city's service based on params
+   */
   ts_searches: (param) => fns.callandCache(allTrafficStops, 'searches', cache)
     .then(reports => reports.filter(report => (
         report.driver_searched == 1 ||
@@ -62,6 +76,12 @@ module.exports = {
         report.t_search_warrant == 1 ||
         report.vehicle_searched == 1
       ))),
+
+  ts_stats: () => fns.callandCache(allTrafficStops, 'traffic', cache)
+    .then(reports => {
+      const formatted = fns.formatTrafficStops(reports)
+      return fns.calculateStats(formatted)
+    }),
 
   ts_use_of_force: () => fns.callandCache(allTrafficStops, 'use_of_force', cache)
     .then(reports => reports.filter(report => (

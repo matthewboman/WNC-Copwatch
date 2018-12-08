@@ -16,7 +16,7 @@
       <div class="row intro">
         <div class="col">
           <p>
-            These endpoints pull from and simplify <a href="http://data.ashevillenc.gov/datasets/apd-traffic-stops-after-oct-1-2017" target="_blank" rel="nofollow" referrerpolicy="no-referrer">Asheville's open data API</a>. For a better understanding of the data, you can refer to their page.
+            These endpoints pull from and simplify <a href="http://data.ashevillenc.gov/datasets/apd-traffic-stops-after-oct-1-2017" target="_blank" rel="nofollow" referrerpolicy="no-referrer">Asheville's open data API</a> on traffic stops since October 2017. For a better understanding of the data, you can refer to their page.
           </p>
         </div>
       </div>
@@ -80,7 +80,9 @@
   }
 
   .documentation-heading {
-
+    text-align: center;
+    margin-bottom: 64px;
+    margin-top: 32px;
   }
 
   .block {

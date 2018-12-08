@@ -32,7 +32,7 @@
 
 <script>
 
-  import { mapActions, mapState } from 'vuex'
+  import { mapActions } from 'vuex'
   import { Arrests, Searches, SearchesDonut, Stops, StopsDonut } from "../components/studies"
   import { fns } from '../utils'
 
@@ -61,83 +61,48 @@
       }
     },
 
+    computed: {
+      tsBreakdown() {
+        return this.$store.state.traffic_reports.formattedTrafficReports
+      },
+      tsStats() {
+        return this.$store.state.traffic_reports.trafficStopStats
+      }
+    },
+
     created() {
       this.$store.watch(
-        state => this.$store.state.traffic_reports.formattedTrafficReports,
+        state => this.$store.state.traffic_reports.trafficStopStats,
         (current, previous) => {
-          this.calculateStats(current)
+          this.renderStats(current)
         }
       )
       this.isMobile = fns.isMobile
     },
 
     mounted() {
-      this.getTSReports()
+      // only make requests the first time
+      if (!this.tsBreakdown.length) {
+        this.getTSBreakdown()
+      }
+      if (this.tsStats) {
+        this.renderStats(this.tsStats)
+      } else {
+        this.getTSStatistics()
+      }
     },
-
 
     methods: {
       ...mapActions({
-        getTSReports: 'getTSReports'
+        getTSBreakdown: 'getTSBreakdown',
+        getTSStatistics: 'getTSStatistics',
       }),
-
-      calculateStats(reports) {
-        // This is a resource-heavy function, so use an object as the accumulator to run only once
-        const accumulator = {
-          stops: 0,
-          searches: 0,
-          arrests: 0,
-          searchWithoutArrest: 0,
-          arrestWithoutSearch: 0,
-          seachWithConsent: 0,
-          searchWithProbableCause: 0,
-          searchWithWarrant: 0,
-          searchWithoutConsentWarrantOrProbableCause: 0
-        }
-        // TODO: extract into testable functions
-        const details = reports.reduce((acc, val) => {
-          const searchWithoutArrest = (
-            (val.searches >= 1 && val.arrests === 0) ||
-            (val.searches > val.arrests)
-          ) ? (val.searches - val.arrests) : 0
-          const arrestWithoutSearch = (
-            (val.searches === 0 && val.arrests >= 1) ||
-            (val.searches < val.arrests)
-          ) ? (val.arrests - val.searches) : 0
-          const seachWithConsent = (
-            val.t_search_consent >= 1
-          ) ? val.t_search_consent : 0
-          const searchWithProbableCause = (
-            val.t_probable_cause >= 1
-          ) ? val.t_probable_cause : 0
-          const searchWithWarrant = (
-            val.t_search_warrant >= 1
-          ) ? val.t_search_warrant : 0
-          const searchWithoutConsentWarrantOrProbableCause = (
-            (val.searches >= 1 && val.t_search_consent === 0 && val.t_probable_cause === 0 && val.t_probable_cause === 0) ||
-            (val.searches > (val.t_search_consent + val.t_probable_cause + val.t_probable_cause))
-          ) ? (val.searches - val.t_search_consent - val.t_probable_cause - val.t_probable_cause) : 0
-          return {
-            stops: acc.stops += val.stops,
-            searches: acc.searches += val.searches,
-            arrests: acc.arrests += val.arrests,
-
-            seachWithConsent: acc.seachWithConsent += seachWithConsent,
-            searchWithProbableCause: acc.searchWithProbableCause += searchWithProbableCause,
-            searchWithWarrant: acc.searchWithWarrant += searchWithWarrant,
-
-            searchWithoutArrest: acc.searchWithoutArrest += searchWithoutArrest,
-            arrestWithoutSearch: acc.arrestWithoutSearch += arrestWithoutSearch,
-            searchWithoutConsentWarrantOrProbableCause: acc.searchWithoutConsentWarrantOrProbableCause += searchWithoutConsentWarrantOrProbableCause
-          }
-        }, accumulator)
-
-        for (const [key, value] of Object.entries(details)) {
+      renderStats(stats) {
+        for (const [key, value] of Object.entries(stats)) {
           this[key] = value
         }
       },
-
-    }
+    },
   }
 
 </script>
@@ -151,7 +116,6 @@
    * style SVGs -- not scoped, so this will cary down to child (and other) components
    */
   text {
-    /* stroke: #666; */
     stroke: none;
     fill: #666;
   }
@@ -241,7 +205,6 @@
 
 
   /* Area Graphs */
-
   .area {
     stroke: none;
     cursor: pointer;

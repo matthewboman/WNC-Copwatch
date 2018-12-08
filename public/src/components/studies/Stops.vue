@@ -29,7 +29,6 @@
 
 <script>
   import * as d3 from 'd3'
-  import { mapActions, mapState } from 'vuex'
   import { charts, fns } from '../../utils'
 
   export default {
@@ -50,8 +49,10 @@
       }
     },
 
-    mounted() {
-      this.createSVG()
+    computed: {
+      tsBreakdown() {
+        return this.$store.state.traffic_reports.formattedTrafficReports
+      },
     },
 
     created() {
@@ -62,6 +63,14 @@
         }
       )
     },
+
+    mounted() {
+      this.createSVG()
+      if (this.tsBreakdown.length) {
+        this.renderGraph(this.tsBreakdown, this.keys)
+      }
+    },
+
 
     beforeDestroy() {
       this.stops = []
@@ -120,7 +129,7 @@
       },
       renderLineGraph(stops, searches, arrests) {
         const line = d3.line()
-          .x(d => this.xScale(d.date))
+          .x(d => this.xScale(new Date(d.date)))
           .y(d => this.yScale(d.category))
 
         this.svg.append("path")
@@ -151,7 +160,7 @@
           .data(stops)
           .enter()
           .append("circle")
-          .attr("cx", d => this.xScale(d.date))
+          .attr("cx", d => this.xScale(new Date(d.date)))
           .attr("cy", d => this.yScale(d.category))
           .attr("r", 3)
           .attr("fill", "rgb(110, 64, 170)")
@@ -163,7 +172,7 @@
           .data(any(arrests))
           .enter()
           .append("circle")
-          .attr("cx", d => this.xScale(d.date))
+          .attr("cx", d => this.xScale(new Date(d.date)))
           .attr("cy", d => this.yScale(d.category))
           .attr("r", 3)
           .attr("fill", "rgb(43, 158, 222)")
@@ -175,7 +184,7 @@
           .data(any(searches))
           .enter()
           .append("circle")
-          .attr("cx", d => this.xScale(d.date))
+          .attr("cx", d => this.xScale(new Date(d.date)))
           .attr("cy", d => this.yScale(d.category))
           .attr("r", 3)
           .attr("fill", "rgb(28, 220, 168)")

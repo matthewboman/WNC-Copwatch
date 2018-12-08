@@ -2,12 +2,12 @@
   <div>
     <section class="top">
       <div class="container">
-        <h1 class="title">WNC Copwatch</h1>
+        <h1 class="title">Asheville Policing Statistics</h1>
         <div class="what-we-do">
           <div class="block">
           <div class="q"><h3>What we do</h3></div>
           <span class="a">
-            WNC Copwatch makes it easy for community members to analyze police data and document systemic discrimination.
+            This application makes it easy for community members to analyze police data and document systemic discrimination.
           </span>
         </div>
         <div class="block">
@@ -37,7 +37,10 @@
               This map compares all times a driver, passenger, and/or vehicle were searched in October 2017. The red dots represent cases in which consent to a search was given, whereas the green represents times that the parties gave no consent.
             </p>
             <p>
-              By using our map, one could toggle not only between these two views, but also see in which cases an officer cited "probable cause".
+              By using <a class="white-link" href="/map">our map</a>, one could toggle not only between these two views, but also see cases in which an officer cited "probable cause".
+            </p>
+            <p>
+              <a class="white-link" href="/studies">Our studies</a> also breakdown stops, searches, and arrests for further analysis.
             </p>
           </div>
           <div class="col-md-6 col-sm-12">
@@ -52,9 +55,9 @@
         <div class="notes">
           <h2 class="title">A few notes on the data we provide</h2>
           <div class="block">
-            <div class="q"><h3>Accurancy</h3></div>
+            <div class="q"><h3>Accuracy</h3></div>
             <span class="a">
-               While (or prehaps because) it comes directly from Asheville's traffic stop data and APD's daily bulletins, we cannot guarantee the accurancy of the data we present.
+               While (or prehaps because) it comes directly from Asheville's traffic stop data and APD's daily bulletins, we cannot guarantee the accuracy of the data we present.
             </span>
           </div>
           <div class="block">
@@ -90,7 +93,7 @@
   .center {
     padding-top: 10%;
     padding-bottom: 10%;
-    background-color: #5f00ba;
+    background-color: rgb(110, 64, 170);
     margin-bottom: 80px;
 
     p {
@@ -102,6 +105,16 @@
       @media (max-width: 768px) {
         font-size: 1rem;
         line-height: 1.2rem;
+      }
+    }
+
+    .white-link {
+      color: white;
+      font-weight: 600;
+
+      &:hover {
+        color: white;
+        // text-decoration: none;
       }
     }
 
@@ -154,7 +167,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      border-right: 4px solid #5f00ba;
+      border-right: 4px solid rgb(110, 64, 170);
       border-top-left-radius: 6px;
       border-bottom-left-radius: 6px;
       background-color: #a09be7;

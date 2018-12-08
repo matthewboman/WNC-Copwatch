@@ -67,7 +67,7 @@
     -moz-appearance: none;
     -webkit-appearance:none;
     appearance: none;
-    background-image: url("/public/icons/carat-down.png");
+    // background-image: url("/public/icons/carat-down.png");
     background-position: right;
     background-size: 24px;
     background-repeat: no-repeat;

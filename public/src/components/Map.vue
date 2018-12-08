@@ -42,8 +42,14 @@
       }
     },
 
-    mounted() {
-      this.initMap()
+    computed: {
+      ...mapState({
+        displayBulletinReports: state => state.bulletins.displayBulletinReports,
+        displayedBulletinReports: state => state.bulletins.displayedBulletinReports,
+        displayTrafficReports: state => state.traffic_reports.displayTrafficReports,
+        displayedTrafficReports: state => state.traffic_reports.displayedTrafficReports,
+        loading: state => state.loading
+      })
     },
 
     created() {
@@ -63,12 +69,16 @@
       )
     },
 
-    computed: {
-      ...mapState({
-        displayBulletinReports: state => state.bulletins.displayBulletinReports,
-        displayTrafficReports: state => state.traffic_reports.displayTrafficReports,
-        loading: state => state.loading
-      })
+    mounted() {
+      this.initMap()
+      if (this.displayedBulletinReports.length) {
+        this.leafleftMap.removeLayer(this.bulletinMarkers)
+        this.markersFromReports(this.displayedBulletinReports, 'bulletin')
+      }
+      if (this.displayedTrafficReports.length) {
+        this.leafleftMap.removeLayer(this.trafficStopMarkers)
+        this.markersFromReports(this.displayedTrafficReports, 'traffic')
+      }
     },
 
     methods: {

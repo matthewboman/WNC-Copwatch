@@ -6,6 +6,59 @@
  * `async function` is a syntax error in ES2015. Maybe it'd work in ES2017?
  */
 
+// calculateStats :: [{}] -> {}
+const calculateStats = reports => {
+  const accumulator = {
+    stops: 0,
+    searches: 0,
+    arrests: 0,
+    searchWithoutArrest: 0,
+    arrestWithoutSearch: 0,
+    seachWithConsent: 0,
+    searchWithProbableCause: 0,
+    searchWithWarrant: 0,
+    searchWithoutConsentWarrantOrProbableCause: 0
+  }
+
+  return reports.reduce((acc, val) => {
+    const searchWithoutArrest = (
+      (val.searches >= 1 && val.arrests === 0) ||
+      (val.searches > val.arrests)
+    ) ? (val.searches - val.arrests) : 0
+    const arrestWithoutSearch = (
+      (val.searches === 0 && val.arrests >= 1) ||
+      (val.searches < val.arrests)
+    ) ? (val.arrests - val.searches) : 0
+    const seachWithConsent = (
+      val.t_search_consent >= 1
+    ) ? val.t_search_consent : 0
+    const searchWithProbableCause = (
+      val.t_probable_cause >= 1
+    ) ? val.t_probable_cause : 0
+    const searchWithWarrant = (
+      val.t_search_warrant >= 1
+    ) ? val.t_search_warrant : 0
+    const searchWithoutConsentWarrantOrProbableCause = (
+      (val.searches >= 1 && val.t_search_consent === 0 && val.t_probable_cause === 0 && val.t_probable_cause === 0) ||
+      (val.searches > (val.t_search_consent + val.t_probable_cause + val.t_probable_cause))
+    ) ? (val.searches - val.t_search_consent - val.t_probable_cause - val.t_probable_cause) : 0
+
+    return {
+      stops: acc.stops += val.stops,
+      searches: acc.searches += val.searches,
+      arrests: acc.arrests += val.arrests,
+
+      seachWithConsent: acc.seachWithConsent += seachWithConsent,
+      searchWithProbableCause: acc.searchWithProbableCause += searchWithProbableCause,
+      searchWithWarrant: acc.searchWithWarrant += searchWithWarrant,
+
+      searchWithoutArrest: acc.searchWithoutArrest += searchWithoutArrest,
+      arrestWithoutSearch: acc.arrestWithoutSearch += arrestWithoutSearch,
+      searchWithoutConsentWarrantOrProbableCause: acc.searchWithoutConsentWarrantOrProbableCause += searchWithoutConsentWarrantOrProbableCause
+    }
+  }, accumulator)
+}
+
 // callandCache :: Function -> Cache.name -> Cache -> [{}]
 async function callandCache(apiCall, cache_name, cache) {
   const result = (cache[cache_name].data.length && sameDay(cache_name, cache))
@@ -27,6 +80,93 @@ const dateFromParam = yyyymmdd => new Date(
   yyyymmdd.substring(4, 6) - 1, // months start at 0
   yyyymmdd.substring(6, 8)
 )
+
+// formatTrafficStops :: [{}] -> [{}]
+const formatTrafficStops = reports => {
+  let dataset = [ ]
+
+  reports.forEach(report => {
+    const existingDates = dataset.map(d => d.date.getTime())
+    const date = new Date(report.dateTime)
+
+    // only count for one search or arrest
+    let searches = 0
+    let arrests = 0
+
+    if (
+      report.driver_searched == 1 ||
+      report.passenger_searched == 1 ||
+      report.search_initiated == 1 ||
+      report.vehicle_searched == 1 ||
+      report.personal_effects_searched == 1 ||
+      report.t_search_consent == 1 ||
+      report.t_search_warrant == 1 ||
+      report.t_probable_cause == 1
+    ) {
+      searches = 1
+    }
+
+    if (
+      report.driver_arrested == 1 ||
+      report.passenger_arrested == 1
+    ) {
+      arrests = 1
+    }
+
+    // update the previous object b/c it's from the same day
+    if (existingDates.includes(date.getTime())) {
+      let sameDay = dataset[dataset.length - 1]
+      const index = dataset.indexOf(sameDay)
+
+      sameDay = {
+        date: sameDay.date,
+        stops: sameDay.stops + 1,
+
+        // searches
+        searches: sameDay.searches + searches,
+        driver_searched: sameDay.driver_searched + parseInt(report.driver_searched),
+        passenger_searched: sameDay.passenger_searched + parseInt(report.passenger_searched),
+        personal_effects_searched: sameDay.personal_effects_searched + parseInt(report.personal_effects_searched),
+        search_initiated: sameDay.search_initiated + parseInt(report.search_initiated),
+        t_probable_cause: sameDay.t_probable_cause + parseInt(report.t_probable_cause),
+        t_search_consent: sameDay.t_search_consent + parseInt(report.t_search_consent),
+        t_search_warrant: sameDay.t_search_warrant + parseInt(report.t_search_warrant),
+        vehicle_searched: sameDay.vehicle_searched + parseInt(report.vehicle_searched),
+
+        // arrests
+        arrests: sameDay.arrests + arrests,
+        driver_arrested: sameDay.driver_arrested + parseInt(report.driver_arrested),
+        passenger_arrested: sameDay.passenger_arrested + parseInt(report.passenger_arrested)
+      }
+
+      // replace w/ updated version
+      dataset[index] = sameDay
+    } else {
+      // create a new object
+      dataset.push({
+        date: date,
+        stops: 1,
+
+        // searches
+        searches: searches,
+        driver_searched: parseInt(report.driver_searched),
+        passenger_searched: parseInt(report.passenger_searched),
+        personal_effects_searched: parseInt(report.personal_effects_searched),
+        search_initiated: parseInt(report.search_initiated),
+        t_probable_cause: parseInt(report.t_probable_cause),
+        t_search_consent: parseInt(report.t_search_consent),
+        t_search_warrant: parseInt(report.t_search_warrant),
+        vehicle_searched: parseInt(report.vehicle_searched),
+
+        // arrests
+        arrests: arrests,
+        driver_arrested: parseInt(report.driver_arrested),
+        passenger_arrested: parseInt(report.passenger_arrested)
+      })
+    }
+  })
+  return dataset.sort((a, b) => new Date(a.date) - new Date(b.date)) // somehow the order was getting off
+}
 
 // genRegExp :: String -> RegEx
 const genRegExp = str => new RegExp(`${str}`, 'i')
@@ -55,10 +195,12 @@ const validDate = date => {
 }
 
 module.exports = {
+  calculateStats,
   callandCache,
   dateFromFilename,
   dateFromParam,
   genRegExp,
+  formatTrafficStops,
   resolvePromise,
   sameDay,
   validDate

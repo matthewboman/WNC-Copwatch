@@ -2,7 +2,6 @@
   <div class="chart-container">
     <h2 class="title">Traffic Stops Leading to Arrests Since October 2017</h2>
 
-
     <div class="row">
       <div class="col col-md-2 offset-md-1 legend">
         <div class="key">
@@ -25,11 +24,7 @@
 
 <script>
   import * as d3 from 'd3'
-  import { formatTrafficStops } from '../../utils/functions'
   import { charts, fns } from '../../utils'
-
-  let padding = 30
-  let thisTypeDataset = []
 
   const toggleBackButton = () => {
     const backButton = d3.select("#arrestBackButton")
@@ -59,6 +54,7 @@
         ],
         h: 500,
         w: 1200,
+        padding: 30,
         xScale: null,
         yScale: null,
         yAxis: null,
@@ -68,6 +64,12 @@
         driverArrestedText: "Driver arrested",
         passenderArrestedText: "Passenger arrested"
       }
+    },
+
+    computed: {
+      tsBreakdown() {
+        return this.$store.state.traffic_reports.formattedTrafficReports
+      },
     },
 
     created() {
@@ -81,6 +83,9 @@
 
     mounted() {
       this.createSVG()
+      if (this.tsBreakdown.length) {
+        this.renderGraph(this.tsBreakdown, this.keys)
+      }
     },
 
     beforeDestroy() {
@@ -109,8 +114,8 @@
         /**
          * Scale initial data, create axis-rendering functions
          */
-        component.xScale = charts.createXScale(dataset, padding, this.w)
-        component.yScale = charts.createYScaleArea(dataset, keys, padding, this.h)
+        component.xScale = charts.createXScale(dataset, this.padding, this.w)
+        component.yScale = charts.createYScaleArea(dataset, keys, this.padding, this.h)
 
         const t = this.isMobile ? charts.formatMobileTime : charts.formatTime
         const xAxis = charts.createXTimeAxis(component.xScale, 10, t)
@@ -120,7 +125,7 @@
          * Create area, stack, and series
          */
         component.area = d3.area()
-          .x(d => component.xScale(d.data.date))
+          .x(d => component.xScale(new Date(d.data.date)))
           .y0(d => component.yScale(d[0]))
           .y1(d => component.yScale(d[1]))
 
@@ -204,12 +209,12 @@
            */
           component.svg.append("g")
             .attr("class", "axis x")
-            .attr("transform", `translate(0,${this.h - padding})`)
+            .attr("transform", `translate(0,${this.h - this.padding})`)
             .call(xAxis)
 
           component.svg.append("g")
             .attr("class", "axis y arrests")
-            .attr("transform", `translate(${padding}, 0)`)
+            .attr("transform", `translate(${this.padding}, 0)`)
             .call(component.yAxis)
 
           const backButton = component.svg.append("g")

@@ -24,7 +24,7 @@ If you'd like to contribute, clone, fork, and push your branch up for review.
 ### Commands
 
 `npm run build`
-* builds frontend application
+* builds frontend application for production
 
 `npm run parser <filename>.xlsx`
 * parses an .xlsx file and saves it to a database
@@ -41,6 +41,7 @@ If you'd like to contribute, clone, fork, and push your branch up for review.
 
 `npm run prod`
 * launches express server RestAPI in production mode
+* requires connection to MongoDB
 
 `npm run test`
 * runs Jest unit tests
@@ -48,32 +49,38 @@ If you'd like to contribute, clone, fork, and push your branch up for review.
 ### Requirements
 * Node 9.* (you'll need a version that allows for array/object destructuring)
 * MongoDB (or you can link to ours)
-* A Google Maps API key (necessary only for parser)
-* Use `.example.env` for backend development. `server.js` requires DB_URL and `parser.js` requires GOOGLE_MAP_API
+* A Google Maps API key (necessary only for daily bulletin parser)
+* Use `.example.env` for backend development. `server.js` requires DB_URL and `BulletinParser.js` requires GOOGLE_MAP_API
 
-We're sharing a remote MongoDB instance. You can use your own for backend development, but if you'd like access to our database, email [avlcommunityaction@gmail.com](mailto:avlcommunityaction@gmail.com).
+We use a remote MongoDB instance to store daily bulletins. You can use your own for backend development, but if you'd like access to our database, email [avlcommunityaction@gmail.com](mailto:avlcommunityaction@gmail.com).
 
 For frontend development, you can get a list of REST endpoints and examples in [the documentation](https://copwatch.avlcommunityaction.com/documentation) of our site and update [where the frontend calls the API](https://github.com/crashspringfield/WNC-Copwatch/blob/master/public/src/vuex/api.js).
 
 ### Version 1 development (in progress or looking for help)
 
+#### Incorporating new datasets
+* [911 calls](https://data-avl.opendata.arcgis.com/datasets/apd-cad-911-calls)
+* [community complaints](https://data-avl.opendata.arcgis.com/datasets/apd-citizen-complaints)
+* ["crime"](https://data-avl.opendata.arcgis.com/datasets/apd-public-incident-data-crime-locations)
+* [beats](https://data-avl.opendata.arcgis.com/datasets/0710dd841bea4c9285fe2cbddf89409f_0)
+
 #### Frontend Application
 * Make the rendered list of reports sortable
 * Improve user feedback while map is re-rendering
-* Start building new visualization tools with D3.js
-* Make mobile-friendly
+* Query by specific dates on map w/o having to load all
 
 #### Backend Application
 * Build spider for automatically downloading .xls
-* Caching with Redis
-* Continue replacing methods that pull from Asheville's Open Data with our DB/services
+* Cache with Redis instead of directly with Node app
+* Continue replacing methods that pull from Asheville's Open Data with our DB/services?
 
 #### Site Configuration
-* Configure webpack and write single development script
+* Code splitting to reduce size of bundle
 * Create Docker container
 
 ### Version 2 development
 * Build and incorporate new GraphQL endpoints
+* Migrate DB to Postgres
 * Typescript?
 * Leave Vue?
 * Server-side rendering?

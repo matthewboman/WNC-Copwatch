@@ -1,4 +1,5 @@
 const R = require('ramda')
+import api from '../api'
 import {
   conditionalArray,
   filterByCodes,
@@ -6,8 +7,10 @@ import {
   filterByDescription,
   filterByOfficer,
   pastWeek,
+  previousWeek,
   removeDuplicates,
   toggleArray,
+  YYYYMMDD
 } from '../../utils/functions'
 
 const state = {
@@ -76,6 +79,9 @@ const mutations = {
 }
 
 const actions = {
+  /**
+   * Component actions
+   */
   toggleBulletinDisplay: ({ commit }) => {
     commit('TOGGLE_BULLETIN_DISPLAY')
     commit('FILTER_BULLETIN_REPORTS')
@@ -103,6 +109,45 @@ const actions = {
   updateDescriptions: ({ commit }, description) => {
     commit('UPDATE_DESCRIPTION', description)
     commit('FILTER_BULLETIN_REPORTS')
+  },
+
+  /**
+   * API requests
+   */
+  getBulletinReports: ({ commit }) => {
+    commit('TOGGLE_LOADING')
+    return api.get('bulletin_reports')
+      .then(reports => {
+        commit('SET_BULLETIN_REPORTS', reports)
+        commit('ALL_BULLETINS_LOADED')
+        commit('SET_BULLETIN_DATES')
+        commit('FILTER_BULLETIN_REPORTS')
+        commit('TOGGLE_LOADING')
+      })
+      .catch(err => console.log(err))
+  },
+
+  getInitialBulletinReports: ({ commit }) => {
+    // const today = new Date('August 15, 2018') // testing or whatever
+    const today = new Date(Date.now()) // if database is kept up-to-date
+    const todayFormatted = YYYYMMDD(today)
+    const lastWeek = YYYYMMDD(new Date(previousWeek(today)))
+    commit('TOGGLE_LOADING')
+
+    return api.get(`bulletin_reports/range/${lastWeek}/${todayFormatted}`)
+      .then(reports => {
+        // if there are no reports, `SET_BULLETIN_DATES` throws an error`
+        // this happens when DB is not up to date
+        if (reports.length) {
+          commit('SET_BULLETIN_REPORTS', reports)
+          commit('SET_BULLETIN_DATES')
+          commit('FILTER_BULLETIN_REPORTS')
+        } else {
+          // do nothing
+        }
+        commit('TOGGLE_LOADING')
+      })
+      .catch(err => console.log(err))
   },
 }
 

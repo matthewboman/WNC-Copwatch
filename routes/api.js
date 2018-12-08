@@ -8,10 +8,10 @@ const BulletinController = require('../controllers/BulletinController')
 const OpenDataController = require('../controllers/OpenDataController')
 
 /*
- * daily APD bulletins
- * route works with or without query string
+ * Daily APD bulletins
  */
 router.get('/bulletin_reports', (req, res) => {
+  // route works with or without query string
   if (Object.keys(req.query).length) {
     const qs = new MongoQS()
     BulletinController.byQueryString(qs.parse(req.query))
@@ -48,9 +48,7 @@ router.get('/bulletin_reports/officer/:officer', (req, res) => {
     })
 })
 
-/*
- * start && end dates are formatted `yyyymmdd`
- */
+// start && end dates are formatted `yyyymmdd`
 router.get('/bulletin_reports/range/:start/:end', (req, res) => {
   BulletinController.bulletin_dates(req.params.start, req.params.end)
     .then(reports => res.status(200).send(reports))
@@ -62,7 +60,7 @@ router.get('/bulletin_reports/range/:start/:end', (req, res) => {
 
 
 /*
- * Open Data from the city -- traffic stops
+ * Open Data -- Traffic stops
  */
 router.get('/open_data/traffic_stops', (req, res) => {
   OpenDataController.traffic_stops()
@@ -93,6 +91,37 @@ router.get('/open_data/traffic_stops/arrests', (req, res) => {
 
 router.get('/open_data/traffic_stops/use-of-force', (req, res) => {
   OpenDataController.ts_use_of_force()
+    .then(reports => res.status(200).send(reports))
+    .catch(err => {
+      winston.error(err)
+      res.status(500).send([])
+    })
+})
+
+router.get('/open_data/traffic_stops/daily-breakdown', (req, res) => {
+  OpenDataController.ts_daily()
+    .then(reports => res.status(200).send(reports))
+    .catch(err => {
+      winston.error(err)
+      res.status(500).send([])
+    })
+})
+
+router.get('/open-data/traffic_stops/statistics', (req, res) => {
+  OpenDataController.ts_stats()
+    .then(reports => res.status(200).send(reports))
+    .catch(err => {
+      winston.error(err)
+      res.status(500).send([])
+    })
+})
+
+
+/*
+ * Open Data -- Traffic stops (backups from our DB)
+ */
+router.get('/open_data_backups/traffic_stops', (req, res) => {
+  OpenDataController.db_traffic_stops()
     .then(reports => res.status(200).send(reports))
     .catch(err => {
       winston.error(err)

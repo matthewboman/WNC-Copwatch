@@ -44,11 +44,8 @@
 
 <script>
   import * as d3 from 'd3'
-  import { formatTrafficStops } from '../../utils/functions'
   import { charts, fns } from '../../utils'
 
-  let padding = 30
-  let thisTypeDataset = []
 
   const toggleBackButton = () => {
     const backButton = d3.select("#searchBackButton")
@@ -88,6 +85,7 @@
         area: null,
         h: 500,
         w: 1200,
+        padding: 30,
         currentDataset: [],
         driverSeachedText: "Driver searched",
         passenderSearchedText: "Passenger searched",
@@ -97,6 +95,12 @@
         consentText: "Individual consented to search",
         warrantText: "Search conducted with warrant"
       }
+    },
+
+    computed: {
+      tsBreakdown() {
+        return this.$store.state.traffic_reports.formattedTrafficReports
+      },
     },
 
     created() {
@@ -110,6 +114,9 @@
 
     mounted() {
       this.createSVG()
+      if (this.tsBreakdown.length) {
+        this.renderGraph(this.tsBreakdown, this.keys)
+      }
     },
 
     beforeDestroy() {
@@ -138,8 +145,8 @@
         /**
          * Scale initial data, create axis-rendering functions
          */
-        component.xScale = charts.createXScale(dataset, padding, this.w)
-        component.yScale = charts.createYScaleArea(dataset, keys, padding, this.h)
+        component.xScale = charts.createXScale(dataset, this.padding, this.w)
+        component.yScale = charts.createYScaleArea(dataset, keys, this.padding, this.h)
 
 
         const t = this.isMobile ? charts.formatMobileTime : charts.formatTime
@@ -150,7 +157,7 @@
          * Create area, stack, and series
          */
         component.area = d3.area()
-          .x(d => component.xScale(d.data.date))
+          .x(d => component.xScale(new Date(d.data.date)))
           .y0(d => component.yScale(d[0]))
           .y1(d => component.yScale(d[1]))
 
@@ -239,12 +246,12 @@
            */
           component.svg.append("g")
             .attr("class", "axis x")
-            .attr("transform", `translate(0,${this.h - padding})`)
+            .attr("transform", `translate(0,${this.h - this.padding})`)
             .call(xAxis)
 
           component.svg.append("g")
             .attr("class", "axis y searches")
-            .attr("transform", `translate(${padding}, 0)`)
+            .attr("transform", `translate(${this.padding}, 0)`)
             .call(component.yAxis)
 
           const backButton = component.svg.append("g")

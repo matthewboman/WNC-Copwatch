@@ -224,6 +224,73 @@ module.exports = {
       ...
       `
     },
+    {
+      title: 'Daily Breakdown of Traffic Stops',
+      description: 'Returns an array of daily totals for stops, arrests, and other subcategories',
+      url: 'api/v1/open_data/traffic_stops/daily-breakdown',
+      parameters: [],
+      example: 'http://copwatch.avlcommunityaction.com/api/v1/open_data/traffic_stops/daily-breakdown',
+      result: `
+      {
+
+          "date": "2017-10-01T00:00:00.000Z",
+          "stops": 20,
+          "searches": 1,
+          "driver_searched": 1,
+          "passenger_searched": 1,
+          "personal_effects_searched": 0,
+          "search_initiated": 0,
+          "t_probable_cause": 0,
+          "t_search_consent": 0,
+          "t_search_warrant": 0,
+          "vehicle_searched": 1,
+          "arrests": 3,
+          "driver_arrested": 2,
+          "passenger_arrested": 1
+
+      },
+      {
+
+          "date": "2017-10-02T00:00:00.000Z",
+          "stops": 6,
+          "searches": 2,
+          "driver_searched": 1,
+          "passenger_searched": 0,
+          "personal_effects_searched": 1,
+          "search_initiated": 2,
+          "t_probable_cause": 1,
+          "t_search_consent": 1,
+          "t_search_warrant": 0,
+          "vehicle_searched": 1,
+          "arrests": 1,
+          "driver_arrested": 1,
+          "passenger_arrested": 0
+
+      },
+      `
+    }, {
+
+      title: 'Traffic Stop Statistics',
+      description: 'Returns an object totalling stops, searches, arrests since October 2017. Also returns different search and arrest statistics.',
+      url: '/api/v1/open-data/traffic_stops/statistics',
+      parameters: [],
+      example: 'http://copwatch.avlcommunityaction.com/api/v1/open-data/traffic_stops/statistics',
+      result: `
+      {
+
+        "stops": 5660,
+        "searches": 478,
+        "arrests": 288,
+        "seachWithConsent": 123,
+        "searchWithProbableCause": 223,
+        "searchWithWarrant": 0,
+        "searchWithoutArrest": 238,
+        "arrestWithoutSearch": 48,
+        "searchWithoutConsentWarrantOrProbableCause": 78
+
+      }
+      `
+    }
   ],
   bulletins: [
     {

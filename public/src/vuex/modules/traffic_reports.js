@@ -2,11 +2,9 @@ const R = require('ramda')
 import api from '../api'
 import {
   calculateStats,
-  categoryPerDay,
   conditionalArray,
   filterByDates,
   filterByTrafficDetails,
-  formatTrafficStops,
   pastWeek,
   removeDuplicates,
   sortByProp,
@@ -15,7 +13,6 @@ import {
 
 const state = {
   allTrafficReports: [],
-  arrestsPerDay: [],
   displayTrafficReports: false,
   displayedTrafficReports: [], // currently displayed on map
   formattedTrafficReports: [], // for d3 components
@@ -23,7 +20,6 @@ const state = {
   trafficStartDate: null,
   trafficEndDate: null,
   trafficStopStats: null,
-  searchesPerDay: [],
   selectedTrafficDetails: [], // initially empty b/c few will contain all conditions
 }
 const mutations = {
@@ -35,11 +31,11 @@ const mutations = {
   'SET_TS_DATES': (state) => {
     [state.trafficEndDate, state.trafficStartDate] = pastWeek(state.trafficDates)
   },
-  'FORMAT_TS_REPORTS': (state) => {
-    state.formattedTrafficReports = formatTrafficStops(state.allTrafficReports)
+  'SET_TS_DAILY_BREAKDOWN': (state, reports) => {
+    state.formattedTrafficReports = reports
   },
-  'CALCULATE_STATS': () => {
-    state.trafficStopStats = calculateStats(state.formattedTrafficReports)
+  'CALCULATE_STATS': (state, stats) => {
+    state.trafficStopStats = stats
   },
   'FILTER_TS_REPORTS': (state) => {
     const dateReports = reports => filterByDates(state.trafficStartDate, state.trafficEndDate, reports)
@@ -51,12 +47,6 @@ const mutations = {
       trafficDetailReports,
       conditionallyRendered
     )(state.allTrafficReports)
-  },
-  'SET_ARRESTS_PER_DAY': (state, reports) => {
-    state.arrestsPerDay = categoryPerDay('arrests', reports)
-  },
-  'SET_SEARCHES_PER_DAY': (state, reports) => {
-    state.searchesPerDay = categoryPerDay('searches', reports)
   },
   'TOGGLE_TS_DISPLAY': (state) => {
     state.displayTrafficReports = !state.displayTrafficReports
@@ -77,6 +67,9 @@ const mutations = {
 }
 
 const actions = {
+  /**
+   * Component actions
+   */
   toggleTrafficDisplay: ({ commit }) => {
     commit('TOGGLE_TS_DISPLAY')
     commit('FILTER_TS_REPORTS')
@@ -97,17 +90,34 @@ const actions = {
     commit('UPDATE_TS_DATES', dates)
     commit('FILTER_TS_REPORTS')
   },
-  getArrests: ({ commit }) => {
-    return api.get('open_data_reports/arrests')
+
+  /**
+   * API requests
+   */
+  getTSBreakdown: ({ commit }) => {
+    return api.get('open_data/traffic_stops/daily-breakdown')
       .then(reports => {
-        commit('SET_ARRESTS_PER_DAY', reports)
+        commit('SET_TS_DAILY_BREAKDOWN', reports)
       })
       .catch(err => console.log(err))
   },
-  getSearches: ({ commit }) => {
-    return api.get('open_data_reports/searches')
+
+  getTSReports: ({ commit }) => {
+    commit('TOGGLE_LOADING')
+    return api.get('open_data/traffic_stops')
       .then(reports => {
-        commit('SET_SEARCHES_PER_DAY', reports)
+        commit('SET_TS_REPORTS', reports)
+        commit('SET_TS_DATES')
+        commit('FILTER_TS_REPORTS')
+        commit('TOGGLE_LOADING')
+      })
+      .catch(err => console.log(err))
+  },
+
+  getTSStatistics: ({ commit }) => {
+    return api.get('open-data/traffic_stops/statistics')
+      .then(stats => {
+        commit('CALCULATE_STATS', stats)
       })
       .catch(err => console.log(err))
   }

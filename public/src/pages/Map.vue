@@ -34,9 +34,23 @@
       appRecords: Records
     },
 
+    computed: {
+      bulletinReports() {
+        return this.$store.state.bulletins.allBulletinReports
+      },
+      trafficReports() {
+        return this.$store.state.traffic_reports.allTrafficReports
+      }
+    },
+
     mounted() {
-      this.getTSReports()
-      this.getInitialBulletinReports()
+      // only make requests the first time
+      if (!this.trafficReports.length) {
+        this.getTSReports()
+      }
+      if (!this.bulletinReports.length) {
+        this.getInitialBulletinReports()
+      }
     },
 
     methods: {
@@ -53,6 +67,5 @@
 <style lang="scss" scoped>
   .upper {
     margin-top: 5vh;
-    // margin-bottom: 10%;
   }
 </style>
