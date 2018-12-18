@@ -57,7 +57,7 @@
           <div class="block">
             <div class="q"><h3>Accuracy</h3></div>
             <span class="a">
-               While (or prehaps because) it comes directly from Asheville's traffic stop data and APD's daily bulletins, we cannot guarantee the accuracy of the data we present.
+               While (or perhaps because) it comes directly from Asheville's traffic stop data and APD's daily bulletins, we cannot guarantee the accuracy of the data we present.
             </span>
           </div>
           <div class="block">
