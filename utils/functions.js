@@ -6,6 +6,11 @@
  * `async function` is a syntax error in ES2015. Maybe it'd work in ES2017?
  */
 
+
+// applyFilters :: [Function] -> [] -> []
+const applyFilters = (fns, arr) =>
+  fns.reduce((acc, curr) => curr(acc), arr)
+
 // calculateStats :: [{}] -> {}
 const calculateStats = reports => {
   const accumulator = {
@@ -80,6 +85,12 @@ const dateFromParam = yyyymmdd => new Date(
   yyyymmdd.substring(4, 6) - 1, // months start at 0
   yyyymmdd.substring(6, 8)
 )
+
+// dateFromArcgis :: String -> Date
+const dateFromArcgis = str => {
+  const d = new Date(str)
+  return d
+}
 
 // formatTrafficStops :: [{}] -> [{}]
 const formatTrafficStops = reports => {
@@ -195,8 +206,10 @@ const validDate = date => {
 }
 
 module.exports = {
+  applyFilters,
   calculateStats,
   callandCache,
+  dateFromArcgis,
   dateFromFilename,
   dateFromParam,
   genRegExp,

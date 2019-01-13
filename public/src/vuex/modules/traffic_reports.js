@@ -1,4 +1,4 @@
-const R = require('ramda')
+import compose from 'ramda/src/compose'
 import api from '../api'
 import {
   calculateStats,
@@ -42,7 +42,7 @@ const mutations = {
     const trafficDetailReports = reports => filterByTrafficDetails(state.selectedTrafficDetails, reports)
     const conditionallyRendered = reports => conditionalArray(state.displayTrafficReports, reports)
 
-    state.displayedTrafficReports = R.compose(
+    state.displayedTrafficReports = compose(
       dateReports,
       trafficDetailReports,
       conditionallyRendered
@@ -95,7 +95,7 @@ const actions = {
    * API requests
    */
   getTSBreakdown: ({ commit }) => {
-    return api.get('open_data/traffic_stops/daily-breakdown')
+    return api.get('open-data/traffic-stops/daily-breakdown')
       .then(reports => {
         commit('SET_TS_DAILY_BREAKDOWN', reports)
       })
@@ -104,7 +104,7 @@ const actions = {
 
   getTSReports: ({ commit }) => {
     commit('TOGGLE_LOADING')
-    return api.get('open_data/traffic_stops')
+    return api.get('open-data/traffic-stops')
       .then(reports => {
         commit('SET_TS_REPORTS', reports)
         commit('SET_TS_DATES')
@@ -115,7 +115,7 @@ const actions = {
   },
 
   getTSStatistics: ({ commit }) => {
-    return api.get('open-data/traffic_stops/statistics')
+    return api.get('open-data/traffic-stops/statistics')
       .then(stats => {
         commit('CALCULATE_STATS', stats)
       })

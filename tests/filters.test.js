@@ -36,7 +36,7 @@ it("Sorts array and removes duplicates", () => {
 it("Returns the current date formatted YYYYMMDD", () => {
   expect(
     fns.YYYYMMDD(new Date(Date.now()))
-  ).toEqual("20181125") // this will need changed whenever the test is run
+  ).toEqual("20190113") // this will need changed whenever the test is run
 })
 
 it("Returns a date formatted YYYYMMDD", () => {

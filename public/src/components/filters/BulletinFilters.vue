@@ -102,7 +102,7 @@
 
 <script>
   import { mapActions, mapState } from 'vuex'
-  import { debounce, throttle } from 'lodash'
+  import debounce from 'lodash/debounce'
 
   export default {
     data() {

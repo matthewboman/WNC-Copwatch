@@ -1,4 +1,7 @@
-const R = require('ramda')
+const all = require('ramda/src/all')
+const last = require('ramda/src/last')
+const prop = require('ramda/src/prop')
+const sortBy = require('ramda/src/sortBy')
 
 /*
  * Higer-order functions for filtering reports, processing dates & strings, etc.
@@ -38,7 +41,7 @@ const filterByDescription = (description, reports) => description.length
 
 // filterByTrafficDetails :: [String] -> [{}] -> [{}]
 const filterByTrafficDetails = (details, reports) => reports.filter(report =>
-  R.all(isTrue)(details.map(detail => trafficHashMap[detail](report)))
+  all(isTrue)(details.map(detail => trafficHashMap[detail](report)))
 )
 
 // filterByOfficer :: String -> [{}] -> [{}]
@@ -89,10 +92,10 @@ const trafficHashMap = {
 
 // pastWeek :: [Date] -> (Date, Date)
 const pastWeek = dates => {
-  const last = R.last(dates)
-  let previous = new Date(last)
+  const lastDate = last(dates)
+  let previous = new Date(lastDate)
   previous.setDate(previous.getDate() - 7)
-  return [last, previous.toISOString()]
+  return [lastDate, previous.toISOString()]
 }
 
 // previousWeek :: Date -> Date
@@ -118,7 +121,7 @@ const scaleWidth = padding => {
 }
 
 // sortByProp :: String -> [{}] -> [{}]
-const sortByProp = property => R.sortBy(R.prop(property))
+const sortByProp = property => sortBy(prop(property))
 
 // toggleArray :: [a] -> a -> [a]
 const toggleArray = (array, value) => array.includes(value)

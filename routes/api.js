@@ -7,10 +7,10 @@ const winston = require('../config/winston')
 const BulletinController = require('../controllers/BulletinController')
 const OpenDataController = require('../controllers/OpenDataController')
 
-/*
+/**
  * Daily APD bulletins
  */
-router.get('/bulletin_reports', (req, res) => {
+router.get('/bulletin-reports', (req, res) => {
   // route works with or without query string
   if (Object.keys(req.query).length) {
     const qs = new MongoQS()
@@ -30,7 +30,7 @@ router.get('/bulletin_reports', (req, res) => {
   }
 })
 
-router.get('/bulletin_reports/description/:word', (req, res) => {
+router.get('/bulletin-reports/description/:word', (req, res) => {
   BulletinController.bulletin_description(req.params.word)
     .then(reports => res.status(200).send(reports))
     .catch(err => {
@@ -39,7 +39,7 @@ router.get('/bulletin_reports/description/:word', (req, res) => {
     })
 })
 
-router.get('/bulletin_reports/officer/:officer', (req, res) => {
+router.get('/bulletin-reports/officer/:officer', (req, res) => {
   BulletinController.bulletin_officer(req.params.officer)
     .then(reports => res.status(200).send(reports))
     .catch(err => {
@@ -49,7 +49,7 @@ router.get('/bulletin_reports/officer/:officer', (req, res) => {
 })
 
 // start && end dates are formatted `yyyymmdd`
-router.get('/bulletin_reports/range/:start/:end', (req, res) => {
+router.get('/bulletin-reports/range/:start/:end', (req, res) => {
   BulletinController.bulletin_dates(req.params.start, req.params.end)
     .then(reports => res.status(200).send(reports))
     .catch(err => {
@@ -59,11 +59,25 @@ router.get('/bulletin_reports/range/:start/:end', (req, res) => {
 })
 
 
-/*
- * Open Data -- Traffic stops
+/**
+ * Open Data - Beats
  */
-router.get('/open_data/traffic_stops', (req, res) => {
-  OpenDataController.traffic_stops()
+router.get('/open-data/beats', (req, res) => {
+  OpenDataController.beats()
+    .then(beats => res.status(200).send(beats))
+    .catch(err => {
+      winston.error(err)
+      res.status(500).send([])
+    })
+})
+
+
+/**
+ * Open Data - Complaints
+ */
+router.get('/open-data/complaints', (req, res) => {
+  const qs = new MongoQS()
+  OpenDataController.complaints(qs.parse(req.query))
     .then(reports => res.status(200).send(reports))
     .catch(err => {
       winston.error(err)
@@ -71,7 +85,49 @@ router.get('/open_data/traffic_stops', (req, res) => {
     })
 })
 
-router.get('/open_data/traffic_stops/searches', (req, res) => {
+
+/**
+ * Open Data - Incidents
+ */
+router.get('/open-data/incidents', (req, res) => {
+  const qs = new MongoQS()
+  OpenDataController.incidents(qs.parse(req.query))
+    .then(reports => res.status(200).send(reports))
+    .catch(err => {
+      winston.error(err)
+      res.status(500).send([])
+    })
+})
+
+
+/**
+ * Open Data - Use of Force
+ */
+router.get('/open-data/use-of-force', (req, res) => {
+  const qs = new MongoQS()
+  OpenDataController.use_of_force(qs.parse(req.query))
+    .then(reports => res.status(200).send(reports))
+    .catch(err => {
+      winston.error(err)
+      res.status(500).send([])
+    })
+})
+
+
+/**
+ * Open Data -- Traffic stops
+ */
+router.get('/open-data/traffic-stops', (req, res) => {
+  const qs = new MongoQS()
+  OpenDataController.traffic_stops(qs.parse(req.query))
+    .then(reports => res.status(200).send(reports))
+    .catch(err => {
+      winston.error(err)
+      res.status(500).send([])
+    })
+})
+
+router.get('/open-data/traffic-stops/searches', (req, res) => {
   OpenDataController.ts_searches()
     .then(reports => res.status(200).send(reports))
     .catch(err => {
@@ -80,7 +136,7 @@ router.get('/open_data/traffic_stops/searches', (req, res) => {
     })
 })
 
-router.get('/open_data/traffic_stops/arrests', (req, res) => {
+router.get('/open-data/traffic-stops/arrests', (req, res) => {
   OpenDataController.ts_arrests()
     .then(reports => res.status(200).send(reports))
     .catch(err => {
@@ -89,7 +145,7 @@ router.get('/open_data/traffic_stops/arrests', (req, res) => {
     })
 })
 
-router.get('/open_data/traffic_stops/use-of-force', (req, res) => {
+router.get('/open-data/traffic-stops/use-of-force', (req, res) => {
   OpenDataController.ts_use_of_force()
     .then(reports => res.status(200).send(reports))
     .catch(err => {
@@ -98,7 +154,7 @@ router.get('/open_data/traffic_stops/use-of-force', (req, res) => {
     })
 })
 
-router.get('/open_data/traffic_stops/daily-breakdown', (req, res) => {
+router.get('/open-data/traffic-stops/daily-breakdown', (req, res) => {
   OpenDataController.ts_daily()
     .then(reports => res.status(200).send(reports))
     .catch(err => {
@@ -107,7 +163,7 @@ router.get('/open_data/traffic_stops/daily-breakdown', (req, res) => {
     })
 })
 
-router.get('/open-data/traffic_stops/statistics', (req, res) => {
+router.get('/open-data/traffic-stops/statistics', (req, res) => {
   OpenDataController.ts_stats()
     .then(reports => res.status(200).send(reports))
     .catch(err => {
@@ -117,10 +173,10 @@ router.get('/open-data/traffic_stops/statistics', (req, res) => {
 })
 
 
-/*
+/**
  * Open Data -- Traffic stops (backups from our DB)
  */
-router.get('/open_data_backups/traffic_stops', (req, res) => {
+router.get('/open-data-backups/traffic-stops', (req, res) => {
   OpenDataController.db_traffic_stops()
     .then(reports => res.status(200).send(reports))
     .catch(err => {
