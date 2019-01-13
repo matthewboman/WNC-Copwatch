@@ -76,6 +76,8 @@ For frontend development, you can get a list of REST endpoints and examples in [
 
 #### Site Configuration
 * Code splitting to reduce size of bundle
+* Write deploy script
+* Create config file for pm2
 * Create Docker container
 
 ### Version 2 development

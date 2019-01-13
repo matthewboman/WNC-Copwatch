@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-const R = require('ramda')
 
 import bulletins from './modules/bulletins'
 import traffic_reports from './modules/traffic_reports'

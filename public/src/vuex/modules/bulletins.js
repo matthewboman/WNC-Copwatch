@@ -1,4 +1,4 @@
-const R = require('ramda')
+import compose from 'ramda/src/compose'
 import api from '../api'
 import {
   conditionalArray,
@@ -42,7 +42,7 @@ const mutations = {
     const descriptionReports = reports => filterByDescription(state.descriptionSearchTerm, reports)
     const conditionallyRendered = reports => conditionalArray(state.displayBulletinReports, reports)
 
-    state.displayedBulletinReports = R.compose(
+    state.displayedBulletinReports = compose(
       officerReports,
       codeReports,
       dateReports,
@@ -134,7 +134,7 @@ const actions = {
     const lastWeek = YYYYMMDD(new Date(previousWeek(today)))
     commit('TOGGLE_LOADING')
 
-    return api.get(`bulletin_reports/range/${lastWeek}/${todayFormatted}`)
+    return api.get(`bulletin-reports/range/${lastWeek}/${todayFormatted}`)
       .then(reports => {
         // if there are no reports, `SET_BULLETIN_DATES` throws an error`
         // this happens when DB is not up to date

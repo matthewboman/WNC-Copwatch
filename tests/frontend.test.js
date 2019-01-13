@@ -1,5 +1,5 @@
 const open_reports = require('../reports/mockOpenData')
-const fns = require('../public/src/utils/functions')
+const fns = require('../utils/functions')
 
 it("Builds data", () => {
   expect(
@@ -17,6 +17,7 @@ it("Builds data", () => {
         "search_initiated": 0,
         "searches": 2,
         "stops": 2,
+        "t_probable_cause": 0,
         "t_search_consent": 0,
         "t_search_warrant": 0,
         "vehicle_searched": 0
@@ -32,6 +33,7 @@ it("Builds data", () => {
         "search_initiated": 0,
         "searches": 1,
         "stops": 1,
+        "t_probable_cause": 0,
         "t_search_consent": 0,
         "t_search_warrant": 0,
         "vehicle_searched": 0
