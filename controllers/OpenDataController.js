@@ -24,7 +24,7 @@ const dbTrafficStops = () => new Promise((resolve, reject) => {
 // filterAfter :: {} -> [] -> []
 const filterAfter = (query, arr) => arr.filter(r => {
   if (query.after) {
-    const occured = fns.dateFromArcgis(r.attributes.occurred_date)
+    const occured = fns.dateFromArcgis(r.dateTime)
     const param = fns.dateFromParam(query.after.toString())
     return occured >= param
   }
@@ -34,22 +34,57 @@ const filterAfter = (query, arr) => arr.filter(r => {
 // filterBefore :: {} -> [] -> []
 const filterBefore = (query, arr) => arr.filter(r => {
   if (query.before) {
-    const occured = fns.dateFromArcgis(r.attributes.occurred_date)
+    const occured = fns.dateFromArcgis(r.dateTime)
     const param = fns.dateFromParam(query.before.toString())
     return occured <= param
   }
   return true
 })
 
-// filterSearch :: String -> {} -> [] -> []
-const filterSearch = (type, query, arr) => arr.filter(r => {
+// filterOne :: String -> {} -> [] -> []
+const filterOne = (type, query, arr) => arr.filter(r => {
   if (query[type]) {
-    if (r.attributes[type]) {
-      return r.attributes[type].toLowerCase().includes(query[type].toLowerCase())
+    if (r[type]) {
+      return r[type].toLowerCase().includes(query[type].toLowerCase())
     }
     return false // handle `null`
   }
   return true // apply filter only if part of query
+})
+
+// filterArrests :: {} -> [] -> []
+const filterArrests = (query, arr) => arr.filter(report => {
+  if (query.arrests) {
+    return (
+      report.driver_arrested == 1 ||
+      report.passenger_arrested == 1
+    )
+  }
+  return true
+})
+
+// filterSearches :: {} -> [] -> []
+const filterSearches = (query, arr) => arr.filter(report => {
+  if (query.searches) {
+    return (
+      report.driver_searched == 1 ||
+      report.passenger_searched == 1||
+      report.personal_effects_searched == 1 ||
+      report.search_initiated == 1 ||
+      report.t_search_consent == 1 ||
+      report.t_search_warrant == 1 ||
+      report.vehicle_searched == 1
+    )
+  }
+  return true
+})
+
+// filterUseOfForce :: {} -> [] -> []
+const filterUseOfForce = (query, arr) => arr.filter(report => {
+  if (query.use_of_force) {
+    return report.off_use_force == 1
+  }
+  return true
 })
 
 module.exports = {
@@ -65,10 +100,10 @@ module.exports = {
   complaints: query => OpenDataService.getComplaintData()
     .then(reports => {
       const after = r => filterAfter(query, r)
-      const allegation = r => filterSearch('allegation', query, r)
+      const allegation = r => filterOne('allegation', query, r)
       const before = r => filterBefore(query, r)
-      const disposition = r => filterSearch('disposition', query, r)
-      const status = r => filterSearch('status', query, r)
+      const disposition = r => filterOne('disposition', query, r)
+      const status = r => filterOne('status', query, r)
 
       return fns.applyFilters(
         [
@@ -87,11 +122,21 @@ module.exports = {
    */
   incidents: query => OpenDataService.getIncidentsData()
     .then(reports => {
-      console.log(query)
-      const geo_beat = r => filterSearch('geo_beat', query, r)
+      const address = r => filterOne('address', query, r)
+      const after = r => filterAfter(query, r)
+      const before = r => filterBefore(query, r)
+      const geo_beat = r => filterOne('geo_beat', query, r)
+      const offense_short_description = r => filterOne('offense_short_description', query, r)
+      const offense_long_description = r => filterOne('offense_long_description', query, r)
+
       return fns.applyFilters(
         [
-          geo_beat
+          address,
+          after,
+          before,
+          geo_beat,
+          offense_short_description,
+          offense_long_description
         ],
         reports
       )
@@ -100,10 +145,25 @@ module.exports = {
   /**
    * APD Traffic Stops after Oct. 2017
    */
-  traffic_stops: param => OpenDataService.getTSData()
+  traffic_stops: query => OpenDataService.getTSData()
     .then(reports => {
-      console.log(param)
-      return reports
+      const after = r => filterAfter(query, r)
+      const arrests = r => filterArrests(query, r)
+      const before = r => filterBefore(query, r)
+      const searches = r => filterSearches(query, r)
+      const use_of_force = r =>filterUseOfForce(query, r)
+
+      const tmp = fns.applyFilters(
+        [
+          after,
+          arrests,
+          before,
+          searches,
+          use_of_force
+        ],
+        reports
+      )
+      return tmp
     }),
 
   ts_daily: () => OpenDataService.getTSData()
@@ -128,7 +188,6 @@ module.exports = {
 
   ts_stats: () => OpenDataService.getTSData()
     .then(reports => {
-      console.log(reports)
       const formatted = fns.formatTrafficStops(reports)
       return fns.calculateStats(formatted)
     }),
@@ -145,22 +204,22 @@ module.exports = {
     .then(reports => {
       const after = r => filterAfter(query, r)
       const before = r => filterBefore(query, r)
-      const county_location = r => filterSearch('county_location', query, r)
-      const disposition = r => filterSearch('disposition', query, r)
-      const officer_condition_injury = r => filterSearch('officer_condition_injury', query, r)
-      const status = r => filterSearch('status', query, r)
-      const subject_injury = r => filterSearch('subject_injury', query, r)
-      const subject_race = r => filterSearch('subject_race', query, r)
-      const subject_resistence = r => filterSearch('subject_resistence', query, r)
-      const subject_sex = r => filterSearch('subject_sex', query, r)
-      const type_force_used = r => filterSearch('type_force_used', query, r)
+      const disposition = r => filterOne('disposition', query, r)
+      const geo_beat = r => filterOne('geo_beat', query, r)
+      const officer_condition_injury = r => filterOne('officer_condition_injury', query, r)
+      const status = r => filterOne('status', query, r)
+      const subject_injury = r => filterOne('subject_injury', query, r)
+      const subject_race = r => filterOne('subject_race', query, r)
+      const subject_resistence = r => filterOne('subject_resistence', query, r)
+      const subject_sex = r => filterOne('subject_sex', query, r)
+      const type_force_used = r => filterOne('type_force_used', query, r)
 
       return fns.applyFilters(
         [
           after,
           before,
-          county_location,
           disposition,
+          geo_beat,
           officer_condition_injury,
           status,
           subject_race,
@@ -170,7 +229,6 @@ module.exports = {
         ],
         reports
       )
-      return reports
     }),
 
     /**

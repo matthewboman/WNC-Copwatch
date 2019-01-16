@@ -9,6 +9,17 @@
       <ul class="parameters">
         <li v-for="parameter in endpoint.parameters" class="parameter">{{ parameter }}</li>
       </ul>
+    <!-- <p v-if="endpoint.queries.length">
+    Queries:
+    <p>
+      <ul class="queries">
+        <li v-for="query in endpoint.queries" class="query">
+          <span class="query-name">{{ query.name }}</span>
+          <ul class="query-examples">
+            <li v-for="example in query.examples" class="example">{{ example }}</li>
+          </ul>
+        </li>
+      </ul> -->
     <div class="example-block">
       <div class="url" @click="displayResult = !displayResult">
         <span class="label">Example URL: </span>
@@ -71,7 +82,7 @@
         .carat {
           margin-left: 12px;
           padding-right: 24px;
-          background-image: url('../../icons/carat-down.png'); 
+          background-image: url('../../icons/carat-down.png');
           background-size: 24px;
           background-repeat: no-repeat;
           background-position: right;

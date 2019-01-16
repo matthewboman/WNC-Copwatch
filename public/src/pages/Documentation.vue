@@ -5,7 +5,7 @@
       <div class="row">
         <div class="col">
           <p>
-            We make the REST endpoints we use to populate our map application publically available, opening the possibility for others to collect and process the data we've pulled. All endpoints are appended to the base url of <span class="base-url">http://copwatch.avlcommunityaction.com</span>, take GET requests, and return JSON.
+            We make the REST endpoints we use to populate our map application publically available, opening the possibility for others to collect and process the data we've pulled. All endpoints are appended to the base url of <span class="base-url">https://copwatch.avlcommunityaction.com</span>, take GET requests, and return JSON.
           </p>
         </div>
       </div>
@@ -22,6 +22,51 @@
       </div>
       <app-endpoint
         v-for="(endpoint, index) in traffic_stops"
+        :key="index"
+        v-bind:endpoint="endpoint"></app-endpoint>
+    </section>
+
+    <section class="block open-data">
+      <h2 class="block-heading">Open Data Incidents</h2>
+      <div class="row intro">
+        <div class="col">
+          <p>
+            These endpoints pull from and simplify <a href="https://data-avl.opendata.arcgis.com/datasets/apd-crime-locations" target="_blank" rel="nofollow" referrerpolicy="no-referrer">Asheville's open data API</a> on "crime" since the beginning of 2005. For a better understanding of the data, you can refer to their page.
+          </p>
+        </div>
+      </div>
+      <app-endpoint
+        v-for="(endpoint, index) in incidents"
+        :key="index"
+        v-bind:endpoint="endpoint"></app-endpoint>
+    </section>
+
+    <section class="block open-data">
+      <h2 class="block-heading">Open Data Complaints</h2>
+      <div class="row intro">
+        <div class="col">
+          <p>
+            These endpoints pull from and simplify <a href="https://data-avl.opendata.arcgis.com/datasets/apd-citizen-complaints" target="_blank" rel="nofollow" referrerpolicy="no-referrer">Asheville's open data API</a> on complaints since the beginning of 2018. For a better understanding of the data, you can refer to their page.
+          </p>
+        </div>
+      </div>
+      <app-endpoint
+        v-for="(endpoint, index) in complaints"
+        :key="index"
+        v-bind:endpoint="endpoint"></app-endpoint>
+    </section>
+
+    <section class="block open-data">
+      <h2 class="block-heading">Open Data Use of Force</h2>
+      <div class="row intro">
+        <div class="col">
+          <p>
+            These endpoints pull from and simplify <a href="https://data-avl.opendata.arcgis.com/datasets/7bc4d78e6bc64f2c9ca02fb2486aad0f_0" target="_blank" rel="nofollow" referrerpolicy="no-referrer">Asheville's open data API</a> on use of force since the beginning of 2018. For a better understanding of the data, you can refer to their page.
+          </p>
+        </div>
+      </div>
+      <app-endpoint
+        v-for="(endpoint, index) in use_of_force"
         :key="index"
         v-bind:endpoint="endpoint"></app-endpoint>
     </section>
@@ -48,7 +93,7 @@
    * Endpoint information is stored in '../data/endponts.js'
    */
   import { Endpoint } from '../components'
-  import { traffic_stops, bulletins } from '../data/endpoints'
+  import { bulletins, complaints, incidents, traffic_stops, use_of_force } from '../data/endpoints'
 
   export default {
     components: {
@@ -56,8 +101,11 @@
     },
     data() {
       return {
+        bulletins,
+        complaints,
+        incidents,
         traffic_stops,
-        bulletins
+        use_of_force
       }
     }
   }

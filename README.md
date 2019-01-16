@@ -1,15 +1,13 @@
 # WNC Copwatch
 This application provides an interactive map and other visualization tools to represent police data for community members in hopes of creating greater accountability and transparency. Check out the current site at [https://copwatch.avlcommunityaction.com/](https://copwatch.avlcommunityaction.com/)
 
-The Node.js backend parses police reports, saves them to a database, and provides a RestAPI endpoint. It also processes data from [Asheville's datasets of APD traffic stops](http://data.ashevillenc.gov/datasets/apd-traffic-stops-after-oct-1-2017).
+The Node.js backend parses police reports, saves them to a database, and provides RestAPI endpoints. It also processes data from [Asheville's open datasets](http://data.ashevillenc.gov/datasets).
 
 The application renders a map of police reports and provides different filter parameters so users can see reports by officer, code, and/or date. It also processes the data and displays the results in various charts and graphs. The frontend is written in Vue, Leaflet, and D3.
 
 
 ## Police Reports
 Reports are pulled from the daily [APD](https://apdp2c.buncombecounty.org/dailybulletin.aspx) and [Buncome County Sheriff](https://bcsdp2c.buncombecounty.org/dailybulletin.aspx) police bulletins. They are then parsed to JSON and stored in a Mongo database.
-
-Traffic stop data is also pulled in from the [city's records](http://data.ashevillenc.gov/datasets/apd-traffic-stops-after-oct-1-2017). and simplified for our purposes.
 
 For a more detailed explanation of resources, as well as available REST endpoints, check out the project's [documentation](https://copwatch.avlcommunityaction.com/documentation).
 
@@ -27,8 +25,8 @@ If you'd like to contribute, clone, fork, and push your branch up for review.
 * builds frontend application for production
 
 `npm run parser <filename>.xlsx`
-* parses an .xlsx file and saves it to a database
-* `filename` will be in force.YYYY-MM-DD.xlsx format (sheriff.2018-02-28.xlsx or apd.2018-02-28.xlsx)
+* parses an .xls file and saves it to a database
+* `filename` will be in force.YYYY-MM-DD.xls format (sheriff.2018-02-28.xls or apd.2018-02-28.xls)
 
 `npm run dev`
 * launches Vue app with hot-reload server (see `webpack.config.json`)
@@ -71,7 +69,7 @@ For frontend development, you can get a list of REST endpoints and examples in [
 
 #### Backend Application
 * Build spider for automatically downloading .xls
-* Cache with Redis instead of directly with Node app
+* Cache with Redis
 * Continue replacing methods that pull from Asheville's Open Data with our DB/services?
 
 #### Site Configuration
