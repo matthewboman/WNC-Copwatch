@@ -9,8 +9,15 @@ module.exports = {
       title: 'All Open Data Traffic Stop Reports',
       description: "Returns all open data traffic stop reports since October 2017",
       url: '/api/v1/open-data/traffic-stops',
-      parameters: [],
-      example: 'http://copwatch.avlcommunityaction.com/api/v1/open-data/traffic-stops',
+      parameters: [
+        'after',
+        'arrests',
+        'before',
+        'searches',
+        'use_of_force'
+      ],
+      queries: [],
+      example: 'https://copwatch.avlcommunityaction.com/api/v1/open-data/traffic-stops',
       result: `
       {
         'force': 'APD_open',
@@ -18,9 +25,9 @@ module.exports = {
         'address': '700-BLK HENDERSONVILLE RD',
         'dateTime': '2017-10-01T00:00:00.000Z',
         'latLng': {
-            'lat': 35.54585783101094,
-            'lng': -82.53175793170404
-          },
+          'lat': 35.54585783101094,
+          'lng': -82.53175793170404
+        },
         'driver_searched': '0',
         'driver_arrested': '0',
         'no_contraband_found': '0',
@@ -46,7 +53,8 @@ module.exports = {
       description: "Returns reports where driver, passenger, car, and/or property have been searched. This inclues both searches where consent has been given and reports where officer claimed 'reasonable suspicion'.",
       url: '/api/v1/open-data/traffic-stops/searches',
       parameters: [],
-      example: 'http://copwatch.avlcommunityaction.com/api/v1/open-data/traffic-stops/searches',
+      queries: [],
+      example: 'https://copwatch.avlcommunityaction.com/api/v1/open-data/traffic-stops/searches',
       result: `
       {
         "force": "APD_open",
@@ -107,7 +115,8 @@ module.exports = {
       description: 'Returns reports where driver and/or passenger were arrested. Includes arrest from outstanding warrants and as a result of searches.',
       url: '/api/v1/open-data/traffic-stops/arrests',
       parameters: [],
-      example: 'http://copwatch.avlcommunityaction.com/api/v1/open-data/traffic-stops/arrests',
+      queries: [],
+      example: 'https://copwatch.avlcommunityaction.com/api/v1/open-data/traffic-stops/arrests',
       result: `
       {
         "force": "APD_open",
@@ -168,7 +177,8 @@ module.exports = {
       description: 'Returns reports where officer reported using force.',
       url: '/api/v1/open-data/traffic-stops/use-of-force',
       parameters: [],
-      example: 'http://copwatch.avlcommunityaction.com/api/v1/open-data/traffic-stops/use-of-force',
+      queries: [],
+      example: 'https://copwatch.avlcommunityaction.com/api/v1/open-data/traffic-stops/use-of-force',
       result: `
       {
         "force": "APD_open",
@@ -229,44 +239,42 @@ module.exports = {
       description: 'Returns an array of daily totals for stops, arrests, and other subcategories',
       url: '/api/v1/open-data/traffic-stops/daily-breakdown',
       parameters: [],
-      example: 'http://copwatch.avlcommunityaction.com/api/v1/open-data/traffic-stops/daily-breakdown',
+      queries: [],
+      example: 'https://copwatch.avlcommunityaction.com/api/v1/open-data/traffic-stops/daily-breakdown',
       result: `
       {
-
-          "date": "2017-10-01T00:00:00.000Z",
-          "stops": 20,
-          "searches": 1,
-          "driver_searched": 1,
-          "passenger_searched": 1,
-          "personal_effects_searched": 0,
-          "search_initiated": 0,
-          "t_probable_cause": 0,
-          "t_search_consent": 0,
-          "t_search_warrant": 0,
-          "vehicle_searched": 1,
-          "arrests": 3,
-          "driver_arrested": 2,
-          "passenger_arrested": 1
-
+        "date": "2017-10-01T00:00:00.000Z",
+        "stops": 20,
+        "searches": 1,
+        "driver_searched": 1,
+        "passenger_searched": 1,
+        "personal_effects_searched": 0,
+        "search_initiated": 0,
+        "t_probable_cause": 0,
+        "t_search_consent": 0,
+        "t_search_warrant": 0,
+        "vehicle_searched": 1,
+        "arrests": 3,
+        "driver_arrested": 2,
+        "passenger_arrested": 1
       },
       {
-
-          "date": "2017-10-02T00:00:00.000Z",
-          "stops": 6,
-          "searches": 2,
-          "driver_searched": 1,
-          "passenger_searched": 0,
-          "personal_effects_searched": 1,
-          "search_initiated": 2,
-          "t_probable_cause": 1,
-          "t_search_consent": 1,
-          "t_search_warrant": 0,
-          "vehicle_searched": 1,
-          "arrests": 1,
-          "driver_arrested": 1,
-          "passenger_arrested": 0
-
+        "date": "2017-10-02T00:00:00.000Z",
+        "stops": 6,
+        "searches": 2,
+        "driver_searched": 1,
+        "passenger_searched": 0,
+        "personal_effects_searched": 1,
+        "search_initiated": 2,
+        "t_probable_cause": 1,
+        "t_search_consent": 1,
+        "t_search_warrant": 0,
+        "vehicle_searched": 1,
+        "arrests": 1,
+        "driver_arrested": 1,
+        "passenger_arrested": 0
       },
+      ...
       `
     }, {
 
@@ -274,42 +282,81 @@ module.exports = {
       description: 'Returns an object totalling stops, searches, arrests since October 2017. Also returns different search and arrest statistics.',
       url: '/api/v1/open-data/traffic-stops/statistics',
       parameters: [],
-      example: 'http://copwatch.avlcommunityaction.com/api/v1/open-data/traffic-stops/statistics',
+      queries: [],
+      example: 'https://copwatch.avlcommunityaction.com/api/v1/open-data/traffic-stops/statistics',
       result: `
       {
-
-        "stops": 5660,
-        "searches": 478,
-        "arrests": 288,
-        "seachWithConsent": 123,
-        "searchWithProbableCause": 223,
+        "stops": 6210,
+        "searches": 531,
+        "arrests": 327,
+        "seachWithConsent": 133,
+        "searchWithProbableCause": 250,
         "searchWithWarrant": 0,
-        "searchWithoutArrest": 238,
-        "arrestWithoutSearch": 48,
-        "searchWithoutConsentWarrantOrProbableCause": 78
-
+        "searchWithoutArrest": 258,
+        "arrestWithoutSearch": 54,
+        "searchWithoutConsentWarrantOrProbableCause": 83
       }
+      (query as of 1-13-19)
       `
     }
   ],
   incidents: [
     {
       title: 'All Incidents',
-      description: 'Returns all open data incident reports since ???. This enpoint allows for query strings.',
+      description: 'Returns all open data incident reports since ???. This enpoint is in development but will allow for query strings in the future.',
       url: '/open-data/incidents',
       parameters: [
-        'geo_beat'
+        'address',
+        'after',
+        'before',
+        'geo_beat',
+        'offense_short_description',
+        'offense_long_description'
       ],
-      example: '',
+      queries: [],
+      example: 'https://copwatch.avlcommunityaction.com/api/v1/open-data/incidents?before=20181215&after=20181212',
       result: `
-
+      {
+        "agency": "APD",
+        "dateTime": 1544716800000,
+        "address": "900-BLK BREVARD RD",
+        "geo_beat": "AA3",
+        "geo_report_area": "A369",
+        "latLng": {
+          "lat": 35.524997032472534,
+          "lng": -82.60390320062093
+        },
+        "offense_short_description": "SHOPLIFT|NONE|NONE",
+        "offense_long_description": "LARCENY SHOPLIFTING",
+        "offense_code": "23C",
+        "offense_group_code": "06",
+        "offense_group_level": "Part I",
+        "force": "APD_open"
+      },
+      {
+        "agency": "APD",
+        "dateTime": 1544828700000,
+        "address": "1000-BLK PATTON AVE",
+        "geo_beat": "AA1",
+        "geo_report_area": "A169",
+        "latLng": {
+          "lat": 35.58721572577508,
+          "lng": -82.59446841890174
+        },
+        "offense_short_description": "DAMGREAL|NONE|NONE",
+        "offense_long_description": "DAMAGE TO REAL PROPERTY",
+        "offense_code": "290",
+        "offense_group_code": "14",
+        "offense_group_level": "Part II",
+        "force": "APD_open"
+      },
       `
     }
   ],
   complaints: [
     {
       title: 'All Complaints',
-      description: "Returns all open data complaints against the APD as reported by the APD since ???. This enpoint allows for query strings. Dates for `before` and `after` are formatted YYYYMMDD. Other queries match against the provided fields. For an understanding of each field's possible values, make a request without any query string",
+      description: "Returns all open data complaints against the APD as reported by the APD since March (?) 2018. This enpoint allows for query strings. Dates for `before` and `after` are formatted YYYYMMDD. Other queries match against the provided fields. For an understanding of each field's possible values, make a request without any query string",
       url: '/open-data/complaints',
       parameters: [
         'after',
@@ -318,21 +365,40 @@ module.exports = {
         'disposition',
         'status'
       ],
-      example: '',
+      queries: [ ],
+      example: 'https://copwatch.avlcommunityaction.com/api/v1/open-data/complaints?status=completed&disposition=sustained',
       result: `
-
+      {
+        "incident_type": "Citizen Complaint",
+        "dateTime": "3/13/2018",
+        "disposition": "Sustained",
+        "status": "Completed",
+        "allegation": "Rules of Conduct - P-2 Unsatisfactory Performance",
+        "ia_no": "C2018-003",
+        "objectid": 1
+      },
+      {
+        "incident_type": "Citizen Complaint",
+        "dateTime": "4/1/2018",
+        "disposition": "Sustained",
+        "status": "Completed",
+        "allegation": "Rules of Conduct - R-1 Courtesy",
+        "ia_no": "C2018-006",
+        "objectid": 4
+      },
+      ...
       `
     }
   ],
   use_of_force: [
     {
       title: 'All Use of Force Reports',
-      description: "Returns all open data reports in which APD documented using force since ???. This enpoint allows for query strings. Dates for `before` and `after` are formatted YYYYMMDD. Other queries match against the provided fields. For an understanding of each field's possible values, make a request without any query string",
+      description: "Returns all open data reports in which APD documented using force since January 2018. This enpoint allows for query strings. Dates for `before` and `after` are formatted YYYYMMDD. Other queries match against the provided fields. For an understanding of each field's possible values, make a request without any query string",
       url: '/open-data/use-of-force',
       parameters: [
         'after',
         'before',
-        'county_location',
+        'geo_beat',
         'disposition',
         'officer_condition_injury',
         'status',
@@ -342,26 +408,30 @@ module.exports = {
         'subject_sex',
         'type_force_used'
       ],
-      example: 'http://localhost:3000/api/v1/open-data/use-of-force?before=20180202&type_force_used=taser',
+      queries: [
+        {
+          name: 'after',
+          examples: [ '20180401', '20181031' ]
+        }
+      ],
+      example: 'https://copwatch.avlcommunityaction.com/api/v1/open-data/use-of-force?before=20180202&type_force_used=taser',
       result: `
       [
         {
-          "attributes": {
-            "objectid": 3,
-            "ia_no": "UOF2018-003",
-            "subject_id": "subject_9612010",
-            "incident_type": "Use of force",
-            "county_location": "AC1",
-            "occurred_date": "01/31/2018",
-            "type_force_used": "Taser Deployment",
-            "subject_resistence": "Aggressive Resistance",
-            "officer_condition_injury": "",
-            "subject_sex": "Male",
-            "subject_race": "White",
-            "disposition": "Within Policy",
-            "status": "Completed",
-            "subject_injury": "Treated at Hospital"
-          }
+          "objectid": 3,
+          "ia_no": "UOF2018-003",
+          "subject_id": "subject_9612010",
+          "incident_type": "Use of force",
+          "geo_beat": "AC1",
+          "dateTime": "01/31/2018",
+          "type_force_used": "Taser Deployment",
+          "subject_resistence": "Aggressive Resistance",
+          "officer_condition_injury": "",
+          "subject_sex": "Male",
+          "subject_race": "White",
+          "disposition": "Within Policy",
+          "status": "Completed",
+          "subject_injury": "Treated at Hospital"
         }
       ]
 
@@ -374,7 +444,8 @@ module.exports = {
       description: "Returns all reports from APD's (and Buncombe County Sheriff's) daily bulletin reports. This allows for query strings with option parameters for officer name, arrest description, and race",
       url: '/api/v1/bulletin-reports',
       parameters: [ 'officer', 'description', 'race' ],
-      example: 'http://copwatch.avlcommunityaction.com/api/v1/bulletin-reports?officer=~Craig&race=~white&description=~speed',
+      queries: [],
+      example: 'https://copwatch.avlcommunityaction.com/api/v1/bulletin-reports?officer=~Craig&race=~white&description=~speed',
       result: `
       {
         "report_id": "",
@@ -415,7 +486,7 @@ module.exports = {
       description: "Returns reports from APD's daily bulletin where reason for arrest includes search term. (Note: many times specific words are abbreviated--e.g. 'mari' for 'marijuanna'--so results may be limited. Using the map can give you a feel for the different search terms to try.)",
       url: '/api/v1/bulletin-reports/description/:word',
       parameters: [ 'word' ],
-      example: 'http://copwatch.avlcommunityaction.com/api/v1/bulletin-reports/description/para',
+      example: 'https://copwatch.avlcommunityaction.com/api/v1/bulletin-reports/description/para',
       result: `
       {
         "report_id": "",
@@ -455,7 +526,7 @@ module.exports = {
       description: 'Returns reports where officer last name matches parameter',
       url: '/api/v1/bulletin-reports/officer/:officer',
       parameters: [ 'officer' ],
-      example: 'http://copwatch.avlcommunityaction.com/api/v1/bulletin-reports/officer/pig',
+      example: 'https://copwatch.avlcommunityaction.com/api/v1/bulletin-reports/officer/pig',
       result: `
       {
         "report_id": "",
@@ -495,7 +566,7 @@ module.exports = {
       description: 'Returns reports between start and end date. Dates are formatted YYYYMMDD.',
       url: '/api/v1/bulletin-reports/range/:start/:end',
       parameters: [ 'start', 'end' ],
-      example: 'http://copwatch.avlcommunityaction.com/api/v1/bulletin-reports/range/20180725/20180727',
+      example: 'https://copwatch.avlcommunityaction.com/api/v1/bulletin-reports/range/20180725/20180727',
       result: `
       {
         "report_id": "",
