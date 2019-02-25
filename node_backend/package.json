@@ -1,0 +1,37 @@
+{
+  "name": "wnc-copwatch-node-backend",
+  "version": "0.1.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "dev": "yarn start:server:watch",
+    "start:server": "ts-node server.ts",
+    "start:server:watch": "nodemon --exec yarn start:server -e ts",
+    "test": "jest --testEnvironment node"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/bluebird": "^3.5.25",
+    "@types/body-parser": "^1.17.0",
+    "@types/cors": "^2.8.4",
+    "@types/express": "^4.16.1",
+    "@types/graphql": "^14.0.7",
+    "@types/graphql-iso-date": "^3.3.1",
+    "@types/node": "^11.9.5",
+    "@types/redis": "^2.8.10",
+    "nodemon": "^1.18.10",
+    "ts-node": "^8.0.2",
+    "typescript": "^3.3.3333"
+  },
+  "dependencies": {
+    "apollo-server-express": "^2.4.6",
+    "bluebird": "^3.5.3",
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "graphql": "^14.1.1",
+    "graphql-iso-date": "^3.6.1",
+    "redis": "^2.8.0"
+  }
+}

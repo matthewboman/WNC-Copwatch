@@ -1,0 +1,44 @@
+Arguments: 
+  /usr/bin/node /usr/share/yarn/bin/yarn.js add --dev typescript ts-node nodemon
+
+PATH: 
+  /home/crash/.npm-global/bin:/home/crash/.cargo/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/home/crash/.cargo/bin:/home/crash/.npm-global/bin
+
+Yarn version: 
+  1.12.3
+
+Node version: 
+  10.15.1
+
+Platform: 
+  linux x64
+
+Trace: 
+  SyntaxError: /home/crash/programming/js/projects/WNC-Copwatch/node_backend/package.json: Unexpected token } in JSON at position 314
+      at JSON.parse (<anonymous>)
+      at /usr/share/yarn/lib/cli.js:1631:59
+      at Generator.next (<anonymous>)
+      at step (/usr/share/yarn/lib/cli.js:304:30)
+      at /usr/share/yarn/lib/cli.js:315:13
+
+npm manifest: 
+  {
+    "name": "wnc-copwatch-node-backend",
+    "version": "0.1.0",
+    "description": "",
+    "main": "server.js",
+    "scripts": {
+      "dev": "yarn start:server:watch",
+      "start:server": "ts-node server.ts",
+      "start:server:watch": "nodemon --exec yarn start:server -e ts",
+      "test": "jest --testEnvironment node",
+    },
+    "author": "",
+    "license": "MIT"
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
