@@ -54,7 +54,9 @@ We use a remote MongoDB instance to store daily bulletins. You can use your own 
 
 For frontend development, you can get a list of REST endpoints and examples in [the documentation](https://copwatch.avlcommunityaction.com/documentation) of our site and update [where the frontend calls the API](https://github.com/crashspringfield/WNC-Copwatch/blob/master/public/src/vuex/api.js).
 
-### Version 1 development (in progress or looking for help)
+### Version 1 development
+
+**I'm not currently adding new features to this branch, but feel free to if you'd like. It exists for bug fixes and security patches. If you would like to help out, check out the `v2` branch for active development.**
 
 #### Incorporating new datasets
 * [911 calls](https://data-avl.opendata.arcgis.com/datasets/apd-cad-911-calls)
@@ -77,10 +79,3 @@ For frontend development, you can get a list of REST endpoints and examples in [
 * Write deploy script
 * Create config file for pm2
 * Create Docker container
-
-### Version 2 development
-* Build and incorporate new GraphQL endpoints
-* Migrate DB to Postgres
-* Typescript?
-* Leave Vue?
-* Server-side rendering?
