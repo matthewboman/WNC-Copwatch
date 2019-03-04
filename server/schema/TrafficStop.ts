@@ -9,7 +9,12 @@ export default gql`
       search: Boolean,
       reason: String
     ): [TrafficStop!]!
+
     trafficStop(id: String!): TrafficStop!
+
+    dailyTrafficStopStats: [DailyTrafficStats]
+
+    allTrafficStopStats: AllTrafficStopStats
   }
 
   type TrafficStop {
@@ -34,5 +39,37 @@ export default gql`
     search_initiated: Boolean
     vehicle_searched: Boolean
     search_category: [String]
+  }
+
+  type DailyTrafficStats {
+    date: Date
+
+    arrests: Int
+    driver_arrested: Int
+    passenger_arrested: Int
+
+    searches: Int
+    driver_searched: Int
+    passenger_searched: Int
+    no_contraband_found: Int
+    personal_effects_searched: Int
+    search_initiated: Int
+    vehicle_searched: Int
+
+    t_search_consent: Int
+    t_search_warrant: Int
+    t_probable_cause: Int
+  }
+
+  type AllTrafficStopStats {
+    stops: Int
+    searches: Int
+    arrests: Int
+    searchWithoutArrest: Int
+    arrestWithoutSearch: Int
+    seachWithConsent: Int
+    searchWithProbableCause: Int
+    searchWithWarrant: Int
+    searchWithoutConsentWarrantOrProbableCause: Int
   }
 `

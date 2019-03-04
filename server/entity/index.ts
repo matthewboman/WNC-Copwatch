@@ -5,12 +5,13 @@ import LatLng from './LatLng'
 import OpenDataQuery from './OpenDataQuery'
 import { OpenDataReport, UnformattedReport } from './OpenDataReport'
 import Query from './Query'
-import TrafficStop from './TrafficStop'
+import { DailyTrafficStats, TrafficStop } from './TrafficStop'
 import UseOfForce from './UseOfForce'
 
 export {
   Beat,
   Complaint,
+  DailyTrafficStats,
   Incident,
   LatLng,
   OpenDataQuery,

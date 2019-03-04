@@ -9,6 +9,9 @@ import {
  * Functions shared across components
  */
 
+// boolToInt :: Bool -> Number
+const boolToInt = (bool: Boolean): Number => bool === true ? 1 : 0
+
 // flatten :: [[]] -> []
 const flatten = (arr: []): any => [].concat.apply([], arr)
 
@@ -147,6 +150,7 @@ const filterUseOfForce = (
 
 export {
   // shared functions
+  boolToInt,
   fixBool,
   fixDate,
   flatten,
