@@ -116,7 +116,7 @@ const actions = {
    */
   getBulletinReports: ({ commit }) => {
     commit('TOGGLE_LOADING')
-    return api.get('bulletin_reports')
+    return api.get('bulletin-reports')
       .then(reports => {
         commit('SET_BULLETIN_REPORTS', reports)
         commit('ALL_BULLETINS_LOADED')
