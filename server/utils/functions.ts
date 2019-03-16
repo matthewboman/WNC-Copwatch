@@ -58,8 +58,8 @@ const tupleToObj = (arr: []): Array<LatLng> => arr.map((geo: Number[]) => {
 // applyFilters :: [ Function ] -> [ OpenDataReport ] -> [ OpenDataReport ]
 const applyFilters = (
   fns: Array<Function>,
-  arr: Array<OpenDataReport>
-): Array<OpenDataReport> => {
+  arr: Array<any>
+): Array<any> => {
   return fns.reduce((acc: Array<OpenDataReport>, curr: Function) => curr(acc), arr)
 }
 

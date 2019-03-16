@@ -1,0 +1,10 @@
+type Query {
+  beats: [Beat]
+  beat(beat: String): Beat
+}
+
+type Beat {
+  id: Int
+  beat: String
+  outline: [LatLng]
+}
