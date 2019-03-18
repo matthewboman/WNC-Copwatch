@@ -1,6 +1,7 @@
 import {
   LatLng,
   OpenDataReport,
+  Name,
   Query,
   TrafficStop
 } from '../entity'
@@ -41,6 +42,35 @@ const fixDate = (yyyymmdd: String): Date => {
 
 // dateFromQuery :: String -> Date
 const dateFromQuery = (date: string): Date => new Date(date)
+
+// mergeByKey :: [{}] -> [{}] -> [{}]
+const mergeByKey = (arr1: Array<any>, arr2: Array<any>): Array<any> => {
+  return arr1.map(x => Object.assign(x, arr2.find(y => y.id == x.id)))
+}
+
+// const nthIndexOf :: String -> String -> Int -> Int
+const nthIndexOf = (str: string, pattern: string, n: number): number => {
+  let i = -1
+
+  while (n-- && i++ < str.length) {
+    i = str.indexOf(pattern, i)
+    if (i < 0) break
+  }
+  return i
+}
+
+// parseName :: String -> Name
+const parseName = (name: string): Name => {
+  const comma = name.indexOf(',')
+  const firstSpace = name.indexOf(' ') + 1
+  const secondSpace = nthIndexOf(name, ' ', 2) + 1
+  return {
+    firstName: name.slice(firstSpace, secondSpace - 1).toLowerCase(),
+    firstInitial: name.slice(firstSpace, firstSpace + 1).toLowerCase(),
+    middleInitial: name.slice(secondSpace, secondSpace + 1).toLowerCase() || '' ,
+    lastName: name.slice(0, comma).toLowerCase(),
+  }
+}
 
 // tupleToObj :: [[]] -> LatLng
 const tupleToObj = (arr: []): Array<LatLng> => arr.map((geo: Number[]) => {
@@ -154,6 +184,9 @@ export {
   fixBool,
   fixDate,
   flatten,
+  mergeByKey,
+  nthIndexOf,
+  parseName,
   tupleToObj,
 
   // filters for Open Data reducers

@@ -6,7 +6,7 @@ export interface TrafficStop extends OpenDataReport {
   agency: String
   geometry: LatLng
   reason: String
-  tsId: String
+  traffic_stop_id: Number
   off_use_force: Boolean
   off_phys_resis: Boolean
 
@@ -24,6 +24,14 @@ export interface TrafficStop extends OpenDataReport {
   t_probable_cause: Boolean
 
   search_category: [string?] // consent, warrant, probable cause
+
+  // potentially brought in from combining data
+  name_type?: String
+  name_type_sequence?: String
+  name_age?: String
+  name_race?: String
+  name_sex?: String
+  name_ethnicity?: String
 }
 
 export interface DailyTrafficStats {

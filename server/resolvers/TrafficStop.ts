@@ -46,7 +46,7 @@ const formatTrafficStops = (stops: Array<UnformattedReport>): Array<TrafficStop>
         lng: stop.geometry ? stop.geometry.y : null
       },
       reason: stop.attributes.stop_sbi_desc || '',
-      tsId: stop.attributes.traffic_stop_id || '',
+      traffic_stop_id: stop.attributes.traffic_stop_id || '',
       off_use_force: fixBool(stop.attributes.off_use_force),
       off_phys_resis: fixBool(stop.attributes.off_phys_resis),
 

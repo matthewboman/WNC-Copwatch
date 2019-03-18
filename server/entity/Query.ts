@@ -1,4 +1,6 @@
 export default interface Query {
+  id?: string
+  
   before?: String
   after?: String
 
@@ -18,4 +20,6 @@ export default interface Query {
   status?: String
 
   description?: String
+
+  lastName?: String
 }

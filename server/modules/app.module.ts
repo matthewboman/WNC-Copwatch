@@ -5,6 +5,7 @@ import { Express } from 'express'
 import { BeatModule } from './beat'
 import { ComplaintModule } from './complaint'
 import { IncidentModule } from './incident'
+import { OfficerModule } from './officer'
 import { TrafficStopModule } from './trafficStop'
 import { UseOfForceModule } from './useOfForce'
 
@@ -18,6 +19,7 @@ export const AppModule = new GraphQLModule<IAppModuleConfig>({
     BeatModule,
     ComplaintModule,
     IncidentModule,
+    OfficerModule,
     TrafficStopModule,
     UseOfForceModule,
   ],

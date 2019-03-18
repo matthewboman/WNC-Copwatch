@@ -2,6 +2,7 @@ import Beat from './Beat'
 import Complaint from './Complaint'
 import Incident from './Incident'
 import LatLng from './LatLng'
+import { Officer, Name } from './Officer'
 import OpenDataQuery from './OpenDataQuery'
 import { OpenDataReport, UnformattedReport } from './OpenDataReport'
 import Query from './Query'
@@ -14,8 +15,10 @@ export {
   DailyTrafficStats,
   Incident,
   LatLng,
+  Officer,
   OpenDataQuery,
   OpenDataReport,
+  Name,
   Query,
   TrafficStop,
   UnformattedReport,

@@ -22,7 +22,7 @@ type TrafficStop {
   agency: String
   geometry: LatLng
   reason: String
-  tsId: String
+  traffic_stop_id: Int
   off_use_force: Boolean
   off_phys_resis: Boolean
 
@@ -36,6 +36,11 @@ type TrafficStop {
   search_initiated: Boolean
   vehicle_searched: Boolean
   search_category: [String]
+
+  name_age: String,
+  name_race: String,
+  name_sex: String,
+  name_ethnicity: String
 }
 
 type DailyTrafficStats {

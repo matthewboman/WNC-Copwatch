@@ -23,7 +23,8 @@ import {
 export class TrafficStopProvider {
   httpService: HttpService
   baseURL: string = "https://services.arcgis.com/aJ16ENn1AaqdFlqx/arcgis/rest/services"
-  trafficStopUrl: string = "APDTrafficStops/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json"
+  trafficStopURL: string = "APDTrafficStops/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json"
+  detailsURL: string = "APDTrafficStops/FeatureServer/2/query?where=1%3D1&outFields=*&outSR=4326&f=json"
   formattedTrafficStops: Array<TrafficStop>
   dailyStats: Array<DailyTrafficStats>
   allStats: {}
@@ -34,10 +35,9 @@ export class TrafficStopProvider {
 
   async getTrafficStops(args: Query): Promise<Array<any>> {
     if (!this.formattedTrafficStops) {
-      const rawTrafficStops: Array<UnformattedReport> = await this.httpService
-        .get(this.trafficStopUrl)
-        .then(data => data.features)
-      this.formattedTrafficStops = this.formatTrafficStops(rawTrafficStops)
+      const rawTrafficStops = await this.getReports(this.trafficStopURL)
+      const stopDetails = await this.getReports(this.detailsURL)
+      this.formattedTrafficStops = this.formatTrafficStops(rawTrafficStops, stopDetails)
         .slice(0,100) // TESTING
     }
 
@@ -64,10 +64,9 @@ export class TrafficStopProvider {
 
   async getDailyTrafficStopStats(): Promise<Array<DailyTrafficStats>> {
     if (!this.formattedTrafficStops) {
-      const rawTrafficStops: Array<UnformattedReport> = await this.httpService
-        .get(this.trafficStopUrl)
-        .then(data => data.features)
-      this.formattedTrafficStops = this.formatTrafficStops(rawTrafficStops)
+      const rawTrafficStops = await this.getReports(this.trafficStopURL)
+      const stopDetails = await this.getReports(this.detailsURL)
+      this.formattedTrafficStops = this.formatTrafficStops(rawTrafficStops, stopDetails)
         .slice(0,100) // TESTING
     }
 
@@ -78,10 +77,9 @@ export class TrafficStopProvider {
 
   async getAllTrafficStopStats(): Promise<{}> {
     if (!this.formattedTrafficStops) {
-      const rawTrafficStops: Array<UnformattedReport> = await this.httpService
-        .get(this.trafficStopUrl)
-        .then(data => data.features)
-      this.formattedTrafficStops = this.formatTrafficStops(rawTrafficStops)
+      const rawTrafficStops = await this.getReports(this.trafficStopURL)
+      const stopDetails = await this.getReports(this.detailsURL)
+      this.formattedTrafficStops = this.formatTrafficStops(rawTrafficStops, stopDetails)
         .slice(0,100) // TESTING
     }
 
@@ -94,7 +92,15 @@ export class TrafficStopProvider {
     return this.allStats
   }
 
-  private formatTrafficStops (stops: Array<UnformattedReport>): Array<TrafficStop> {
+  async getReports(url: string): Promise<Array<UnformattedReport>> {
+    return await this.httpService.get(url)
+      .then(data => data.features)
+  }
+
+  private formatTrafficStops (
+    stops: Array<UnformattedReport>,
+    details: Array<any>
+  ): Array<TrafficStop> {
     return stops.map((stop: UnformattedReport) => {
       // create field for given search reason
       let categories: [string?] = []
@@ -109,6 +115,22 @@ export class TrafficStopProvider {
         categories.push("Search warrant")
       }
 
+      // TODO: this is a heavy calculation and takes minutes to resolve
+      // extract to a specific function
+      // const match = details
+      //   .map(d => d.attributes)
+      //   .filter(d => d.name_type === 'DRIV')
+      //   .find(d => d.traffic_stop_id == stop.attributes.traffic_stop_id) // inconsisten types from API
+      //
+      // const { name_age, name_race, name_sex, name_ethnicity } = match
+      //   ? match
+      //   : {
+      //     name_age: '',
+      //     name_race: '',
+      //     name_sex: '',
+      //     name_ethnicity: ''
+      //   }
+
       const trafficStop: TrafficStop = {
         id: stop.attributes.objectid,
 
@@ -120,7 +142,7 @@ export class TrafficStopProvider {
           lng: stop.geometry ? stop.geometry.y : null
         },
         reason: stop.attributes.stop_sbi_desc || '',
-        tsId: stop.attributes.traffic_stop_id || '',
+        traffic_stop_id: stop.attributes.traffic_stop_id || '',
         off_use_force: fixBool(stop.attributes.off_use_force),
         off_phys_resis: fixBool(stop.attributes.off_phys_resis),
 
