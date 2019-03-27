@@ -3,7 +3,8 @@ type Query {
   officer(
     lastName: String,
     firstInitial: String,
-    id: Int
+    middleInitial: String,
+    id: Int,
   ): [Officer]
 }
 
@@ -15,4 +16,6 @@ type Officer {
   lastName: String
   position: String
   division: String
+  bulletins: [Bulletin] # will return null for `officers` b/c calculation heavy af
+  useOfForce: [UseOfForce] # will return null for `officers` b/c calculation heavy af
 }

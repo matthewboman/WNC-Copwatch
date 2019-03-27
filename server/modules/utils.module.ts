@@ -7,8 +7,8 @@ export const UtilsModule = new GraphQLModule({
     scalar Date
 
     type LatLng {
-      lat: Int
-      lng: Int
+      lat: Float
+      lng: Float
     }
   `,
   resolvers: {

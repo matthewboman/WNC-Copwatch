@@ -10,7 +10,8 @@ import {
   applyFilters,
   filterOne,
   filterBefore,
-  filterAfter
+  filterAfter,
+  filterExactDate
 } from '../../../utils/functions'
 
 @Injectable()
@@ -24,7 +25,7 @@ export class UseOfForceProvider {
     this.httpService = new HttpService(this.baseURL)
   }
 
-  async getAllUseOfForce(query: Query): Promise<Array<UseOfForce>> {
+  async getAllUseOfForce(query: any): Promise<Array<UseOfForce>> {
     if (!this.formattedUseOfForce) {
       const rawUseOfForce: Array<UnformattedReport> = await this.httpService.get(this.useOfForceURL)
         .then(data => data.features)
@@ -34,6 +35,7 @@ export class UseOfForceProvider {
     // partially apply filters
     const before = (reports: Array<UseOfForce>) => filterBefore(query, reports)
     const after = (reports: Array<UseOfForce>) => filterAfter(query, reports)
+    const exact = (reports: Array<UseOfForce>) => filterExactDate(query, reports)
     const disposition = (reports: Array<UseOfForce>) => filterOne('disposition', query, reports)
     const geo_beat = (reports: Array<UseOfForce>) => filterOne('geo_beat', query, reports)
     const officer_condition_injury = (reports: Array<UseOfForce>) => filterOne('officer_condition_injury', query, reports)
@@ -48,6 +50,7 @@ export class UseOfForceProvider {
     return applyFilters([
       before,
       after,
+      exact,
       disposition,
       geo_beat,
       officer_condition_injury,

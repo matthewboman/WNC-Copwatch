@@ -13,3 +13,5 @@ export const UseOfForceModule = new GraphQLModule({
   typeDefs: loadSchemaFiles(__dirname + '/schema/'),
   resolvers: loadResolversFiles(__dirname + '/resolvers/')
 })
+
+export { UseOfForceProvider }

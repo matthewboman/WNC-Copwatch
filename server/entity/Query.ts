@@ -1,8 +1,9 @@
 export default interface Query {
   id?: string
-  
+
   before?: String
   after?: String
+  exact?: String
 
   arrest?: Boolean
   search?: Boolean
@@ -22,4 +23,6 @@ export default interface Query {
   description?: String
 
   lastName?: String
+  firstInitial?: String
+  middleInitial?: String
 }
