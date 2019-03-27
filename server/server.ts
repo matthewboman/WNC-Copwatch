@@ -1,4 +1,6 @@
 import 'dotenv/config'
+import 'reflect-metadata'
+
 import { ApolloServer } from 'apollo-server-express'
 import Promise from 'bluebird'
 import bodyParser from 'body-parser'
@@ -8,8 +10,6 @@ import { createServer } from 'http'
 import redis from 'redis'
 import { createConnection } from 'typeorm'
 
-// import schema from './schema'
-// import resolvers from './resolvers'
 import { AppModule } from './modules/app.module'
 
 // Connect to the Redis client, coverting callbacks to promises for async/await
@@ -29,11 +29,8 @@ createConnection().then((connection) => {
 
   const { schema, context } = AppModule.forRoot({ connection })
 
-  // Create the Apollo server
+  // Create the Apollo server, passing in schema && db connection
   const apollo = new ApolloServer({
-    // typeDefs: schema,
-    // resolvers: resolvers as any,
-    // context: { client }
     schema,
     context
   })
@@ -46,10 +43,10 @@ createConnection().then((connection) => {
 
   // Wrap the Express server and launch the application
   const httpServer = createServer(app)
-
   apollo.installSubscriptionHandlers(httpServer)
 
   httpServer.listen(process.env.PORT, () => {
     console.log(`Listening on ${process.env.PORT}`)
   })
 })
+.catch(err => console.log(err))

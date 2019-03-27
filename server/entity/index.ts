@@ -1,4 +1,5 @@
 import Beat from './Beat'
+import Bulletin from './Bulletin'
 import Complaint from './Complaint'
 import Incident from './Incident'
 import LatLng from './LatLng'
@@ -11,6 +12,7 @@ import UseOfForce from './UseOfForce'
 
 export {
   Beat,
+  Bulletin,
   Complaint,
   DailyTrafficStats,
   Incident,

@@ -1,3 +1,7 @@
+/**
+* Functions shared across components
+*/
+
 import {
   LatLng,
   OpenDataReport,
@@ -6,9 +10,10 @@ import {
   TrafficStop
 } from '../entity'
 
-/**
- * Functions shared across components
- */
+
+// dateWithoutTime :: Date -> Date
+const dateWithoutTime = (d: Date): Date =>
+  new Date(`${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`)
 
 // boolToInt :: Bool -> Number
 const boolToInt = (bool: Boolean): Number => bool === true ? 1 : 0
@@ -67,7 +72,7 @@ const parseName = (name: string): Name => {
   return {
     firstName: name.slice(firstSpace, secondSpace - 1).toLowerCase(),
     firstInitial: name.slice(firstSpace, firstSpace + 1).toLowerCase(),
-    middleInitial: name.slice(secondSpace, secondSpace + 1).toLowerCase() || '' ,
+    middleInitial: name.slice(secondSpace, secondSpace + 1).toLowerCase() || '',
     lastName: name.slice(0, comma).toLowerCase(),
   }
 }
@@ -118,6 +123,19 @@ const filterBefore = (
   }
   return true // apply filter only if part of query
 })
+
+const filterExactDate = (
+  query: Query,
+  arr: Array<OpenDataReport>
+) => {
+  if (query.exact) {
+    const date = dateFromQuery(query.exact as string)
+    return arr.filter((r: OpenDataReport) => {
+      return dateWithoutTime(r.date).getTime() == date.getTime()
+    })
+  }
+  return arr
+}
 
 // TODO: This was developed for a URL and can probably be implemented in a cleaner
 // way depending on to what degree we update field names and make each queryable
@@ -181,6 +199,7 @@ const filterUseOfForce = (
 export {
   // shared functions
   boolToInt,
+  dateWithoutTime,
   fixBool,
   fixDate,
   flatten,
@@ -194,6 +213,7 @@ export {
   filterAfter,
   filterArrests,
   filterBefore,
+  filterExactDate,
   filterOne,
   filterSearches,
   filterUseOfForce,

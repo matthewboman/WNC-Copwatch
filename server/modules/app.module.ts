@@ -3,6 +3,8 @@ import { Connection } from 'typeorm'
 import { Express } from 'express'
 
 import { BeatModule } from './beat'
+import { BulletinModule } from './bulletin'
+import { DatabaseModule } from './database'
 import { ComplaintModule } from './complaint'
 import { IncidentModule } from './incident'
 import { OfficerModule } from './officer'
@@ -17,6 +19,8 @@ export const AppModule = new GraphQLModule<IAppModuleConfig>({
   name: 'App',
   imports: ({ config: { connection } }) => [
     BeatModule,
+    BulletinModule,
+    DatabaseModule.forRoot({ connection }),
     ComplaintModule,
     IncidentModule,
     OfficerModule,
