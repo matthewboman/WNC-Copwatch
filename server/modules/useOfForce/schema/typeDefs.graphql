@@ -2,6 +2,7 @@ type Query {
   useOfForce(
     before: String
     after: String
+    exact: String
     disposition: String
     status: String
     geo_beat: String
@@ -31,4 +32,6 @@ type UseOfForce {
   subject_sex: String
   subject_race: String
   subject_injury: String
+
+  # possible_officers: [Officer]
 }

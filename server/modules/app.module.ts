@@ -4,6 +4,7 @@ import { Express } from 'express'
 
 import { BeatModule } from './beat'
 import { BulletinModule } from './bulletin'
+import { CombinedModule } from './combined'
 import { DatabaseModule } from './database'
 import { ComplaintModule } from './complaint'
 import { IncidentModule } from './incident'
@@ -20,6 +21,7 @@ export const AppModule = new GraphQLModule<IAppModuleConfig>({
   imports: ({ config: { connection } }) => [
     BeatModule,
     BulletinModule,
+    // CombinedModule,
     DatabaseModule.forRoot({ connection }),
     ComplaintModule,
     IncidentModule,

@@ -1,5 +1,5 @@
 import Beat from './Beat'
-import Bulletin from './Bulletin'
+import { Bulletin, ExtendedBulletin, OriginalBulletin } from './Bulletin'
 import Complaint from './Complaint'
 import Incident from './Incident'
 import LatLng from './LatLng'
@@ -15,11 +15,13 @@ export {
   Bulletin,
   Complaint,
   DailyTrafficStats,
+  ExtendedBulletin,
   Incident,
   LatLng,
   Officer,
   OpenDataQuery,
   OpenDataReport,
+  OriginalBulletin,
   Name,
   Query,
   TrafficStop,

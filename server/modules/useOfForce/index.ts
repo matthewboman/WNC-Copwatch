@@ -2,13 +2,22 @@ import { GraphQLModule } from '@graphql-modules/core'
 import { ProviderScope } from '@graphql-modules/di'
 import { loadResolversFiles, loadSchemaFiles } from '@graphql-modules/sonar'
 
+import { BeatModule, BeatProvider } from '../beat'
+import { BulletinModule, BulletinProvider } from '../bulletin'
 import { UtilsModule } from '../utils.module'
 import { UseOfForceProvider } from './providers/useOfForce.provider'
+import { OfficerModule, OfficerProvider } from '../officer'
 
-export const UseOfForceModule = new GraphQLModule({
+export const UseOfForceModule: any = new GraphQLModule({
   name: 'UseOfForce',
-  imports: [ UtilsModule ],
-  providers: [ UseOfForceProvider ],
+  imports: [
+    // BeatModule,
+    // OfficerModule,
+    UtilsModule
+  ],
+  providers: [
+    UseOfForceProvider
+  ],
   defaultProviderScope: ProviderScope.Session,
   typeDefs: loadSchemaFiles(__dirname + '/schema/'),
   resolvers: loadResolversFiles(__dirname + '/resolvers/')

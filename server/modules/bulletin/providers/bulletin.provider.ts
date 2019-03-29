@@ -23,6 +23,7 @@ export class BulletinProvider {
     const {
       before,
       after,
+      exact,
       description,
       lastName,
       firstInitial,
@@ -50,6 +51,14 @@ export class BulletinProvider {
     if (after) {
       query.andWhere('bulletin.date >= :after', { after })
     }
+    // if (exact) {
+    //   const prev = new Date(new Date(exact as string).getTime() - (24 * 60 * 60 * 1000))
+    //   const next = new Date(new Date(exact as string).getTime() + (24 * 60 * 60 * 1000))
+    //   // console.log('e', exact)
+    //   console.log('n', next)
+    //   query.andWhere('bulletin.date >= :prev', { prev })
+    //     .andWhere('bulletin.date <= :next', { next })
+    // }
 
     return await query.getMany()
   }

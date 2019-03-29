@@ -3,7 +3,9 @@ import {
   dateWithoutTime,
   filterExactDate,
   nthIndexOf,
+  parseID,
   parseName,
+  withinShape,
 } from '../utils/functions'
 
 describe("shared functions", () => {
@@ -42,6 +44,47 @@ describe("shared functions", () => {
   it("creates a new date", () => {
     const date = new Date('December 21, 2012 04:20:00')
     expect(dateWithoutTime(date)).toEqual(new Date('12/21/2012'))
+  })
+
+  it('parses an incident numbder from a traffic stop', () => {
+    const stop = {
+      "report_id": "",
+      "force": "apd",
+      "code": "TC",
+      "description": " Cited on Charge of Expired Registration Card/tag (18017308),",
+      "address": "Broadway St/zillicoa St, Asheville, ",
+      "race": "White",
+      "officer": "Hunter, B D",
+      "_id": "5b7df923aa4ccb2d189dd55d",
+      "dateTime": "2018-07-08T04:00:00.000Z",
+      "latLng": {
+        "lat": 35.6134958,
+        "lng": -82.5709289
+      }
+    }
+    expect(parseID(stop)).toEqual(18017308)
+  })
+
+  it('verifies a point is in the shape', () => {
+    const shape = [
+      [ 5, 5 ],
+      [-5, 5 ],
+      [-5,-5 ],
+      [ 5,-5 ]
+    ]
+    const point = [ 2, 3 ]
+    expect(withinShape(point, shape)).toBe(true)
+  })
+
+  it('verifies an point is outside the shape', () => {
+    const shape = [
+      [ 5, 5 ],
+      [-5, 5 ],
+      [-5,-5 ],
+      [ 5,-5 ]
+    ]
+    const point = [ 6, 3 ]
+    expect(withinShape(point, shape)).toBe(false)
   })
 })
 

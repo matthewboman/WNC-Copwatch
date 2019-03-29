@@ -2,6 +2,7 @@ type Query {
   apd_bulletins (
     after: String,
     before: String,
+    exact: String,
     description: String,
     lastName: String,
     firstInitial: String,

@@ -1,19 +1,23 @@
 import { Injectable } from '@graphql-modules/di'
 import { Connection } from 'typeorm'
-import * as d3 from 'd3-geo'
 
 import { HttpService } from '../../../services'
 import {
   Bulletin,
+  ExtendedBulletin,
   Officer,
-  UnformattedReport
+  UnformattedReport,
+  UseOfForce
 } from '../../../entity'
 import { DatabaseProvider } from '../../database/providers/database.provider'
+import { BeatProvider } from '../../beat/providers/beat.provider'
 import { BulletinProvider } from '../../bulletin/providers/bulletin.provider'
 import { UseOfForceProvider } from '../../useOfForce/providers/useOfForce.provider'
 import {
   applyFilters,
-  parseName
+  dateWithoutTime,
+  parseName,
+  withinShape
 } from '../../../utils/functions'
 
 const filterById = (args: any, officers: Array<Officer>) => args.id
@@ -32,6 +36,28 @@ const filterByMiddleInitial = (args: any, officers: Array<Officer>) => args.midd
   ? officers.filter((officer: Officer) => officer.middleInitial === args.middleInitial.toLowerCase())
   : officers
 
+interface BulletinAndUOF {
+  bulletin: Bulletin
+  report: UseOfForce
+}
+
+const findSameDay = (bulletins: Bulletin[], useOfForceReports: UseOfForce[]) => {
+  let sameDay: BulletinAndUOF[] = []
+  let beatsToSearch: string[] = []
+  bulletins.forEach(bulletin => {
+    useOfForceReports.forEach(report => {
+      if (dateWithoutTime(report.date).getTime() == dateWithoutTime(bulletin.date).getTime()) {
+        sameDay.push({ bulletin, report })
+
+        if (!beatsToSearch.includes(report.geo_beat)) {
+          beatsToSearch.push(report.geo_beat)
+        }
+      }
+    })
+  })
+  return { sameDay, beatsToSearch }
+}
+
 @Injectable()
 export class OfficerProvider {
   httpService: HttpService
@@ -42,6 +68,7 @@ export class OfficerProvider {
 
   constructor(
     private connection: Connection,
+    private beatProvider: BeatProvider,
     private bulletinProvider: BulletinProvider,
     private useOfForceProvider: UseOfForceProvider,
     private databaseProvider: DatabaseProvider,
@@ -95,12 +122,40 @@ export class OfficerProvider {
     const bulletins = await bulletinQuery.getMany()
 
     // match bulletins to Use of Force data
-    // TODO: use `exact` query on bulletins to get matching dates
-    // TODO: iterate over beats with `d3.geoContains()` to see if bulletin LatLng falls w/in beat
+    const useOfForceReports = await this.useOfForceProvider.getAllUseOfForce({})
+    const { sameDay, beatsToSearch } = findSameDay(bulletins, useOfForceReports)
+
+    // get only necessary beats
+    const promises = beatsToSearch.map(async (beat) =>
+      await this.beatProvider.rawBeatById(beat)
+    )
+    const beats = await Promise.all(promises)
+
+    // see if geometry of bulletin is within beat
+    const possibleUseOfForce = sameDay
+      .filter((combined: BulletinAndUOF) => {
+        let withinBeat = false
+        const { bulletin } = combined
+        const point = bulletin.geometry
+          ? [ bulletin.geometry.lng, bulletin.geometry.lat ]
+          : null
+        if (!point) return false // initial geometry lookup may have failed
+
+        beats.forEach(beat => {
+          const shape = beat.geometry.rings[0]
+          if (withinShape(point, shape)) {
+            withinBeat = true
+          }
+        })
+
+        return withinBeat
+      })
+      .map((combined: BulletinAndUOF) => combined.report)
 
     return matches.map(match => ({
       ...match,
-      bulletins
+      bulletins,
+      possibleUseOfForce
     }))
   }
 

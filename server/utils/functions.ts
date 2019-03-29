@@ -1,10 +1,10 @@
 /**
 * Functions shared across components
 */
-
 import {
   LatLng,
   OpenDataReport,
+  OriginalBulletin,
   Name,
   Query,
   TrafficStop
@@ -48,6 +48,27 @@ const fixDate = (yyyymmdd: String): Date => {
 // dateFromQuery :: String -> Date
 const dateFromQuery = (date: string): Date => new Date(date)
 
+// TODO: write in more declaritive way
+// TODO: generate types for https://github.com/mikolalysenko/robust-point-in-polygon
+const withinShape = (point: any, bounds: any) => {
+  // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+
+  const x = point[0]
+  const y = point[1]
+  let inside = false
+
+  for (let i = 0, j = bounds.length - 1; i < bounds.length; j = i++) {
+      let xi = bounds[i][0], yi = bounds[i][1];
+      let xj = bounds[j][0], yj = bounds[j][1];
+
+      let intersect = ((yi > y) != (yj > y))
+          && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+      if (intersect) inside = !inside;
+  }
+
+  return inside
+}
+
 // mergeByKey :: [{}] -> [{}] -> [{}]
 const mergeByKey = (arr1: Array<any>, arr2: Array<any>): Array<any> => {
   return arr1.map(x => Object.assign(x, arr2.find(y => y.id == x.id)))
@@ -62,6 +83,15 @@ const nthIndexOf = (str: string, pattern: string, n: number): number => {
     if (i < 0) break
   }
   return i
+}
+
+const parseID = (bulletin: OriginalBulletin): Number => {
+  const p1 = bulletin.description.indexOf('(') + 1
+  const p2 = bulletin.description.indexOf(')')
+
+  return parseInt(
+    bulletin.description.slice(p1, p2)
+  )
 }
 
 // parseName :: String -> Name
@@ -205,8 +235,10 @@ export {
   flatten,
   mergeByKey,
   nthIndexOf,
+  parseID,
   parseName,
   tupleToObj,
+  withinShape,
 
   // filters for Open Data reducers
   applyFilters,

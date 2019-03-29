@@ -2,6 +2,8 @@ import { Injectable } from '@graphql-modules/di'
 
 import { HttpService } from '../../../services'
 import {
+  Beat,
+  Bulletin,
   Query,
   UseOfForce,
   UnformattedReport
@@ -13,6 +15,12 @@ import {
   filterAfter,
   filterExactDate
 } from '../../../utils/functions'
+
+interface Combined {
+  beat: Beat,
+  bulletins: Bulletin[],
+  report: UseOfForce
+}
 
 @Injectable()
 export class UseOfForceProvider {

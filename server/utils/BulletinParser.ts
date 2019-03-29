@@ -1,3 +1,7 @@
+/**
+ * Adds daily bulletins from `/reports` directory to Postgres database
+ */
+
 import 'dotenv/config'
 import * as fs from 'fs'
 import * as path from 'path'
@@ -28,7 +32,7 @@ const format = async (report: any): Promise<Bulletin> => {
 
   const bulletin = new Bulletin ({
     id: report[1],
-    date: new Date(),
+    date: new Date(), // TEST
     key: report[0],
     force,
     description: report[4],

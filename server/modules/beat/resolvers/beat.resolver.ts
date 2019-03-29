@@ -11,6 +11,9 @@ export default {
     },
     beat: (obj: any, args: any, { injector }: any) => {
       return injector.get(BeatProvider).beatById(args.beat)
-    }
+    },
+    // rawBeats: (obj: any, args: any, { injector }: any) => {
+    //   return injector.get(BeatProvider).rawBeats()
+    // }
   }
 }

@@ -30,35 +30,35 @@ export class Bulletin {
   @Column()
   date: Date
 
-  @Column()
-  key: String
+  @Column({ nullable: true })
+  key?: String
 
-  @Column()
-  force: String
+  @Column({ nullable: true })
+  force?: String
 
-  @Column()
-  description: String
+  @Column({ nullable: true })
+  description?: String
 
-  @Column()
-  address: String
+  @Column({ nullable: true })
+  address?: String
 
-  @Column("json")
-  geometry: LatLng
+  @Column("json", { nullable: true })
+  geometry?: LatLng
 
-  @Column()
+  @Column({ nullable: true })
   lastName?: String
 
-  @Column()
+  @Column({ nullable: true })
   firstInitial?: String
 
-  @Column()
+  @Column({ nullable: true })
   middleInitial?: String
 
-  @Column()
-  race: String
+  @Column({ nullable: true })
+  race?: String
 
-  @Column()
-  sex: String
+  @Column({ nullable: true })
+  sex?: String
 
   constructor({
     id,
@@ -111,6 +111,24 @@ export class Bulletin {
       this.sex = sex
     }
   }
+}
+
+export interface OriginalBulletin {
+  report_id: string
+  force: string
+  code: string
+  description: string
+  address: string
+  race: string
+  sex?: string | null
+  officer: string
+  _id: string
+  dateTime: string
+  latLng: LatLng
+}
+
+export interface ExtendedBulletin extends Bulletin {
+  geo_beat: string
 }
 
 export default Bulletin

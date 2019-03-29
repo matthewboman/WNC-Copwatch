@@ -13,3 +13,5 @@ export const BeatModule = new GraphQLModule({
   typeDefs: loadSchemaFiles(__dirname + '/schema/'),
   resolvers: loadResolversFiles(__dirname + '/resolvers/')
 })
+
+export { BeatProvider }
