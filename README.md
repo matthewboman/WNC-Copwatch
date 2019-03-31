@@ -5,21 +5,42 @@ This application provides an interactive map and other visualization tools to re
 Most data comes from [Asheville's open datasets](http://data.ashevillenc.gov/datasets). Some reports are pulled from the daily [APD](https://apdp2c.buncombecounty.org/dailybulletin.aspx) and [Buncome County Sheriff](https://bcsdp2c.buncombecounty.org/dailybulletin.aspx) police bulletins.
 
 ## Versioning
-This branch (v2) differs greatly from the master branch. The master branch is what is currently live; this branch is being actively developed. One key difference is that the front and back end have been separated. For additionaly information, checkout the README for each.
+Version 2 differs great;y what is currently live; this branch is being actively developed. One key difference is that the front and back end have been separated. For additionaly information, checkout the README for each.
 
 ## Requirements
 * Node 9.* (you'll need a version that allows for array/object destructuring)
-* Postgres
-* Redis
+* Postgres (version 2 only)
+* Redis (version 2 only)
+* MongoDB (version 1 only)
+* A Google Maps API key (necessary only for daily bulletin parser)
+* Use `.example.env` for backend development. `server.js` requires DB_URL and `BulletinParser.js` requires GOOGLE_MAP_API
 
-## Development timeline
+We use a remote MongoDB instance to store daily bulletins. You can use your own for backend development, but if you'd like access to our database, email [avlcommunityaction@gmail.com](mailto:avlcommunityaction@gmail.com).
+
+For frontend development, you can get a list of REST endpoints and examples in [the documentation](https://copwatch.avlcommunityaction.com/documentation) of our site and update [where the frontend calls the API](https://github.com/crashspringfield/WNC-Copwatch/blob/master/public/src/vuex/api.js).
+
+### Version 1 development
+
+**I'm not currently adding new features to this branch, but feel free to if you'd like. It exists for bug fixes and security patches. If you would like to help out, check out the `v2` branch for active development.**
+Any development for the production site should be done on the V1 branch.
+
+#### Frontend Application
+* Make the rendered list of reports sortable
+* Improve user feedback while map is re-rendering
+* Query by specific dates on map w/o having to load all
+
+
+### Version 2 development
 
 ### Frontend
-This is a resign from the ground-up beginning with a focus on user experience. The map and datavisualizations will eventually be incorporated. Version 2 will move from Vue to React-Apollo.
+This is a resign from the ground-up beginning with a focus on user experience. The map and datavisualizations will eventually be incorporated. 
+Version 2 will move from Vue to React-Apollo.
 
 ### Backend
-* Create Express server in Typescript
-* Create GraphQL endpoints for all Open Data services
-* Implement Redis caching for expensive calculations
-* Port daily bulletins from MongoDB to Postgres and create GraphQL endpoints
 * Rewrite bullentin parser or develop more maintainable solution
+
+#### Site Configuration
+* Code splitting to reduce size of bundle
+* Write deploy script
+* Create config file for pm2
+* Create Docker container
