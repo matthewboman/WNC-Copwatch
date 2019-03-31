@@ -1,0 +1,23 @@
+overwrite: true
+schema: ./schema/typeDefs.ts
+require: ts-node/register/transpile-only
+generates:
+  ./types.d.ts:
+    plugins:
+      - typescript-common
+      - typescript-resolvers
+    config:
+      optionalType: undefined | null
+      # contextType: ./context#Context
+      mappers:
+        Beat: ./entity/Beat#Beat
+        Complaint: ./entity/Complaint#Complaint
+        Incident: ./entity/Incident#Incident
+        LatLng: './entity/LatLng#LatLng'
+        OpenDataReport: ./entity/OpenDataReport#OpenDataReport
+        Query: ./entity/Query#Query
+        TrafficStop: ./entity/TrafficStop#TrafficStop
+        UnformattedReport: ./entity/OpenDataReport#UnformattedReport
+        UseOfForce: ./entity/UseOfForce#UseOfForce
+      scalers:
+        Date: Date

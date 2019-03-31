@@ -1,0 +1,21 @@
+type Query {
+  officers: [Officer],
+  officer(
+    lastName: String,
+    firstInitial: String,
+    middleInitial: String,
+    id: Int,
+  ): [Officer]
+}
+
+type Officer {
+  id: Int
+  firstName: String
+  firstInitial: String
+  middleInitial: String
+  lastName: String
+  position: String
+  division: String
+  bulletins: [Bulletin] # will return null for `officers` b/c calculation heavy af
+  possibleUseOfForce: [UseOfForce] # will return null for `officers` b/c calculation heavy af
+}

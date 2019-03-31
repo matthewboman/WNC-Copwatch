@@ -1,0 +1,29 @@
+type Query {
+  apd_bulletins (
+    after: String,
+    before: String,
+    exact: String,
+    description: String,
+    lastName: String,
+    firstInitial: String,
+    middleInitial: String,
+  ): [Bulletin!]!
+}
+
+type Bulletin {
+  id: Int
+  date: Date
+
+  key: String
+  force: String
+  address: String
+  geometry: LatLng
+
+  lastName: String
+  firstInitial: String
+  middleInitial: String
+
+  description: String
+  race: String
+  sex: String
+}

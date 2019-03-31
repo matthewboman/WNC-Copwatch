@@ -1,52 +1,17 @@
 # WNC Copwatch
 This application provides an interactive map and other visualization tools to represent police data for community members in hopes of creating greater accountability and transparency. Check out the current site at [https://copwatch.avlcommunityaction.com/](https://copwatch.avlcommunityaction.com/)
 
-The Node.js backend parses police reports, saves them to a database, and provides RestAPI endpoints. It also processes data from [Asheville's open datasets](http://data.ashevillenc.gov/datasets).
-
-The application renders a map of police reports and provides different filter parameters so users can see reports by officer, code, and/or date. It also processes the data and displays the results in various charts and graphs. The frontend is written in Vue, Leaflet, and D3.
-
-
 ## Police Reports
-Reports are pulled from the daily [APD](https://apdp2c.buncombecounty.org/dailybulletin.aspx) and [Buncome County Sheriff](https://bcsdp2c.buncombecounty.org/dailybulletin.aspx) police bulletins. They are then parsed to JSON and stored in a Mongo database.
+Most data comes from [Asheville's open datasets](http://data.ashevillenc.gov/datasets). Some reports are pulled from the daily [APD](https://apdp2c.buncombecounty.org/dailybulletin.aspx) and [Buncome County Sheriff](https://bcsdp2c.buncombecounty.org/dailybulletin.aspx) police bulletins.
 
-For a more detailed explanation of resources, as well as available REST endpoints, check out the project's [documentation](https://copwatch.avlcommunityaction.com/documentation).
+## Versioning
+Version 2 differs great;y what is currently live; this branch is being actively developed. One key difference is that the front and back end have been separated. For additionaly information, checkout the README for each.
 
-## Contributing
-If you'd like to contribute, clone, fork, and push your branch up for review.
-
-### Installation
-* `git clone https://github.com/crashspringfield/WNC-Copwatch.git`
-* `cd WNC-Copwatch`
-* `npm install`
-
-### Commands
-
-`npm run build`
-* builds frontend application for production
-
-`npm run parser <filename>.xlsx`
-* parses an .xls file and saves it to a database
-* `filename` will be in force.YYYY-MM-DD.xls format (sheriff.2018-02-28.xls or apd.2018-02-28.xls)
-
-`npm run dev`
-* launches Vue app with hot-reload server (see `webpack.config.json`)
-* runs at localhost:8080
-
-`npm run devserver`
-* launches Express server RestAPI in development mode
-* requires connection to MongoDB
-* runs at localhost:3000
-
-`npm run prod`
-* launches express server RestAPI in production mode
-* requires connection to MongoDB
-
-`npm run test`
-* runs Jest unit tests
-
-### Requirements
+## Requirements
 * Node 9.* (you'll need a version that allows for array/object destructuring)
-* MongoDB (or you can link to ours)
+* Postgres (version 2 only)
+* Redis (version 2 only)
+* MongoDB (version 1 only)
 * A Google Maps API key (necessary only for daily bulletin parser)
 * Use `.example.env` for backend development. `server.js` requires DB_URL and `BulletinParser.js` requires GOOGLE_MAP_API
 
@@ -57,22 +22,22 @@ For frontend development, you can get a list of REST endpoints and examples in [
 ### Version 1 development
 
 **I'm not currently adding new features to this branch, but feel free to if you'd like. It exists for bug fixes and security patches. If you would like to help out, check out the `v2` branch for active development.**
-
-#### Incorporating new datasets
-* [911 calls](https://data-avl.opendata.arcgis.com/datasets/apd-cad-911-calls)
-* [community complaints](https://data-avl.opendata.arcgis.com/datasets/apd-citizen-complaints)
-* ["crime"](https://data-avl.opendata.arcgis.com/datasets/apd-public-incident-data-crime-locations)
-* [beats](https://data-avl.opendata.arcgis.com/datasets/0710dd841bea4c9285fe2cbddf89409f_0)
+Any development for the production site should be done on the V1 branch.
 
 #### Frontend Application
 * Make the rendered list of reports sortable
 * Improve user feedback while map is re-rendering
 * Query by specific dates on map w/o having to load all
 
-#### Backend Application
-* Build spider for automatically downloading .xls
-* Cache with Redis
-* Continue replacing methods that pull from Asheville's Open Data with our DB/services?
+
+### Version 2 development
+
+### Frontend
+This is a resign from the ground-up beginning with a focus on user experience. The map and datavisualizations will eventually be incorporated. 
+Version 2 will move from Vue to React-Apollo.
+
+### Backend
+* Rewrite bullentin parser or develop more maintainable solution
 
 #### Site Configuration
 * Code splitting to reduce size of bundle
