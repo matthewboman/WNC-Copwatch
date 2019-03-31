@@ -5,10 +5,10 @@ import {
   ManyToOne
 } from 'typeorm'
 
-import LatLng from './LatLng'
+import { LatLng } from './LatLng'
 
 interface BulletinConstructor {
-  id?: Number
+  id?: number
   date?: Date
   key?: string
   force?: string

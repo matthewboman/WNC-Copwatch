@@ -1,5 +1,5 @@
-import { Injectable, ProviderScope } from '@graphql-modules/di'
-import { Connection, Like } from 'typeorm'
+import { Injectable } from '@graphql-modules/di'
+import { Connection } from 'typeorm'
 
 import { DatabaseProvider } from '../../database/providers/database.provider'
 
@@ -51,14 +51,9 @@ export class BulletinProvider {
     if (after) {
       query.andWhere('bulletin.date >= :after', { after })
     }
-    // if (exact) {
-    //   const prev = new Date(new Date(exact as string).getTime() - (24 * 60 * 60 * 1000))
-    //   const next = new Date(new Date(exact as string).getTime() + (24 * 60 * 60 * 1000))
-    //   // console.log('e', exact)
-    //   console.log('n', next)
-    //   query.andWhere('bulletin.date >= :prev', { prev })
-    //     .andWhere('bulletin.date <= :next', { next })
-    // }
+    if (exact) {
+      query.andWhere('bulletin.date = :exact', { exact })
+    }
 
     return await query.getMany()
   }

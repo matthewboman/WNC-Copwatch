@@ -15,14 +15,14 @@ export class BeatProvider {
   httpService: HttpService
   baseURL: string = "https://arcgis.ashevillenc.gov/arcgis/rest/services"
   beatURL: string = "Boundaries/LawBeats/MapServer//0/query?where=1%3D1&outFields=*&outSR=4326&f=json"
-  beats: Array<Beat>
+  beats: Beat[]
   unformattedBeats: Array<any>
 
   constructor() {
     this.httpService = new HttpService(this.baseURL)
   }
 
-  async allBeats(): Promise<Array<Beat>> {
+  async allBeats(): Promise<Beat[]> {
     if (!this.beats) {
       const rawBeats: Array<UnformattedReport> = await this.httpService.get(this.beatURL)
         .then(data => data.features)
@@ -31,7 +31,7 @@ export class BeatProvider {
     return this.beats
   }
 
-  async rawBeats(): Promise<Array<Beat>> {
+  async rawBeats(): Promise<Beat[]> {
     if (!this.unformattedBeats) {
       this.unformattedBeats = await this.httpService.get(this.beatURL)
         .then(data => data.features)
@@ -59,7 +59,7 @@ export class BeatProvider {
       .filter((b: any) => b.attributes.beat.toLowerCase() === id.toLowerCase())[0]
   }
 
-  private formatBeats(beats: Array<UnformattedReport>): Array<Beat> {
+  private formatBeats(beats: Array<UnformattedReport>): Beat[] {
     return beats.map((b: UnformattedReport) => {
       const beat: Beat = {
         id: b.attributes.objectid,

@@ -14,10 +14,10 @@ enum Status {
   Open
 }
 
-export default interface Complaint extends OpenDataReport {
-  incident_type: String
+export interface Complaint extends OpenDataReport {
+  incident_type: string
   disposition: Disposition
   status: Status
-  allegation: String
-  ia_no: String
+  allegation: string
+  ia_no: string
 }

@@ -1,5 +1,5 @@
 import { GraphQLModule } from '@graphql-modules/core'
-import { InjectFunction, ProviderScope } from '@graphql-modules/di'
+import { ProviderScope } from '@graphql-modules/di'
 import { loadResolversFiles, loadSchemaFiles } from '@graphql-modules/sonar'
 
 import { DatabaseModule } from '../database'

@@ -3,7 +3,6 @@
  */
 
 import 'dotenv/config'
-import * as fs from 'fs'
 import * as path from 'path'
 import * as xlsx from 'node-xlsx'
 import { createConnection } from 'typeorm'
@@ -14,7 +13,7 @@ import { parseName } from './functions'
 
 const fileName = process.argv[2]
 const filePath = path.join(__dirname, `../reports/${fileName}`)
-const [ force, date, type ] = fileName.split('.') // ex. [ apd, 2019-4-1, xls ]
+const [ force, date ] = fileName.split('.') // ex. [ apd, 2019-4-1 ]
 
 const sheets = xlsx.parse(filePath)
 const [ header, ...reports ] = sheets[0].data
@@ -32,7 +31,7 @@ const format = async (report: any): Promise<Bulletin> => {
 
   const bulletin = new Bulletin ({
     id: report[1],
-    date: new Date(), // TEST
+    date: new Date(date),
     key: report[0],
     force,
     description: report[4],

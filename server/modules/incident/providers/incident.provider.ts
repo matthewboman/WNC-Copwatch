@@ -11,31 +11,32 @@ import {
   filterOne,
   filterBefore,
   filterAfter
-} from '../../../utils/functions'
+} from '../../../utils/filters'
 
 @Injectable()
 export class IncidentProvider {
   httpService: HttpService
   baseURL: string = "https://services.arcgis.com/aJ16ENn1AaqdFlqx/arcgis/rest/services"
   incidentURL: string = "Layers/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json"
-  formattedIncidents: Array<Incident>
+  formattedIncidents: Incident[]
 
   constructor() {
     this.httpService = new HttpService(this.baseURL)
   }
 
-  async getAllIncidents(query: Query): Promise<Array<Incident>> {
+  async getAllIncidents(query: Query): Promise<Incident[]> {
     if (!this.formattedIncidents) {
-      const rawIncidents: Array<UnformattedReport> = await this.httpService.get(this.incidentURL)
+      const rawIncidents: UnformattedReport[] = await this.httpService.get(this.incidentURL)
         .then(data => data.features)
       this.formattedIncidents = this.formatIncidents(rawIncidents)
     }
 
     // partially apply filters
-    const before = (incidents: Array<Incident>) => filterBefore(query, incidents)
-    const after = (incidents: Array<Incident>) => filterAfter(query, incidents)
+    const before = (incidents: Incident[]) => filterBefore(query, incidents)
+    const after = (incidents: Incident[]) => filterAfter(query, incidents)
+    
     // clean up query arg
-    const description = (incidents: Array<Incident>) => {
+    const description = (incidents: Incident[]) => {
       if (query.description) {
         return filterOne(
           'offense_group_long_description',
@@ -54,7 +55,7 @@ export class IncidentProvider {
     ], this.formattedIncidents)
   }
 
-  private formatIncidents(reports: Array<UnformattedReport>): Array<Incident> {
+  private formatIncidents(reports: UnformattedReport[]): Incident[] {
     return reports.map((report: UnformattedReport) => {
       const incident: Incident = {
           id: report.attributes.OBJECTID, // wtf

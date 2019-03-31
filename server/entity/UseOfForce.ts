@@ -1,6 +1,7 @@
 import { OpenDataReport } from './OpenDataReport'
+import { Bulletin } from './Bulletin'
 
-export default interface UseOfForce extends OpenDataReport {
+export interface UseOfForce extends OpenDataReport {
     ia_no: string
     subject_id: string
     incident_type: string
@@ -13,4 +14,5 @@ export default interface UseOfForce extends OpenDataReport {
     disposition: string
     status: string
     subject_injury: string
+    possible_bulletins?: Bulletin[]
 }

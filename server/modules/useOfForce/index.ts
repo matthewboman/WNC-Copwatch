@@ -6,17 +6,18 @@ import { BeatModule, BeatProvider } from '../beat'
 import { BulletinModule, BulletinProvider } from '../bulletin'
 import { UtilsModule } from '../utils.module'
 import { UseOfForceProvider } from './providers/useOfForce.provider'
-import { OfficerModule, OfficerProvider } from '../officer'
 
 export const UseOfForceModule: any = new GraphQLModule({
   name: 'UseOfForce',
   imports: [
-    // BeatModule,
-    // OfficerModule,
+    BeatModule,
+    BulletinModule,
     UtilsModule
   ],
   providers: [
-    UseOfForceProvider
+    BeatProvider,
+    BulletinProvider,
+    UseOfForceProvider,
   ],
   defaultProviderScope: ProviderScope.Session,
   typeDefs: loadSchemaFiles(__dirname + '/schema/'),

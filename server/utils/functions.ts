@@ -3,11 +3,8 @@
 */
 import {
   LatLng,
-  OpenDataReport,
   OriginalBulletin,
   Name,
-  Query,
-  TrafficStop
 } from '../entity'
 
 
@@ -16,13 +13,13 @@ const dateWithoutTime = (d: Date): Date =>
   new Date(`${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`)
 
 // boolToInt :: Bool -> Number
-const boolToInt = (bool: Boolean): Number => bool === true ? 1 : 0
+const boolToInt = (bool: Boolean): number => bool === true ? 1 : 0
 
 // flatten :: [[]] -> []
 const flatten = (arr: []): any => [].concat.apply([], arr)
 
 // fixBool :: String | Number -> Bool
-const fixBool = (b: (string | Number)): Boolean => (b == 0) ? false : true
+const fixBool = (b: (string | number)): Boolean => (b == 0) ? false : true
 
 // fixDate :: String -> Date
 const fixDate = (yyyymmdd: String): Date => {
@@ -48,27 +45,6 @@ const fixDate = (yyyymmdd: String): Date => {
 // dateFromQuery :: String -> Date
 const dateFromQuery = (date: string): Date => new Date(date)
 
-// TODO: write in more declaritive way
-// TODO: generate types for https://github.com/mikolalysenko/robust-point-in-polygon
-const withinShape = (point: any, bounds: any) => {
-  // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
-
-  const x = point[0]
-  const y = point[1]
-  let inside = false
-
-  for (let i = 0, j = bounds.length - 1; i < bounds.length; j = i++) {
-      let xi = bounds[i][0], yi = bounds[i][1];
-      let xj = bounds[j][0], yj = bounds[j][1];
-
-      let intersect = ((yi > y) != (yj > y))
-          && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-      if (intersect) inside = !inside;
-  }
-
-  return inside
-}
-
 // mergeByKey :: [{}] -> [{}] -> [{}]
 const mergeByKey = (arr1: Array<any>, arr2: Array<any>): Array<any> => {
   return arr1.map(x => Object.assign(x, arr2.find(y => y.id == x.id)))
@@ -85,7 +61,7 @@ const nthIndexOf = (str: string, pattern: string, n: number): number => {
   return i
 }
 
-const parseID = (bulletin: OriginalBulletin): Number => {
+const parseID = (bulletin: OriginalBulletin): number => {
   const p1 = bulletin.description.indexOf('(') + 1
   const p2 = bulletin.description.indexOf(')')
 
@@ -108,127 +84,37 @@ const parseName = (name: string): Name => {
 }
 
 // tupleToObj :: [[]] -> LatLng
-const tupleToObj = (arr: []): Array<LatLng> => arr.map((geo: Number[]) => {
+const tupleToObj = (arr: []): LatLng[] => arr.map((geo: number[]) => {
   return {
     lat: geo[0],
     lng: geo[1]
   }
 })
 
+// TODO: write in more declaritive way
+// TODO: generate types for https://github.com/mikolalysenko/robust-point-in-polygon
+const withinShape = (point: number[], bounds: any) => {
+  // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
 
-/**
- * Filters for Open Data
- */
+  const x = point[0]
+  const y = point[1]
+  let inside = false
 
-// applyFilters :: [ Function ] -> [ OpenDataReport ] -> [ OpenDataReport ]
-const applyFilters = (
-  fns: Array<Function>,
-  arr: Array<any>
-): Array<any> => {
-  return fns.reduce((acc: Array<OpenDataReport>, curr: Function) => curr(acc), arr)
+  for (let i = 0, j = bounds.length - 1; i < bounds.length; j = i++) {
+      let xi = bounds[i][0], yi = bounds[i][1];
+      let xj = bounds[j][0], yj = bounds[j][1];
+
+      let intersect = ((yi > y) != (yj > y))
+          && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+      if (intersect) inside = !inside;
+  }
+
+  return inside
 }
-
-// filterAfter :: Query -> [ OpenDataReport ] -> [ OpenDataReport ]
-const filterAfter = (
-  query: Query,
-  arr: Array<OpenDataReport>
-): Array<OpenDataReport> => arr.filter((r: OpenDataReport) => {
-  if (query.after) {
-    const occured = r.date
-    const param = dateFromQuery(query.after.toString())
-    return occured >= param
-  }
-  return true // apply filter only if part of query
-})
-
-// filterBefore :: Query -> [ OpenDataReport ] -> [ OpenDataReport ]
-const filterBefore = (
-  query: Query,
-  arr: Array<OpenDataReport>
-): Array<OpenDataReport> => arr.filter((r: OpenDataReport) => {
-  if (query.before) {
-    const occured = r.date
-    const param = dateFromQuery(query.before.toString())
-    return occured <= param
-  }
-  return true // apply filter only if part of query
-})
-
-const filterExactDate = (
-  query: Query,
-  arr: Array<OpenDataReport>
-) => {
-  if (query.exact) {
-    const date = dateFromQuery(query.exact as string)
-    return arr.filter((r: OpenDataReport) => {
-      return dateWithoutTime(r.date).getTime() == date.getTime()
-    })
-  }
-  return arr
-}
-
-// TODO: This was developed for a URL and can probably be implemented in a cleaner
-// way depending on to what degree we update field names and make each queryable
-// filterOne :: String -> Query -> [ OpenDataReport ] -> [ OpenDataReport ]
-const filterOne = (
-  type: string,
-  query: any, // type Query won't work b/c how we access the value
-  arr: Array<OpenDataReport>
-): Array<OpenDataReport> => arr.filter((r: any) => {
-  if (query[type]) {
-    if (r[type]) {
-      return r[type].toLowerCase().includes(query[type].toLowerCase())
-    }
-    return false // handle `null`
-  }
-  return true // apply filter only if part of query
-})
-
-// filterArrests :: Query -> [ TrafficStop ] -> [ TrafficStop ]
-const filterArrests = (
-  query: Query,
-  arr: Array<TrafficStop>
-): Array<TrafficStop> => arr.filter((report: TrafficStop) => {
-  if (query.arrest === true) {
-    return (
-      report.driver_arrested ||
-      report.passenger_arrested
-    )
-  }
-  return true // apply filter only if part of query
-})
-
-// filterSearches :: Query -> [ TrafficStop ] -> [ TrafficStop ]
-const filterSearches = (
-  query: Query,
-  arr: Array<TrafficStop>
-): Array<TrafficStop> => arr.filter((report: TrafficStop) => {
-  if (query.search === true) {
-    return (
-      report.driver_searched ||
-      report.passenger_searched ||
-      report.personal_effects_searched ||
-      report.search_initiated ||
-      report.vehicle_searched
-    )
-  }
-  return true // apply filter only if part of query
-})
-
-// filterUseOfForce :: Query -> [ TrafficStop ] -> [ TrafficStop ]
-const filterUseOfForce = (
-  query: Query,
-  arr: Array<TrafficStop>
-): Array<TrafficStop> => arr.filter((report: TrafficStop) => {
-  if (query.use_of_force === true) {
-    return report.off_use_force
-  }
-  return true // apply filter only if part of query
-})
 
 export {
-  // shared functions
   boolToInt,
+  dateFromQuery,
   dateWithoutTime,
   fixBool,
   fixDate,
@@ -239,14 +125,4 @@ export {
   parseName,
   tupleToObj,
   withinShape,
-
-  // filters for Open Data reducers
-  applyFilters,
-  filterAfter,
-  filterArrests,
-  filterBefore,
-  filterExactDate,
-  filterOne,
-  filterSearches,
-  filterUseOfForce,
 }

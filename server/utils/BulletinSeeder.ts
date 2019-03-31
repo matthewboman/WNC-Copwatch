@@ -5,8 +5,8 @@
 import axios from 'axios'
 import { createConnection } from 'typeorm'
 
-import { Bulletin, LatLng, OriginalBulletin } from '../entity'
-import { nthIndexOf, parseID, parseName } from './functions'
+import { Bulletin, OriginalBulletin } from '../entity'
+import { parseID, parseName } from './functions'
 
 const URL = `https://copwatch.avlcommunityaction.com/api/v1/bulletin-reports/`
 
@@ -16,14 +16,10 @@ const getBulletins = async (): Promise<OriginalBulletin[]> => await axios
 
 createConnection().then(connection => {
   getBulletins().then((bulletins: OriginalBulletin[]) => {
-    let counter = 1 // make up a # for reports for now
+    let counter = 1 // make up a # for reports
 
     bulletins.forEach((b: OriginalBulletin) => {
-      const {
-        lastName,
-        firstInitial,
-        middleInitial,
-      } = parseName(b.officer)
+      const { lastName, firstInitial, middleInitial } = parseName(b.officer)
 
       // we can pull the ID from description for Traffic Control
       const id = b.description == 'TC'

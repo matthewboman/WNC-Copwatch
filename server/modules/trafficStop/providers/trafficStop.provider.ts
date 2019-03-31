@@ -2,22 +2,25 @@ import { Injectable } from '@graphql-modules/di'
 
 import { HttpService } from '../../../services'
 import {
+  AllTrafficStopStats,
   DailyTrafficStats,
   Query,
   TrafficStop,
   UnformattedReport
 } from '../../../entity'
 import {
-  applyFilters,
   boolToInt,
+  fixBool,
+  fixDate
+} from '../../../utils/functions'
+import {
+  applyFilters,
   filterAfter,
   filterBefore,
   filterArrests,
   filterSearches,
   filterOne,
-  fixBool,
-  fixDate
-} from '../../../utils/functions'
+} from '../../../utils/filters'
 
 @Injectable()
 export class TrafficStopProvider {
@@ -25,28 +28,27 @@ export class TrafficStopProvider {
   baseURL: string = "https://services.arcgis.com/aJ16ENn1AaqdFlqx/arcgis/rest/services"
   trafficStopURL: string = "APDTrafficStops/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json"
   detailsURL: string = "APDTrafficStops/FeatureServer/2/query?where=1%3D1&outFields=*&outSR=4326&f=json"
-  formattedTrafficStops: Array<TrafficStop>
-  dailyStats: Array<DailyTrafficStats>
-  allStats: {}
+  formattedTrafficStops: TrafficStop[]
+  dailyStats: DailyTrafficStats[]
+  allStats: AllTrafficStopStats
 
   constructor() {
     this.httpService = new HttpService(this.baseURL)
   }
 
-  async getTrafficStops(args: Query): Promise<Array<any>> {
+  async getTrafficStops(args: Query): Promise<TrafficStop[]> {
     if (!this.formattedTrafficStops) {
       const rawTrafficStops = await this.getReports(this.trafficStopURL)
       const stopDetails = await this.getReports(this.detailsURL)
       this.formattedTrafficStops = this.formatTrafficStops(rawTrafficStops, stopDetails)
-        .slice(0,100) // TESTING
     }
 
     // partially apply filters
-    const before = (stops: Array<TrafficStop>) => filterBefore(args, stops)
-    const after = (stops: Array<TrafficStop>) => filterAfter(args, stops)
-    const searches = (stops: Array<TrafficStop>) => filterSearches(args, stops)
-    const arrests = (stops: Array<TrafficStop>) => filterArrests(args, stops)
-    const reason = (stops: Array<TrafficStop>) => filterOne('reason', args, stops)
+    const before = (stops: TrafficStop[]) => filterBefore(args, stops)
+    const after = (stops: TrafficStop[]) => filterAfter(args, stops)
+    const searches = (stops: TrafficStop[]) => filterSearches(args, stops)
+    const arrests = (stops: TrafficStop[]) => filterArrests(args, stops)
+    const reason = (stops: TrafficStop[]) => filterOne('reason', args, stops)
 
     // compose
     return applyFilters([
@@ -62,12 +64,11 @@ export class TrafficStopProvider {
     // TODO
   }
 
-  async getDailyTrafficStopStats(): Promise<Array<DailyTrafficStats>> {
+  async getDailyTrafficStopStats(): Promise<DailyTrafficStats[]> {
     if (!this.formattedTrafficStops) {
       const rawTrafficStops = await this.getReports(this.trafficStopURL)
       const stopDetails = await this.getReports(this.detailsURL)
       this.formattedTrafficStops = this.formatTrafficStops(rawTrafficStops, stopDetails)
-        .slice(0,100) // TESTING
     }
 
     this.dailyStats = this.formatDailyStats(this.formattedTrafficStops)
@@ -75,12 +76,11 @@ export class TrafficStopProvider {
     return this.dailyStats
   }
 
-  async getAllTrafficStopStats(): Promise<{}> {
+  async getAllTrafficStopStats(): Promise<AllTrafficStopStats> {
     if (!this.formattedTrafficStops) {
       const rawTrafficStops = await this.getReports(this.trafficStopURL)
       const stopDetails = await this.getReports(this.detailsURL)
       this.formattedTrafficStops = this.formatTrafficStops(rawTrafficStops, stopDetails)
-        .slice(0,100) // TESTING
     }
 
     if (!this.dailyStats) {
@@ -92,15 +92,15 @@ export class TrafficStopProvider {
     return this.allStats
   }
 
-  async getReports(url: string): Promise<Array<UnformattedReport>> {
+  async getReports(url: string): Promise<UnformattedReport[]> {
     return await this.httpService.get(url)
       .then(data => data.features)
   }
 
   private formatTrafficStops (
-    stops: Array<UnformattedReport>,
+    stops: UnformattedReport[],
     details: Array<any>
-  ): Array<TrafficStop> {
+  ): TrafficStop[] {
     return stops.map((stop: UnformattedReport) => {
       // create field for given search reason
       let categories: [string?] = []
@@ -120,7 +120,7 @@ export class TrafficStopProvider {
       // const match = details
       //   .map(d => d.attributes)
       //   .filter(d => d.name_type === 'DRIV')
-      //   .find(d => d.traffic_stop_id == stop.attributes.traffic_stop_id) // inconsisten types from API
+      //   .find(d => d.traffic_stop_id == stop.attributes.traffic_stop_id) // inconsistent types from API
       //
       // const { name_age, name_race, name_sex, name_ethnicity } = match
       //   ? match
@@ -165,7 +165,7 @@ export class TrafficStopProvider {
     })
   }
 
-  private formatDailyStats(stops: Array<TrafficStop>): Array<DailyTrafficStats> {
+  private formatDailyStats(stops: TrafficStop[]): DailyTrafficStats[] {
     let dataset: any = []
 
     stops.forEach((stop: TrafficStop) => {
@@ -240,8 +240,8 @@ export class TrafficStopProvider {
     return dataset.sort((a: DailyTrafficStats, b: DailyTrafficStats) => a.date.getTime() - b.date.getTime())
   }
 
-  private calculateStats(stops: Array<DailyTrafficStats>): {} {
-    const accumulator = {
+  private calculateStats(stops: DailyTrafficStats[]): AllTrafficStopStats {
+    const accumulator: AllTrafficStopStats = {
       stops: 0,
       searches: 0,
       arrests: 0,

@@ -1,61 +1,32 @@
 import { Injectable } from '@graphql-modules/di'
-import { Connection } from 'typeorm'
 
 import { HttpService } from '../../../services'
 import {
   Bulletin,
-  ExtendedBulletin,
   Officer,
+  Query,
   UnformattedReport,
   UseOfForce
 } from '../../../entity'
-import { DatabaseProvider } from '../../database/providers/database.provider'
 import { BeatProvider } from '../../beat/providers/beat.provider'
 import { BulletinProvider } from '../../bulletin/providers/bulletin.provider'
 import { UseOfForceProvider } from '../../useOfForce/providers/useOfForce.provider'
 import {
-  applyFilters,
   dateWithoutTime,
   parseName,
   withinShape
 } from '../../../utils/functions'
-
-const filterById = (args: any, officers: Array<Officer>) => args.id
-  ? officers.filter((officer: Officer) => officer.id === args.id)
-  : officers
-
-const filterByLastName = (args: any, officers: Array<Officer>) => args.lastName
-  ? officers.filter((officer: Officer) => officer.lastName === args.lastName.toLowerCase())
-  : officers
-
-const filterByFirstInitial = (args: any, officers: Array<Officer>) => args.firstInitial
-  ? officers.filter((officer: Officer) => officer.firstInitial === args.firstInitial.toLowerCase())
-  : officers
-
-const filterByMiddleInitial = (args: any, officers: Array<Officer>) => args.middleInitial
-  ? officers.filter((officer: Officer) => officer.middleInitial === args.middleInitial.toLowerCase())
-  : officers
+import {
+  applyFilters,
+  filterById,
+  filterByLastName,
+  filterByFirstInitial,
+  filterByMiddleInitial
+} from '../../../utils/filters'
 
 interface BulletinAndUOF {
   bulletin: Bulletin
   report: UseOfForce
-}
-
-const findSameDay = (bulletins: Bulletin[], useOfForceReports: UseOfForce[]) => {
-  let sameDay: BulletinAndUOF[] = []
-  let beatsToSearch: string[] = []
-  bulletins.forEach(bulletin => {
-    useOfForceReports.forEach(report => {
-      if (dateWithoutTime(report.date).getTime() == dateWithoutTime(bulletin.date).getTime()) {
-        sameDay.push({ bulletin, report })
-
-        if (!beatsToSearch.includes(report.geo_beat)) {
-          beatsToSearch.push(report.geo_beat)
-        }
-      }
-    })
-  })
-  return { sameDay, beatsToSearch }
 }
 
 @Injectable()
@@ -63,22 +34,20 @@ export class OfficerProvider {
   httpService: HttpService
   baseURL: string = "https://services.arcgis.com/aJ16ENn1AaqdFlqx/arcgis/rest/services"
   staffURL: string = "Financials/FeatureServer/10/query?where=1%3D1&outFields=*&outSR=4326&f=json"
-  officers: Array<Officer>
-  matches: Array<Officer>
+  officers: Officer[]
+  matches: Officer[]
 
   constructor(
-    private connection: Connection,
     private beatProvider: BeatProvider,
     private bulletinProvider: BulletinProvider,
     private useOfForceProvider: UseOfForceProvider,
-    private databaseProvider: DatabaseProvider,
   ) {
     this.httpService = new HttpService(this.baseURL)
   }
 
-  async allOfficers(): Promise<Array<Officer>> {
+  async allOfficers(): Promise<Officer[]> {
     if (!this.officers) {
-      const rawStaff: Array<UnformattedReport> = await this.httpService.get(this.staffURL)
+      const rawStaff: UnformattedReport[] = await this.httpService.get(this.staffURL)
         .then(data => data.features)
       this.officers = this.extractAndFormatOfficers(rawStaff)
     }
@@ -86,17 +55,17 @@ export class OfficerProvider {
   }
 
 
-  async officer(args: any): Promise<Array<Officer>> {
+  async officer(args: any): Promise<Officer[]> {
     if (!this.officers) {
-      const rawStaff: Array<UnformattedReport> = await this.httpService.get(this.staffURL)
+      const rawStaff: UnformattedReport[] = await this.httpService.get(this.staffURL)
         .then(data => data.features)
       this.officers = this.extractAndFormatOfficers(rawStaff)
     }
 
-    const id = (officers: Array<Officer>) => filterById(args, officers)
-    const last = (officers: Array<Officer>) => filterByLastName(args, officers)
-    const first = (officers: Array<Officer>) => filterByFirstInitial(args, officers)
-    const middle = (officers: Array<Officer>) => filterByMiddleInitial(args, officers)
+    const id = (officers: Officer[]) => filterById(args, officers)
+    const last = (officers: Officer[]) => filterByLastName(args, officers)
+    const first = (officers: Officer[]) => filterByFirstInitial(args, officers)
+    const middle = (officers: Officer[]) => filterByMiddleInitial(args, officers)
 
     const matches = applyFilters([
       id,
@@ -123,7 +92,7 @@ export class OfficerProvider {
 
     // match bulletins to Use of Force data
     const useOfForceReports = await this.useOfForceProvider.getAllUseOfForce({})
-    const { sameDay, beatsToSearch } = findSameDay(bulletins, useOfForceReports)
+    const { sameDay, beatsToSearch } = this.findSameDay(bulletins, useOfForceReports)
 
     // get only necessary beats
     const promises = beatsToSearch.map(async (beat) =>
@@ -137,7 +106,7 @@ export class OfficerProvider {
         let withinBeat = false
         const { bulletin } = combined
         const point = bulletin.geometry
-          ? [ bulletin.geometry.lng, bulletin.geometry.lat ]
+          ? [ bulletin.geometry.lng as number, bulletin.geometry.lat as number ]
           : null
         if (!point) return false // initial geometry lookup may have failed
 
@@ -159,25 +128,25 @@ export class OfficerProvider {
     }))
   }
 
-  async officerByName(lastName: string): Promise<Array<Officer>> {
+  async officerByName(lastName: string): Promise<Officer[]> {
     if (!this.officers) {
-      const rawStaff: Array<UnformattedReport> = await this.httpService.get(this.staffURL)
+      const rawStaff: UnformattedReport[] = await this.httpService.get(this.staffURL)
         .then(data => data.features)
       this.officers = this.extractAndFormatOfficers(rawStaff)
     }
     return this.officers.filter((officer: Officer) => officer.lastName === lastName.toLowerCase())
   }
 
-  async officerById(id: number): Promise<Array<Officer>> {
+  async officerById(id: number): Promise<Officer[]> {
     if (!this.officers) {
-      const rawStaff: Array<UnformattedReport> = await this.httpService.get(this.staffURL)
+      const rawStaff: UnformattedReport[] = await this.httpService.get(this.staffURL)
         .then(data => data.features)
       this.officers = this.extractAndFormatOfficers(rawStaff)
     }
     return this.officers.filter((officer: Officer) => officer.id === id)
   }
 
-  private extractAndFormatOfficers(staff: Array<UnformattedReport>): Array<any> {
+  private extractAndFormatOfficers(staff: UnformattedReport[]): Officer[] {
     return staff.filter((s: UnformattedReport) => s.attributes.department === 'POLICE')
       .map((o: UnformattedReport) => {
         const { firstName, firstInitial, middleInitial, lastName } = parseName(o.attributes.employee_name)
@@ -193,5 +162,22 @@ export class OfficerProvider {
         }
         return officer
       })
+  }
+
+  private findSameDay(bulletins: Bulletin[], useOfForceReports: UseOfForce[]) {
+    let sameDay: BulletinAndUOF[] = []
+    let beatsToSearch: string[] = []
+    bulletins.forEach(bulletin => {
+      useOfForceReports.forEach(report => {
+        if (dateWithoutTime(report.date).getTime() == dateWithoutTime(bulletin.date).getTime()) {
+          sameDay.push({ bulletin, report })
+
+          if (!beatsToSearch.includes(report.geo_beat)) {
+            beatsToSearch.push(report.geo_beat)
+          }
+        }
+      })
+    })
+    return { sameDay, beatsToSearch }
   }
 }

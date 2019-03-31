@@ -1,28 +1,28 @@
-export default interface Query {
-  id?: string
+export interface Query {
+  id?: string | number
 
-  before?: String
-  after?: String
-  exact?: String
+  before?: string
+  after?: string
+  exact?: string | Date
 
   arrest?: Boolean
   search?: Boolean
 
   use_of_force?: Boolean
-  type_force_used?: String
+  type_force_used?: string
 
-  subject_race?: String
-  subject_sex?: String
-  subject_injury?: String
-  subject_resistence?: String
+  subject_race?: string
+  subject_sex?: string
+  subject_injury?: string
+  subject_resistence?: string
 
-  allegation?: String
-  disposition?: String
-  status?: String
+  allegation?: string
+  disposition?: string
+  status?: string
 
-  description?: String
+  description?: string
 
-  lastName?: String
-  firstInitial?: String
-  middleInitial?: String
+  lastName?: string
+  firstInitial?: string
+  middleInitial?: string
 }

@@ -1,4 +1,4 @@
-export default interface LatLng {
-  lat: Number | null
-  lng: Number | null
+export interface LatLng {
+  lat: number | null
+  lng: number | null
 }

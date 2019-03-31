@@ -1,7 +1,7 @@
-import LatLng from './LatLng'
+import { LatLng } from './LatLng'
 
-export default interface Beat {
-  id: Number
-  beat: String
-  outline: Array<LatLng>
+export interface Beat {
+  id: number
+  beat: string
+  outline: LatLng[]
 }

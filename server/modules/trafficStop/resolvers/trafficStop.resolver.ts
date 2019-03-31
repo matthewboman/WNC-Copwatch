@@ -1,7 +1,4 @@
-import { GraphQLModule, ModuleContext } from '@graphql-modules/core'
-
 import { Query } from '../../../entity'
-import { IResolvers } from '../../../types'
 import { TrafficStopProvider } from '../providers/trafficStop.provider'
 
 export default {
@@ -16,4 +13,4 @@ export default {
       return injector.get(TrafficStopProvider).getAllTrafficStopStats()
     }
   }
-} 
+}

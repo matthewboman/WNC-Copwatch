@@ -1,7 +1,4 @@
-import { GraphQLModule, ModuleContext } from '@graphql-modules/core'
-
 import { Query } from '../../../entity'
-import { IResolvers } from '../../../types'
 import { ComplaintProvider } from '../providers/complaint.provider'
 
 export default {

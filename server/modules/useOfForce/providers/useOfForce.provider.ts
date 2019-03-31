@@ -2,57 +2,58 @@ import { Injectable } from '@graphql-modules/di'
 
 import { HttpService } from '../../../services'
 import {
-  Beat,
   Bulletin,
   Query,
   UseOfForce,
   UnformattedReport
 } from '../../../entity'
 import {
+  withinShape
+} from '../../../utils/functions'
+import {
   applyFilters,
   filterOne,
   filterBefore,
   filterAfter,
-  filterExactDate
-} from '../../../utils/functions'
-
-interface Combined {
-  beat: Beat,
-  bulletins: Bulletin[],
-  report: UseOfForce
-}
+  filterExactDate,
+} from '../../../utils/filters'
+import { BeatProvider } from '../../beat/providers/beat.provider'
+import { BulletinProvider } from '../../bulletin/providers/bulletin.provider'
 
 @Injectable()
 export class UseOfForceProvider {
   httpService: HttpService
   baseURL: string = "https://services.arcgis.com/aJ16ENn1AaqdFlqx/arcgis/rest/services"
   useOfForceURL: string = "APDUseOfForce/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json"
-  formattedUseOfForce: Array<UseOfForce>
+  formattedUseOfForce: UseOfForce[]
 
-  constructor() {
+  constructor(
+    private beatProvider: BeatProvider,
+    private bulletinProvider: BulletinProvider
+  ) {
     this.httpService = new HttpService(this.baseURL)
   }
 
-  async getAllUseOfForce(query: any): Promise<Array<UseOfForce>> {
+  async getAllUseOfForce(query: any): Promise<UseOfForce[]> {
     if (!this.formattedUseOfForce) {
-      const rawUseOfForce: Array<UnformattedReport> = await this.httpService.get(this.useOfForceURL)
+      const rawUseOfForce: UnformattedReport[] = await this.httpService.get(this.useOfForceURL)
         .then(data => data.features)
       this.formattedUseOfForce = this.formatUseOfForce(rawUseOfForce)
     }
 
     // partially apply filters
-    const before = (reports: Array<UseOfForce>) => filterBefore(query, reports)
-    const after = (reports: Array<UseOfForce>) => filterAfter(query, reports)
-    const exact = (reports: Array<UseOfForce>) => filterExactDate(query, reports)
-    const disposition = (reports: Array<UseOfForce>) => filterOne('disposition', query, reports)
-    const geo_beat = (reports: Array<UseOfForce>) => filterOne('geo_beat', query, reports)
-    const officer_condition_injury = (reports: Array<UseOfForce>) => filterOne('officer_condition_injury', query, reports)
-    const status = (reports: Array<UseOfForce>) => filterOne('status', query, reports)
-    const subject_race = (reports: Array<UseOfForce>) => filterOne('subject_race', query, reports)
-    const subject_sex = (reports: Array<UseOfForce>) => filterOne('subject_sex', query, reports)
-    const subject_injury = (reports: Array<UseOfForce>) => filterOne('subject_injury', query, reports)
-    const subject_resistence = (reports: Array<UseOfForce>) => filterOne('subject_resistence', query, reports)
-    const type_force_used = (reports: Array<UseOfForce>) => filterOne('type_force_used', query, reports)
+    const before = (reports: UseOfForce[]) => filterBefore(query, reports)
+    const after = (reports: UseOfForce[]) => filterAfter(query, reports)
+    const exact = (reports: UseOfForce[]) => filterExactDate(query, reports)
+    const disposition = (reports: UseOfForce[]) => filterOne('disposition', query, reports)
+    const geo_beat = (reports: UseOfForce[]) => filterOne('geo_beat', query, reports)
+    const officer_condition_injury = (reports: UseOfForce[]) => filterOne('officer_condition_injury', query, reports)
+    const status = (reports: UseOfForce[]) => filterOne('status', query, reports)
+    const subject_race = (reports: UseOfForce[]) => filterOne('subject_race', query, reports)
+    const subject_sex = (reports: UseOfForce[]) => filterOne('subject_sex', query, reports)
+    const subject_injury = (reports: UseOfForce[]) => filterOne('subject_injury', query, reports)
+    const subject_resistence = (reports: UseOfForce[]) => filterOne('subject_resistence', query, reports)
+    const type_force_used = (reports: UseOfForce[]) => filterOne('type_force_used', query, reports)
 
     // compose
     return applyFilters([
@@ -71,8 +72,35 @@ export class UseOfForceProvider {
     ], this.formattedUseOfForce)
   }
 
-  private formatUseOfForce(reports: Array<UnformattedReport>): Array<UseOfForce> {
-    return reports.map((report: UnformattedReport) => {
+  async getUseOfForce(id: number): Promise<UseOfForce> {
+    if (!this.formattedUseOfForce) {
+      const rawUseOfForce: UnformattedReport[]= await this.httpService.get(this.useOfForceURL)
+        .then(data => data.features)
+      this.formattedUseOfForce = this.formatUseOfForce(rawUseOfForce)
+    }
+    // find matching ID
+    const report = this.formattedUseOfForce.filter(r => r.id === id)[0]
+
+    // get every bulletin from that day
+    const bulletinsFromDay = await this.bulletinProvider.getAllBulletins({ exact: report.date })
+
+    // find every bulletin within beat
+    const beat = await this.beatProvider.rawBeatById(report.geo_beat)
+    const possible_bulletins = bulletinsFromDay.filter((bulletin: Bulletin) => {
+      if (!bulletin.geometry) return false
+
+      const point = [ bulletin.geometry.lng as number, bulletin.geometry.lat as number ]
+      return withinShape(point, beat.geometry.rings[0])
+    })
+
+    return {
+      ...report,
+      possible_bulletins
+    }
+  }
+
+  private formatUseOfForce = (reports: UnformattedReport[]): UseOfForce[] =>
+    reports.map((report: UnformattedReport) => {
       const useOfForce: UseOfForce = {
         id: report.attributes.objectid,
         date: new Date(report.attributes.occurred_date),
@@ -87,9 +115,9 @@ export class UseOfForceProvider {
         subject_race: report.attributes.subject_race,
         disposition: report.attributes.disposition,
         status: report.attributes.status,
-        subject_injury: report.attributes.subject_injury
+        subject_injury: report.attributes.subject_injury,
       }
       return useOfForce
     })
-  }
+
 }

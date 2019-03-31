@@ -1,12 +1,11 @@
-import { OpenDataReport } from '../entity'
 import {
   dateWithoutTime,
-  filterExactDate,
   nthIndexOf,
   parseID,
   parseName,
   withinShape,
 } from '../utils/functions'
+
 
 describe("shared functions", () => {
   it("doesn't find that which doesn't exist", () => {
@@ -85,22 +84,5 @@ describe("shared functions", () => {
     ]
     const point = [ 6, 3 ]
     expect(withinShape(point, shape)).toBe(false)
-  })
-})
-
-describe("filters", () => {
-  it('returns reports with matching dates', () => {
-    const reports: Array<OpenDataReport> = [
-      { id: 1, date: new Date('December 21, 2012 04:20:00') },
-      { id: 2, date: new Date('December 21, 2012 16:20:00') },
-      { id: 3, date: new Date('December 22, 2012 04:20:00') },
-    ]
-    const args = { exact: '12/21/2012' }
-    expect(
-      filterExactDate(args, reports)
-    ).toEqual([
-      { id: 1, date: new Date('December 21, 2012 04:20:00') },
-      { id: 2, date: new Date('December 21, 2012 16:20:00') },
-    ])
   })
 })

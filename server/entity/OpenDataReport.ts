@@ -1,5 +1,5 @@
 interface OpenDataReport {
-  id: Number | String
+  id: number | string
   date: Date
 }
 

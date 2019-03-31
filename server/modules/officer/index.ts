@@ -8,12 +8,9 @@ import { DatabaseModule } from '../database'
 import { UseOfForceModule, UseOfForceProvider } from '../useOfForce'
 import { OfficerProvider } from './providers/officer.provider'
 
-import { CombinedModule } from '../combined'
-
 export const OfficerModule: any = new GraphQLModule({
   name: 'Officer',
   imports: [
-    // CombinedModule
     BeatModule,
     BulletinModule,
     DatabaseModule,

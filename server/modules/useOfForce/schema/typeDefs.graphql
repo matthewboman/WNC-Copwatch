@@ -1,5 +1,5 @@
 type Query {
-  useOfForce(
+  useOfForceIncidents(
     before: String
     after: String
     exact: String
@@ -13,6 +13,8 @@ type Query {
     subject_resistence: String
     type_force_used: String
   ): [UseOfForce]
+
+  useOfForceIncident(id: Int): UseOfForce
 }
 
 type UseOfForce {
@@ -33,5 +35,5 @@ type UseOfForce {
   subject_race: String
   subject_injury: String
 
-  # possible_officers: [Officer]
+  possible_bulletins: [Bulletin]
 }

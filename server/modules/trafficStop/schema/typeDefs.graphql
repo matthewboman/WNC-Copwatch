@@ -74,8 +74,3 @@ type AllTrafficStopStats {
   searchWithWarrant: Int
   searchWithoutConsentWarrantOrProbableCause: Int
 }
-
-# type LatLng {
-#   lat: Int
-#   lng: Int
-# }

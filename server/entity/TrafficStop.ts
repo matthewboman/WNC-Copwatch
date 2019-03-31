@@ -1,11 +1,11 @@
-import LatLng from './LatLng'
+import { LatLng } from './LatLng'
 import { OpenDataReport } from './OpenDataReport'
 
 export interface TrafficStop extends OpenDataReport {
-  address: String
-  agency: String
+  address: string
+  agency: string
   geometry: LatLng
-  reason: String
+  reason: string
   traffic_stop_id: Number
   off_use_force: Boolean
   off_phys_resis: Boolean
@@ -25,13 +25,13 @@ export interface TrafficStop extends OpenDataReport {
 
   search_category: [string?] // consent, warrant, probable cause
 
-  // potentially brought in from combining data
-  name_type?: String
-  name_type_sequence?: String
-  name_age?: String
-  name_race?: String
-  name_sex?: String
-  name_ethnicity?: String
+  // TODO: potentially brought in from combining data
+  name_type?: string
+  name_type_sequence?: string
+  name_age?: string
+  name_race?: string
+  name_sex?: string
+  name_ethnicity?: string
 }
 
 export interface DailyTrafficStats {
@@ -51,4 +51,16 @@ export interface DailyTrafficStats {
   t_search_consent: Number
   t_search_warrant: Number
   t_probable_cause: Number
+}
+
+export interface AllTrafficStopStats {
+  stops: number
+  searches: number
+  arrests: number
+  searchWithoutArrest: number
+  arrestWithoutSearch: number
+  seachWithConsent: number
+  searchWithProbableCause: number
+  searchWithWarrant: number
+  searchWithoutConsentWarrantOrProbableCause: number
 }

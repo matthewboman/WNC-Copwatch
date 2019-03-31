@@ -1,9 +1,9 @@
 import axios from 'axios'
 
 export default class HttpService {
-  baseURL: String
+  baseURL: string
 
-  constructor(url: String) {
+  constructor(url: string) {
     this.baseURL = url
   }
 
