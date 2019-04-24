@@ -9,6 +9,11 @@ import { Query } from './Query'
 import { AllTrafficStopStats, DailyTrafficStats, TrafficStop } from './TrafficStop'
 import { UseOfForce } from './UseOfForce'
 
+interface Stat {
+  key: string
+  value: number
+}
+
 export {
   AllTrafficStopStats,
   Beat,
@@ -23,6 +28,7 @@ export {
   OriginalBulletin,
   Name,
   Query,
+  Stat,
   TrafficStop,
   UnformattedReport,
   UseOfForce

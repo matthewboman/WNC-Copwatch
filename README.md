@@ -15,11 +15,12 @@ This branch (v2) differs greatly from the master branch. The master branch is wh
 ## Development timeline
 
 ### Frontend
-This is a resign from the ground-up beginning with a focus on user experience. The map and datavisualizations will eventually be incorporated. Version 2 will move from Vue to React-Apollo.
+* Many of the components are basically working and need styled and optimized.
+* Maps with markers can make the browser unresponsive
+* Heatmaps work only on initial navigation due to a race condition in rendering the map and the heatlayer referencing the map. This may be a library issue.
 
 ### Backend
-* Create Express server in Typescript
-* Create GraphQL endpoints for all Open Data services
 * Implement Redis caching for expensive calculations
-* Port daily bulletins from MongoDB to Postgres and create GraphQL endpoints
-* Rewrite bullentin parser or develop more maintainable solution
+
+### GraphQL
+* Implement pagination and error handling

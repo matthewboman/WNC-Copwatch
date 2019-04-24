@@ -34,7 +34,7 @@ export class IncidentProvider {
     // partially apply filters
     const before = (incidents: Incident[]) => filterBefore(query, incidents)
     const after = (incidents: Incident[]) => filterAfter(query, incidents)
-    
+
     // clean up query arg
     const description = (incidents: Incident[]) => {
       if (query.description) {
@@ -66,8 +66,8 @@ export class IncidentProvider {
           geo_beat: report.attributes.geo_beat,
           geo_report_area: report.attributes.geo_report_area,
           geometry: {
-            lat: report.geometry ? report.geometry.x : null,
-            lng: report.geometry ? report.geometry.y : null
+            lat: report.geometry ? report.geometry.y : null,
+            lng: report.geometry ? report.geometry.x : null
           },
           offense_group_long_description: report.attributes.offense_group_long_description,
           offense_short_description: report.attributes.offense_short_description,

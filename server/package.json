@@ -9,7 +9,7 @@
     "parser": "ts-node ./utils/BulletinParser.ts",
     "seeder": "ts-node ./utils/BulletinSeeder.ts",
     "start:server": "ts-node server.ts",
-    "start:server:watch": "nodemon --exec yarn start:server -e ts",
+    "start:server:watch": "nodemon --exec yarn start:server -e ts,graphql",
     "test": "jest --testEnvironment node"
   },
   "author": "",

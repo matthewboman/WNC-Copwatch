@@ -57,4 +57,32 @@ export class BulletinProvider {
 
     return await query.getMany()
   }
+
+  async getTargettedBulletins({ target }: Query) {
+    const query = this.createQueryBuilder()
+
+    switch (target) {
+      case 'houseless':
+        query.where(`
+          LOWER(description) LIKE :trespass OR
+          LOWER(description) LIKE :alcohol
+        `, {
+            trespass: `%second degree trespass%`,
+            alcohol: `%open container alcohol%`
+          }
+        )
+        return await query.getMany()
+
+      default:
+        return [{}]
+    }
+  }
+
+  async getBulletinsByID({ id }: Query) {
+    const query = await this.createQueryBuilder()
+      .where('id = :id', { id })
+      .getOne()
+
+    return query
+  }
 }

@@ -1,4 +1,6 @@
 import {
+  addItUp,
+  addReduce,
   dateWithoutTime,
   nthIndexOf,
   parseID,
@@ -84,5 +86,28 @@ describe("shared functions", () => {
     ]
     const point = [ 6, 3 ]
     expect(withinShape(point, shape)).toBe(false)
+  })
+
+  it('counts the occurences in an array of objects', () => {
+    const record = [
+      { us: 1, them: 0 },
+      { us: 2, them: 2 },
+      { us: 3, them: 8 },
+      { us: 4, them: 1 },
+    ]
+    expect(addReduce('us', record)).toEqual(10)
+  })
+
+  it('returns the total count with key', () => {
+    const record = [
+      { us: 1, them: 0 },
+      { us: 2, them: 2 },
+      { us: 3, them: 8 },
+      { us: 4, them: 1 },
+    ]
+    expect(addItUp('us', record)).toEqual({
+      key: 'us',
+      value: 10
+    })
   })
 })

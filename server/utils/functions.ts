@@ -7,6 +7,21 @@ import {
   Name,
 } from '../entity'
 
+interface KeyValue {
+  key: string
+  value: number
+}
+
+// addItUp :: [{}] -> {}
+const addItUp = (name: string, arr: Array<any>) => ({
+  key: name,
+  value: addReduce(name, arr)
+})
+
+// addReduce :: [{}] -> Int
+const addReduce = (name: string, arr: Array<any>) => arr.reduce((acc, val) =>
+  acc + val[name]
+, 0)
 
 // dateWithoutTime :: Date -> Date
 const dateWithoutTime = (d: Date): Date =>
@@ -113,6 +128,8 @@ const withinShape = (point: number[], bounds: any) => {
 }
 
 export {
+  addItUp,
+  addReduce,
   boolToInt,
   dateFromQuery,
   dateWithoutTime,

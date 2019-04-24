@@ -25,4 +25,6 @@ export interface Query {
   lastName?: string
   firstInitial?: string
   middleInitial?: string
+
+  target?: string
 }

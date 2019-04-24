@@ -8,6 +8,12 @@ type Query {
     firstInitial: String,
     middleInitial: String,
   ): [Bulletin!]!
+
+  targetedAPDBulletins (
+    target: String
+  ): [Bulletin!]!
+
+  apd_bulletin(id: Int!): Bulletin!
 }
 
 type Bulletin {

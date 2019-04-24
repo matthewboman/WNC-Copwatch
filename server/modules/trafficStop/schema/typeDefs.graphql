@@ -7,11 +7,13 @@ type Query {
     reason: String
   ): [TrafficStop!]!
 
-  trafficStop(id: String!): TrafficStop!
+  trafficStop(id: Int!): TrafficStop!
 
   dailyTrafficStopStats: [DailyTrafficStats]
 
-  allTrafficStopStats: AllTrafficStopStats
+  allTrafficStopStats: [Stat]
+
+  # allTrafficStopStats: AllTrafficStopStats
 }
 
 type TrafficStop {
@@ -37,14 +39,19 @@ type TrafficStop {
   vehicle_searched: Boolean
   search_category: [String]
 
-  name_age: String,
-  name_race: String,
-  name_sex: String,
+  t_search_consent: Int
+  t_search_warrant: Int
+  t_probable_cause: Int
+
+  name_age: String
+  name_race: String
+  name_sex: String
   name_ethnicity: String
 }
 
 type DailyTrafficStats {
   date: Date
+  stops: Int
 
   arrests: Int
   driver_arrested: Int
@@ -57,10 +64,6 @@ type DailyTrafficStats {
   personal_effects_searched: Int
   search_initiated: Int
   vehicle_searched: Int
-
-  t_search_consent: Int
-  t_search_warrant: Int
-  t_probable_cause: Int
 }
 
 type AllTrafficStopStats {
@@ -73,4 +76,10 @@ type AllTrafficStopStats {
   searchWithProbableCause: Int
   searchWithWarrant: Int
   searchWithoutConsentWarrantOrProbableCause: Int
+}
+
+# TODO: The D3 library would work better with an array
+type Stat {
+  key: String
+  value: Int
 }
