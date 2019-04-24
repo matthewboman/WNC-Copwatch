@@ -19,3 +19,13 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.leaflet-container {
+  height: 400px;
+  width: 80%;
+  margin: 0 auto;
+}
+
+.leaflet-zoom-animated {
+  height: 400px;
+}

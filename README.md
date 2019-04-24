@@ -33,11 +33,15 @@ Any development for the production site should be done on the V1 branch.
 ### Version 2 development
 
 ### Frontend
-This is a resign from the ground-up beginning with a focus on user experience. The map and datavisualizations will eventually be incorporated. 
-Version 2 will move from Vue to React-Apollo.
+* Many of the components are basically working and need styled and optimized.
+* Maps with markers can make the browser unresponsive
+* Heatmaps work only on initial navigation due to a race condition in rendering the map and the heatlayer referencing the map. This may be a library issue.
 
 ### Backend
-* Rewrite bullentin parser or develop more maintainable solution
+* Implement Redis caching for expensive calculations
+
+### GraphQL
+* Implement pagination and error handling
 
 #### Site Configuration
 * Code splitting to reduce size of bundle

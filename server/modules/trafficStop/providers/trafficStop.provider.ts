@@ -2,13 +2,14 @@ import { Injectable } from '@graphql-modules/di'
 
 import { HttpService } from '../../../services'
 import {
-  AllTrafficStopStats,
   DailyTrafficStats,
   Query,
+  Stat,
   TrafficStop,
   UnformattedReport
 } from '../../../entity'
 import {
+  addItUp,
   boolToInt,
   fixBool,
   fixDate
@@ -30,7 +31,7 @@ export class TrafficStopProvider {
   detailsURL: string = "APDTrafficStops/FeatureServer/2/query?where=1%3D1&outFields=*&outSR=4326&f=json"
   formattedTrafficStops: TrafficStop[]
   dailyStats: DailyTrafficStats[]
-  allStats: AllTrafficStopStats
+  allStats: Stat[]
 
   constructor() {
     this.httpService = new HttpService(this.baseURL)
@@ -60,8 +61,13 @@ export class TrafficStopProvider {
     ], this.formattedTrafficStops)
   }
 
-  async getTrafficStop() {
-    // TODO
+  async getTrafficStop({ id }: Query) {
+    if (!this.formattedTrafficStops) {
+      const rawTrafficStops = await this.getReports(this.trafficStopURL)
+      const stopDetails = await this.getReports(this.detailsURL)
+      this.formattedTrafficStops = this.formatTrafficStops(rawTrafficStops, stopDetails)
+    }
+    return this.formattedTrafficStops.find((stop: TrafficStop) => stop.id == id)
   }
 
   async getDailyTrafficStopStats(): Promise<DailyTrafficStats[]> {
@@ -72,11 +78,10 @@ export class TrafficStopProvider {
     }
 
     this.dailyStats = this.formatDailyStats(this.formattedTrafficStops)
-
     return this.dailyStats
   }
 
-  async getAllTrafficStopStats(): Promise<AllTrafficStopStats> {
+  async getAllTrafficStopStats(): Promise<Stat[]> {
     if (!this.formattedTrafficStops) {
       const rawTrafficStops = await this.getReports(this.trafficStopURL)
       const stopDetails = await this.getReports(this.detailsURL)
@@ -88,7 +93,6 @@ export class TrafficStopProvider {
     }
 
     this.allStats = this.calculateStats(this.dailyStats)
-
     return this.allStats
   }
 
@@ -138,8 +142,8 @@ export class TrafficStopProvider {
         agency: stop.attributes.agency || '',
         date: fixDate(stop.attributes.date_occurred),
         geometry: {
-          lat: stop.geometry ? stop.geometry.x : null,
-          lng: stop.geometry ? stop.geometry.y : null
+          lat: stop.geometry ? stop.geometry.y : null,
+          lng: stop.geometry ? stop.geometry.x : null
         },
         reason: stop.attributes.stop_sbi_desc || '',
         traffic_stop_id: stop.attributes.traffic_stop_id || '',
@@ -169,7 +173,9 @@ export class TrafficStopProvider {
     let dataset: any = []
 
     stops.forEach((stop: TrafficStop) => {
-      const existingDates = dataset.map((d: DailyTrafficStats) => `${d.date.getMonth()}/${d.date.getDate()}${d.date.getFullYear()}`)
+      const existingDates = dataset.map((d: DailyTrafficStats) =>
+        `${d.date.getMonth()}/${d.date.getDate()}${d.date.getFullYear()}`
+      )
       const date = new Date(stop.date)
 
       // only count for one search or arrest
@@ -237,23 +243,20 @@ export class TrafficStopProvider {
         })
       }
     })
-    return dataset.sort((a: DailyTrafficStats, b: DailyTrafficStats) => a.date.getTime() - b.date.getTime())
+
+    return dataset.sort((a: DailyTrafficStats, b: DailyTrafficStats) =>
+      a.date.getTime() - b.date.getTime())
   }
 
-  private calculateStats(stops: DailyTrafficStats[]): AllTrafficStopStats {
-    const accumulator: AllTrafficStopStats = {
-      stops: 0,
-      searches: 0,
-      arrests: 0,
-      searchWithoutArrest: 0,
-      arrestWithoutSearch: 0,
-      seachWithConsent: 0,
-      searchWithProbableCause: 0,
-      searchWithWarrant: 0,
-      searchWithoutConsentWarrantOrProbableCause: 0
-    }
+  private calculateStats(dailyTrafficStopStats: DailyTrafficStats[]): Stat[] {
+    let statArray = [
+      addItUp('stops', dailyTrafficStopStats),
+      addItUp('arrests', dailyTrafficStopStats),
+      addItUp('searches', dailyTrafficStopStats),
+    ]
 
-    return stops.reduce((acc: any, val: any) => {
+    // this is messy but performs the caculation once instead of many times
+    const statObj = dailyTrafficStopStats.reduce((acc: any, val: any) => {
       const searchWithoutArrest = (
         (val.searches >= 1 && val.arrests === 0) ||
         (val.searches > val.arrests)
@@ -277,10 +280,6 @@ export class TrafficStopProvider {
       ) ? (val.searches - val.t_search_consent - val.t_probable_cause - val.t_probable_cause) : 0
 
       return {
-        stops: acc.stops += val.stops,
-        searches: acc.searches += val.searches,
-        arrests: acc.arrests += val.arrests,
-
         seachWithConsent: acc.seachWithConsent += seachWithConsent,
         searchWithProbableCause: acc.searchWithProbableCause += searchWithProbableCause,
         searchWithWarrant: acc.searchWithWarrant += searchWithWarrant,
@@ -289,6 +288,35 @@ export class TrafficStopProvider {
         arrestWithoutSearch: acc.arrestWithoutSearch += arrestWithoutSearch,
         searchWithoutConsentWarrantOrProbableCause: acc.searchWithoutConsentWarrantOrProbableCause += searchWithoutConsentWarrantOrProbableCause
       }
-    }, accumulator)
+    }, {
+      searchWithoutArrest: 0,
+      arrestWithoutSearch: 0,
+      seachWithConsent: 0,
+      searchWithProbableCause: 0,
+      searchWithWarrant: 0,
+      searchWithoutConsentWarrantOrProbableCause: 0
+    })
+
+    for (const key in statObj) {
+      statArray = [
+        ...statArray,
+        { key, value: statObj[key] }
+      ]
+    }
+
+    const keys = statArray.map(s => s.key)
+    const searchesIndex = keys.indexOf('searches')
+    const withoutArrestIndex = keys.indexOf('searchWithoutArrest')
+    const stopsIndex = keys.indexOf('stops')
+    // const arrestsIndex = keys.indexOf('arrests')
+
+    const combined = statArray[searchesIndex].value - statArray[withoutArrestIndex].value
+    const uneventful = statArray[stopsIndex].value - statArray[searchesIndex].value - statArray[withoutArrestIndex].value
+
+    return [
+      ...statArray,
+      { key: 'combined', value: combined },
+      { key: 'uneventful', value: uneventful }
+    ]
   }
 }

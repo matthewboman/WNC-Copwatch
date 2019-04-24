@@ -3,11 +3,11 @@ import { Grid, Paper, Typography } from '@material-ui/core'
 import { StyleRulesCallback, Theme, withStyles, createStyles } from '@material-ui/core/styles'
 
 import { MapContainer, MapFilters } from '../Components'
-import { getStops, getStopDetails } from '../utils/queries'
+import { getBulletins, getBulletinDetails } from '../utils/queries'
 import { Styled } from '../utils/types'
 import { getLastWeek } from '../utils/functions'
 
-class TrafficStopMap extends Component<Styled> {
+class APDBulletinsMap extends Component<Styled> {
   state = {
     variables: { }
   }
@@ -31,9 +31,9 @@ class TrafficStopMap extends Component<Styled> {
         <Grid container spacing={24}>
           <Grid item xs={12} sm={6}>
             <MapContainer
-              query={getStops}
+              query={getBulletins}
               variables={variables}
-              popupQuery={getStopDetails}
+              popupQuery={getBulletinDetails}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -65,4 +65,4 @@ const styles: StyleRulesCallback = (theme: Theme) => createStyles({
   },
 })
 
-export default withStyles(styles)(TrafficStopMap)
+export default withStyles(styles)(APDBulletinsMap)

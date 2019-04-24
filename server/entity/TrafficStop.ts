@@ -53,6 +53,9 @@ export interface DailyTrafficStats {
   t_probable_cause: Number
 }
 
+/**
+ * @deprecated
+ */
 export interface AllTrafficStopStats {
   stops: number
   searches: number

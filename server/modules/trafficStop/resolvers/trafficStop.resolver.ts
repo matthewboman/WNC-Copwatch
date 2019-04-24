@@ -6,6 +6,9 @@ export default {
     trafficStops: (obj: any, args: Query, { injector }: any) => {
       return injector.get(TrafficStopProvider).getTrafficStops(args)
     },
+    trafficStop: (obj: any, args: Query, { injector }: any) => {
+      return injector.get(TrafficStopProvider).getTrafficStop(args)
+    },
     dailyTrafficStopStats: (obj: any, args: Query, { injector }: any) => {
       return injector.get(TrafficStopProvider).getDailyTrafficStopStats()
     },
