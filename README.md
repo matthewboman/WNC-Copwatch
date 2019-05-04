@@ -24,6 +24,8 @@ For frontend development, you can get a list of REST endpoints and examples in [
 **I'm not currently adding new features to this branch, but feel free to if you'd like. It exists for bug fixes and security patches. If you would like to help out, check out the `v2` branch for active development.**
 Any development for the production site should be done on the V1 branch.
 
+Directories that begin with an underscore are V1 for reference only.
+
 #### Frontend Application
 * Make the rendered list of reports sortable
 * Improve user feedback while map is re-rendering
@@ -31,6 +33,9 @@ Any development for the production site should be done on the V1 branch.
 
 
 ### Version 2 development
+We're still pulling from the city's API. This can cause issues with speed.
+One option would be to cache results with Redis.
+Another option would be to write DB seeders && store all in our DB.
 
 ### Frontend
 * Many of the components are basically working and need styled and optimized.
