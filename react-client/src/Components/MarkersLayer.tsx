@@ -4,6 +4,9 @@ import { Query } from 'react-apollo'
 
 import PopupQuery from './PopupQuery'
 
+/**
+ * This is different from HeatMap. We don't want to re-render the map with every query.
+ */
 export default ({
   name,
   query,

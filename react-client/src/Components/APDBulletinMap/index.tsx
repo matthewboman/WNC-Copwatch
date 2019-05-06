@@ -26,6 +26,8 @@ class APDBulletinsMap extends Component<Styled> {
     const { variables } = this.state
     const { classes } = this.props
 
+    console.log('component APDBulletinsMap')
+
     return (
       <div className={classes.wtfMaterial}>
         <Grid container spacing={24}>

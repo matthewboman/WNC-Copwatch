@@ -23,6 +23,8 @@ class TrafficStopsMap extends Component<Styled> {
   }
 
   render() {
+    console.log('component TrafficStopsMap')
+
     const { variables } = this.state
     const { classes } = this.props
 

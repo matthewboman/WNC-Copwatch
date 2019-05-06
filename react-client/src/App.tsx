@@ -31,12 +31,12 @@ class App extends Component {
           </header>
           <Style>
               <Route path="/" exact component={Home} />
-              <Route path="/apd-bulletins" component={APDBulletinMap} />
+              <Route path="/apd-bulletins-map" component={APDBulletinMap} />
               <Route path="/officer-info" component={OfficerInfo} />
-              <Route path="/studies-houseless" component={HouselessStudies} />
-              <Route path="/studies-race" component={RaceStudies} />
-              <Route path="/studies-traffic" component={TrafficStopStudies} />
-              <Route path="/traffic-stops" component={TrafficStopMap} />
+              <Route path="/houseless-studies" component={HouselessStudies} />
+              <Route path="/race-studies" component={RaceStudies} />
+              <Route path="/traffic-stop-studies" component={TrafficStopStudies} />
+              <Route path="/traffic-stops-maps" component={TrafficStopMap} />
           </Style>
         </div>
       </Router>
