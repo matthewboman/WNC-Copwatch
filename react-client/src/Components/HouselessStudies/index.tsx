@@ -6,8 +6,6 @@ import HeatMap from './HeatMap'
 import { Styled } from '../../utils/types'
 
 const HouselessStudies = ({ classes }) => {
-  console.log('component HouselessStudies')
-
   return (
     <Grid container spacing={24}>
       <Grid item xs={12}>

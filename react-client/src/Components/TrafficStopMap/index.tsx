@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Grid, Paper, Typography } from '@material-ui/core'
 import { StyleRulesCallback, Theme, withStyles, createStyles } from '@material-ui/core/styles'
 
-import { MapContainer, MarkersLayer, DateFilters } from '..'
+import { MarkersLayer, DateFilters } from '..'
 import { Styled } from '../../utils/types'
 import { getLastWeek } from '../../utils/functions'
 import { getStops, getStopDetails } from '../../utils/queries'
@@ -23,8 +23,6 @@ class TrafficStopsMap extends Component<Styled> {
   }
 
   render() {
-    console.log('component TrafficStopsMap')
-
     const { variables } = this.state
     const { classes } = this.props
 
@@ -32,14 +30,12 @@ class TrafficStopsMap extends Component<Styled> {
       <div className={classes.wtfMaterial}>
         <Grid container spacing={24}>
           <Grid item xs={12} sm={6}>
-            <MapContainer>
-              <MarkersLayer
-                name='trafficStops'
-                query={getStops}
-                variables={variables}
-                popupQuery={getStopDetails}
-              />
-            </MapContainer>
+            <MarkersLayer
+              name='trafficStops'
+              query={getStops}
+              variables={variables}
+              popupQuery={getStopDetails}
+            />
           </Grid>
           <Grid item xs={12} sm={6}>
             <Paper>

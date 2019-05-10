@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Grid, Paper, Typography } from '@material-ui/core'
 import { StyleRulesCallback, Theme, withStyles, createStyles } from '@material-ui/core/styles'
 
-import { MapContainer, MarkersLayer, DateFilters } from '..'
+import { MarkersLayer, DateFilters } from '..'
 import { Styled } from '../../utils/types'
 import { getLastWeek } from '../../utils/functions'
 import { getBulletins, getBulletinDetails } from '../../utils/queries'
@@ -26,20 +26,16 @@ class APDBulletinsMap extends Component<Styled> {
     const { variables } = this.state
     const { classes } = this.props
 
-    console.log('component APDBulletinsMap')
-
     return (
       <div className={classes.wtfMaterial}>
         <Grid container spacing={24}>
           <Grid item xs={12} sm={6}>
-            <MapContainer>
-              <MarkersLayer
-                name='apdBulletins'
-                query={getBulletins}
-                variables={variables}
-                popupQuery={getBulletinDetails}
-              />
-            </MapContainer>
+            <MarkersLayer
+              name='apdBulletins'
+              query={getBulletins}
+              variables={variables}
+              popupQuery={getBulletinDetails}
+            />
           </Grid>
           <Grid item xs={12} sm={6}>
             <Paper>

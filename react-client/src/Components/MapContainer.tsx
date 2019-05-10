@@ -10,21 +10,35 @@ const BASEMAP = 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/
 const ATTRIBUTION = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>'
 const ZOOM = 8
 
+// const MapContainer = ({ classes, children }) => (
+//   <Grid container spacing={24}>
+//     <Grid item xs={12}>
+//       <Map center={DEFAULT_CENTER} zoom={ZOOM}>
+//         <LayersControl>
+//           <LayersControl.BaseLayer name="Base" checked>
+//             <TileLayer
+//               attribution={ATTRIBUTION}
+//               url={BASEMAP}
+//             />
+//           </LayersControl.BaseLayer>
+//           <LayersControl.Overlay name="Details" checked>
+//             { children }
+//           </LayersControl.Overlay>
+//         </LayersControl>
+//       </Map>
+//     </Grid>
+//   </Grid>
+// )
+
 const MapContainer = ({ classes, children }) => (
   <Grid container spacing={24}>
     <Grid item xs={12}>
       <Map center={DEFAULT_CENTER} zoom={ZOOM}>
-        <LayersControl>
-          <LayersControl.BaseLayer name="Base" checked>
-            <TileLayer
-              attribution={ATTRIBUTION}
-              url={BASEMAP}
-            />
-          </LayersControl.BaseLayer>
-          <LayersControl.Overlay name="Details" checked>
-            { children }
-          </LayersControl.Overlay>
-        </LayersControl>
+        <TileLayer
+          attribution={ATTRIBUTION}
+          url={BASEMAP}
+        />
+        { children }
       </Map>
     </Grid>
   </Grid>

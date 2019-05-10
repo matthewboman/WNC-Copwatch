@@ -2,7 +2,6 @@ import React, { Fragment } from 'react'
 import { Typography } from '@material-ui/core'
 
 export default ({ stop }) => {
-  console.log(stop)
   return (
   <Fragment>
     <Typography>

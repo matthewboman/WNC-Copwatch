@@ -36,7 +36,7 @@ class App extends Component {
               <Route path="/houseless-studies" component={HouselessStudies} />
               <Route path="/race-studies" component={RaceStudies} />
               <Route path="/traffic-stop-studies" component={TrafficStopStudies} />
-              <Route path="/traffic-stops-maps" component={TrafficStopMap} />
+              <Route path="/traffic-stops-map" component={TrafficStopMap} />
           </Style>
         </div>
       </Router>

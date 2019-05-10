@@ -20,8 +20,6 @@ const theme = createMuiTheme({
   }
 })
 
-
-
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
     <ApolloProvider client={apolloClient}>
@@ -29,6 +27,5 @@ ReactDOM.render(
     </ApolloProvider>
   </MuiThemeProvider>
 , document.getElementById('root'))
-
 
 serviceWorker.unregister()

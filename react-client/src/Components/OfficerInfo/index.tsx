@@ -3,8 +3,6 @@ import { Grid, Paper, Typography } from '@material-ui/core'
 import { StyleRulesCallback, Theme, withStyles } from '@material-ui/core/styles'
 
 const OfficerInfo = () => {
-  console.log('component OfficerInfo')
-
   return (
     <Grid container spacing={24}>
       <Grid item xs={12}>
