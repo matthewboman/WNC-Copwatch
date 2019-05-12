@@ -5,7 +5,7 @@ import { Group } from '@vx/group'
 const black = '#000000'
 const value = d => d.value
 
-export default ({ dimensions, stats }) => {
+const PieChart = ({ dimensions, stats }) => {
   const radius = Math.min(dimensions.width, dimensions.height) / 2
   const centerY = dimensions.height / 2
   const centerX = dimensions.width / 2
@@ -45,3 +45,5 @@ export default ({ dimensions, stats }) => {
     </svg>
   )
 }
+
+export default React.memo(PieChart)

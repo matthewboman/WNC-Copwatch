@@ -4,7 +4,8 @@ type Query {
     before: String,
     arrest: Boolean,
     search: Boolean,
-    reason: String
+    reason: String,
+    searchCategory: String
   ): [TrafficStop!]!
 
   trafficStop(id: Int!): TrafficStop!

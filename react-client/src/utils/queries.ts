@@ -4,8 +4,18 @@ import gql from 'graphql-tag'
  * APD Daily Bulletins
  */
 export const getBulletins = gql`
-  query apdBulletins($after: String, $before: String) {
-    apdBulletins(after: $after, before: $before) {
+  query apdBulletins(
+    $after: String,
+    $before: String,
+    $description: String,
+    $lastName: String
+  ) {
+    apdBulletins(
+      after: $after,
+      before: $before,
+      description: $description,
+      lastName: $lastName
+    ) {
       id
       date
       geometry {
@@ -80,8 +90,20 @@ export const getAllTrafficStopStats = gql`
 `
 
 export const getStops = gql`
-  query trafficStops($after: String, $before: String) {
-    trafficStops(after: $after, before: $before) {
+  query trafficStops(
+    $after: String,
+    $before: String,
+    $search: Boolean,
+    $arrest: Boolean,
+    $searchCategory: String,
+  ) {
+    trafficStops(
+      after: $after,
+      before: $before,
+      search: $search,
+      arrest: $arrest,
+      searchCategory: $searchCategory,
+    ) {
       id
       date
       geometry {

@@ -2,11 +2,21 @@
  * Higher-order functions used across components
  */
 
+// twoDigit :: Int | String -> String
+const twoDigit = (i: any) => intLength(i) == 1 ? `0${i}` : i
+
 // getLastWeek :: Date -> String
 export const getLastWeek = (d: Date) => {
   const prev = new Date(d.getFullYear(), d.getMonth(), d.getDate() - 7)
-  return `${prev.getMonth() + 1}/${prev.getDate()}/${prev.getFullYear()}`
+  const year = prev.getFullYear()
+  const month = prev.getMonth() + 1
+  const day = prev.getDate()
+
+  return `${year}-${twoDigit(month)}-${twoDigit(day)}`
 }
+
+// intLength :: Int -> Int
+const intLength = (i: number) => ('' + i).length
 
 // withinShape :: [Point] -> Point -> Bool
 export const withinShape = (bounds: any) => (point: number[]) => {

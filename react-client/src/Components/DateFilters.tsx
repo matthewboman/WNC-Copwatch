@@ -1,14 +1,17 @@
-import React, { useState } from 'react'
-import { IconButton, TextField } from '@material-ui/core'
-import { Search } from '@material-ui/icons'
+import React from 'react'
+import { FormControl, FormLabel, TextField } from '@material-ui/core'
 import { StyleRulesCallback, Theme, withStyles, createStyles } from '@material-ui/core/styles'
 
-const DateFilters = ({ classes, updateQuery }) => {
-  const [before, setBefore] = useState('')
-  const [after, setAfter] = useState('')
-
+const DateFilters = ({
+  classes,
+  after,
+  before,
+  setAfter,
+  setBefore
+}) => {
   return (
-    <form className={classes.container} noValidate>
+    <FormControl className={classes.formControl}>
+      <FormLabel>Filter by date</FormLabel>
       <TextField
         id="date"
         label="after"
@@ -31,17 +34,7 @@ const DateFilters = ({ classes, updateQuery }) => {
           shrink: true,
         }}
       />
-      <IconButton
-        className={classes.iconButton}
-        onClick={e => {
-          e.preventDefault()
-          updateQuery({ before, after })
-        }}
-        aria-label="Search"
-      >
-        <Search />
-      </IconButton>
-    </form>
+    </FormControl>
   )
 }
 

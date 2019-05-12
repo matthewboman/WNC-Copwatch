@@ -50,6 +50,7 @@ export class TrafficStopProvider {
     const searches = (stops: TrafficStop[]) => filterSearches(args, stops)
     const arrests = (stops: TrafficStop[]) => filterArrests(args, stops)
     const reason = (stops: TrafficStop[]) => filterOne('reason', args, stops)
+    const category = (stops: TrafficStop[]) => filterOne('search_category', args, stops)
 
     // compose
     return applyFilters([
@@ -58,6 +59,7 @@ export class TrafficStopProvider {
       arrests,
       searches,
       reason,
+      category
     ], this.formattedTrafficStops)
   }
 
