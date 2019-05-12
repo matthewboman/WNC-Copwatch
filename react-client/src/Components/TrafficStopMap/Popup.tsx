@@ -1,8 +1,7 @@
 import React, { Fragment } from 'react'
 import { Typography } from '@material-ui/core'
 
-export default ({ stop }) => {
-  return (
+const Popup = ({ stop }) => (
   <Fragment>
     <Typography>
       Address: { stop.address }
@@ -11,4 +10,6 @@ export default ({ stop }) => {
       Reason: { stop.reason }
     </Typography>
   </Fragment>
-)}
+)
+
+export default React.memo(Popup)

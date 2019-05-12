@@ -66,15 +66,15 @@ const TrafficStopStudies = () => (
 
             return (
               <Fragment>
-              <PieChart
-                dimensions={pieChartDimensions}
-                stats={stops}
-              />
-              <PieChart
-                dimensions={pieChartDimensions}
-                stats={searches}
-              />
-            </Fragment>
+                <PieChart
+                  dimensions={pieChartDimensions}
+                  stats={stops}
+                />
+                <PieChart
+                  dimensions={pieChartDimensions}
+                  stats={searches}
+                />
+              </Fragment>
             )
           }}
         </Query>

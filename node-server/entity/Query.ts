@@ -7,6 +7,7 @@ export interface Query {
 
   arrest?: Boolean
   search?: Boolean
+  category?: String
 
   use_of_force?: Boolean
   type_force_used?: string

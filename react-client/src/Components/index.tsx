@@ -27,5 +27,5 @@ export {
   DateFilters,
   MapContainer,
   MarkersLayer,
-  PopupQuery
+  PopupQuery,
 }

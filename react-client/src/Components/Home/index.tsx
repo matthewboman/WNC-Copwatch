@@ -98,4 +98,4 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
   },
 })
 
-export default withStyles(styles)(Home)
+export default withStyles(styles)(React.memo(Home))
