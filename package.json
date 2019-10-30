@@ -29,7 +29,7 @@
     "lodash": "^4.17.10",
     "mongo-querystring": "^4.1.1",
     "mongodb": "^3.0.3",
-    "mongoose": "^5.4.3",
+    "mongoose": "^5.7.5",
     "morgan": "^1.9.1",
     "node-xlsx": "^0.11.2",
     "ramda": "^0.25.0",
