@@ -28,7 +28,7 @@
     "leaflet": "^1.4.0",
     "lodash": "^4.17.10",
     "mongo-querystring": "^4.1.1",
-    "mongodb": "^3.0.3",
+    "mongodb": "^3.1.13",
     "mongoose": "^5.4.3",
     "morgan": "^1.9.1",
     "node-xlsx": "^0.11.2",
