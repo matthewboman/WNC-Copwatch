@@ -26,7 +26,7 @@
     "express": "^4.16.2",
     "googlemaps": "^1.12.0",
     "leaflet": "^1.4.0",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.21",
     "mongo-querystring": "^4.1.1",
     "mongodb": "^3.0.3",
     "mongoose": "^5.4.3",
