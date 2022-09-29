@@ -21,7 +21,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "bootstrap": "^4.2.1",
-    "d3": "^5.7.0",
+    "d3": "^7.6.1",
     "dotenv": "^6.2.0",
     "express": "^4.16.2",
     "googlemaps": "^1.12.0",
